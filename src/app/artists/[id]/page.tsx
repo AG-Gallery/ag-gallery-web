@@ -14,7 +14,7 @@ export default function ArtistPage() {
           alt=""
           width="1920"
           height="1080"
-          className="aspect-[3/2] w-full shrink-0 object-cover grayscale-100 lg:w-64"
+          className="animate-fade-in aspect-[3/2] w-full shrink-0 object-cover grayscale-100 lg:w-64"
         />
 
         <article className="my-8 grid grid-cols-1 lg:my-0 lg:ml-24 lg:grid-cols-[100px_1fr]">

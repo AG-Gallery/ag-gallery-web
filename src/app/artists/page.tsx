@@ -24,7 +24,7 @@ export default function ArtistsPage() {
     <div className="animate-fade-in flex min-h-screen w-fit">
       <h2 className="text-2xl tracking-tight md:text-[28px]">Artists</h2>
 
-      <section className="absolute right-0 left-0 mx-auto grid size-fit grid-cols-2 gap-x-16 gap-y-3 md:top-2/5 md:mt-0 md:grid-cols-4 md:gap-x-20">
+      <section className="absolute right-0 left-0 mx-auto mt-24 grid size-fit grid-cols-2 gap-x-16 gap-y-3 md:top-2/5 md:mt-0 md:grid-cols-4 md:gap-x-20">
         {artists.map((artist, i) => {
           return (
             <Link

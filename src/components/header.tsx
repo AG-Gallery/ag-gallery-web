@@ -83,7 +83,7 @@ export default function Header() {
               </div>
 
               <DrawerFooter>
-                <DrawerClose className="ml-auto">
+                <DrawerClose className="ml-auto" asChild>
                   <Button variant="ghost">Close</Button>
                 </DrawerClose>
               </DrawerFooter>
