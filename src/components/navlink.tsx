@@ -1,20 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 type NavLinkProps = {
   href: string;
   exact?: boolean;
+  className: string;
   children: React.ReactNode;
 };
 
-export function NavLink({ href, exact, children }: NavLinkProps) {
+export function NavLink({ href, className, children }: NavLinkProps) {
   const pathname = usePathname();
-  const isActive = exact ? pathname === href : pathname?.startsWith(href);
+  const params = useSearchParams();
+
+  const paramsString = params.toString();
+  const fullPath = pathname + (paramsString ? `?${paramsString}` : "");
+
+  const active = fullPath === href;
 
   return (
-    <Link href={href} className={isActive ? "!text-foreground" : ""}>
+    <Link
+      href={href}
+      className={`${active && "!text-foreground"} ${className}`}
+    >
       {children}
     </Link>
   );

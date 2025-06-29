@@ -33,7 +33,12 @@ export default function Header() {
       {navPages.map((page) => {
         return (
           <li key={page.title}>
-            <NavLink href={page.link}>{page.title}</NavLink>
+            <NavLink
+              href={page.link}
+              className="font-medium text-neutral-500 transition-colors duration-200 hover:text-black md:font-normal"
+            >
+              {page.title}
+            </NavLink>
           </li>
         );
       })}

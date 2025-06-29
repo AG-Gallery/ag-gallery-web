@@ -17,7 +17,7 @@ export default function Home() {
       </section>
 
       {/* Current Exhibitions */}
-      <section className="my-8 md:my-10">
+      <section className="animate-fade-in my-8 md:my-10">
         <h2 className="mb-3 text-2xl tracking-tight">Now On View</h2>
         <ExhibitionCarousel
           imageLink="/images/exhibit-1.jpg"
@@ -29,7 +29,7 @@ export default function Home() {
       </section>
 
       {/* Upcoming Exhibitions  */}
-      <section className="my-8 md:my-10">
+      <section className="animate-fade-in my-8 md:my-10">
         <h2 className="mb-3 text-2xl tracking-tight">Upcoming</h2>
         <ExhibitionCarousel
           imageLink="/images/exhibit-2.webp"
