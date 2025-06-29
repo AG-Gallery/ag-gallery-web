@@ -6,6 +6,7 @@ import "./globals.css";
 
 import localFont from "next/font/local";
 
+import Footer from "@/components/footer";
 import Header from "@/components/header";
 
 const geistSans = Geist({
@@ -42,6 +43,7 @@ export default function RootLayout({
         <div className="mx-3 mt-24 flex min-h-screen flex-col md:mx-10">
           <Header />
           {children}
+          <Footer />
         </div>
       </body>
     </html>
