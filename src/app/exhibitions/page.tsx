@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -14,18 +15,20 @@ export default function ExhibitionsPage() {
             aria-label="Filter exhibitions"
             className="flex gap-2 text-neutral-700 md:flex-col md:gap-0 md:text-sm"
           >
-            <NavLink
-              href="/exhibitions?filter=current"
-              className="w-fit py-1 pr-3 text-neutral-400 transition-colors duration-200 hover:text-black md:pr-0"
-            >
-              Current
-            </NavLink>
-            <NavLink
-              href="/exhibitions?filter=past"
-              className="w-fit py-1 text-neutral-400 transition-colors duration-200 hover:text-black"
-            >
-              Past
-            </NavLink>
+            <Suspense>
+              <NavLink
+                href="/exhibitions?filter=current"
+                className="w-fit py-1 pr-3 text-neutral-400 transition-colors duration-200 hover:text-black md:pr-0"
+              >
+                Current
+              </NavLink>
+              <NavLink
+                href="/exhibitions?filter=past"
+                className="w-fit py-1 text-neutral-400 transition-colors duration-200 hover:text-black"
+              >
+                Past
+              </NavLink>
+            </Suspense>
           </nav>
         </aside>
 
