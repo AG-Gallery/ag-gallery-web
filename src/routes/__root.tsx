@@ -1,16 +1,13 @@
 import type { QueryClient } from '@tanstack/react-query'
 
-import { TanstackDevtools } from '@tanstack/react-devtools'
 import {
   createRootRouteWithContext,
   HeadContent,
   Scripts,
 } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import pretendardFontUrl from '../assets/fonts/pretendard-variable.woff2?url'
 import Header from '../components/Header'
-import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import appCss from '../styles.css?url'
 
 interface MyRouterContext {
@@ -58,20 +55,34 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <Header />
         <div className="mx-auto">{children}</div>
-        <TanstackDevtools
-          config={{
-            position: 'bottom-left',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-            TanStackQueryDevtools,
-          ]}
-        />
+
+        {import.meta.env.DEV && <Devtools />}
         <Scripts />
       </body>
     </html>
+  )
+}
+
+function Devtools() {
+  const { TanstackDevtools } = require('@tanstack/react-devtools')
+  const {
+    TanStackRouterDevtoolsPanel,
+  } = require('@tanstack/react-router-devtools')
+  const TanStackQueryDevtools =
+    require('../integrations/tanstack-query/devtools').default
+
+  return (
+    <TanstackDevtools
+      config={{
+        position: 'bottom-left',
+      }}
+      plugins={[
+        {
+          name: 'Tanstack Router',
+          render: <TanStackRouterDevtoolsPanel />,
+        },
+        TanStackQueryDevtools,
+      ]}
+    />
   )
 }
