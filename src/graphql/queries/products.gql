@@ -1,0 +1,330 @@
+query Public_GetAllProducts(
+  $first: Int = 12
+  $after: String
+  $imagesFirst: Int = 1
+  $metafieldNamespace: String = "custom"
+  $artistKey: String = "artist"
+  $categoryKey: String = "category"
+  $genreKey: String = "genre"
+  $mediumKey: String = "medium"
+  $styleKey: String = "style"
+  $typeKey: String = "type"
+  $dimensionsKey: String = "dimensions"
+) {
+  products(first: $first, after: $after) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      cursor
+      node {
+        id
+        title
+        handle
+        createdAt
+        descriptionHtml
+        images(first: $imagesFirst) {
+          edges {
+            node {
+              id
+              url
+              altText
+              width
+              height
+            }
+          }
+        }
+        priceRange {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+        artist: metafield(namespace: $metafieldNamespace, key: $artistKey) {
+          value
+          type
+        }
+        category: metafield(namespace: $metafieldNamespace, key: $categoryKey) {
+          value
+          type
+        }
+        genre: metafield(namespace: $metafieldNamespace, key: $genreKey) {
+          value
+          type
+        }
+        medium: metafield(namespace: $metafieldNamespace, key: $mediumKey) {
+          value
+          type
+        }
+        style: metafield(namespace: $metafieldNamespace, key: $styleKey) {
+          value
+          type
+        }
+        type: metafield(namespace: $metafieldNamespace, key: $typeKey) {
+          value
+          type
+        }
+        dimensions: metafield(
+          namespace: $metafieldNamespace
+          key: $dimensionsKey
+        ) {
+          value
+          type
+        }
+      }
+    }
+  }
+}
+
+query GetRecentProducts(
+  $first: Int = 6
+  $sortKey: ProductSortKeys = CREATED_AT
+  $reverse: Boolean = true
+  $imagesFirst: Int = 1
+  $metafieldNamespace: String = "custom"
+  $artistKey: String = "artist"
+  $categoryKey: String = "category"
+  $genreKey: String = "genre"
+  $mediumKey: String = "medium"
+  $styleKey: String = "style"
+  $typeKey: String = "type"
+  $dimensionsKey: String = "dimensions"
+) {
+  products(first: $first, sortKey: $sortKey, reverse: $reverse) {
+    edges {
+      cursor
+      node {
+        id
+        title
+        handle
+        createdAt
+        descriptionHtml
+        images(first: $imagesFirst) {
+          edges {
+            node {
+              id
+              url
+              altText
+              width
+              height
+            }
+          }
+        }
+        priceRange {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+        artist: metafield(namespace: $metafieldNamespace, key: $artistKey) {
+          value
+          type
+        }
+        category: metafield(namespace: $metafieldNamespace, key: $categoryKey) {
+          value
+          type
+        }
+        genre: metafield(namespace: $metafieldNamespace, key: $genreKey) {
+          value
+          type
+        }
+        medium: metafield(namespace: $metafieldNamespace, key: $mediumKey) {
+          value
+          type
+        }
+        style: metafield(namespace: $metafieldNamespace, key: $styleKey) {
+          value
+          type
+        }
+        type: metafield(namespace: $metafieldNamespace, key: $typeKey) {
+          value
+          type
+        }
+        dimensions: metafield(
+          namespace: $metafieldNamespace
+          key: $dimensionsKey
+        ) {
+          value
+          type
+        }
+      }
+    }
+  }
+}
+
+query GetCollectionProducts(
+  $collectionHandle: String!
+  $productsFirst: Int = 12
+  $productsAfter: String
+  $imagesFirst: Int = 1
+  $metafieldNamespace: String = "custom"
+  $artistKey: String = "artist"
+  $categoryKey: String = "category"
+  $genreKey: String = "genre"
+  $mediumKey: String = "medium"
+  $styleKey: String = "style"
+  $typeKey: String = "type"
+  $dimensionsKey: String = "dimensions"
+) {
+  collectionByHandle(handle: $collectionHandle) {
+    products(first: $productsFirst, after: $productsAfter) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        cursor
+        node {
+          id
+          title
+          handle
+          createdAt
+          descriptionHtml
+          images(first: $imagesFirst) {
+            edges {
+              node {
+                id
+                url
+                altText
+                width
+                height
+              }
+            }
+          }
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          artist: metafield(namespace: $metafieldNamespace, key: $artistKey) {
+            value
+            type
+          }
+          category: metafield(
+            namespace: $metafieldNamespace
+            key: $categoryKey
+          ) {
+            value
+            type
+          }
+          genre: metafield(namespace: $metafieldNamespace, key: $genreKey) {
+            value
+            type
+          }
+          medium: metafield(namespace: $metafieldNamespace, key: $mediumKey) {
+            value
+            type
+          }
+          style: metafield(namespace: $metafieldNamespace, key: $styleKey) {
+            value
+            type
+          }
+          type: metafield(namespace: $metafieldNamespace, key: $typeKey) {
+            value
+            type
+          }
+          dimensions: metafield(
+            namespace: $metafieldNamespace
+            key: $dimensionsKey
+          ) {
+            value
+            type
+          }
+        }
+      }
+    }
+  }
+}
+
+query GetProduct(
+  $id: ID!
+  $imagesFirst: Int = 6
+  $metafieldNamespace: String = "custom"
+  $artistKey: String = "artist"
+  $categoryKey: String = "category"
+  $genreKey: String = "genre"
+  $mediumKey: String = "medium"
+  $styleKey: String = "style"
+  $typeKey: String = "type"
+  $dimensionsKey: String = "dimensions"
+) {
+  product(id: $id) {
+    id
+    title
+    handle
+    createdAt
+    descriptionHtml
+    images(first: $imagesFirst) {
+      edges {
+        node {
+          id
+          url
+          altText
+          width
+          height
+        }
+      }
+    }
+    priceRange {
+      minVariantPrice {
+        amount
+        currencyCode
+      }
+    }
+    artist: metafield(namespace: $metafieldNamespace, key: $artistKey) {
+      value
+      type
+    }
+    category: metafield(namespace: $metafieldNamespace, key: $categoryKey) {
+      value
+      type
+    }
+    genre: metafield(namespace: $metafieldNamespace, key: $genreKey) {
+      value
+      type
+    }
+    medium: metafield(namespace: $metafieldNamespace, key: $mediumKey) {
+      value
+      type
+    }
+    style: metafield(namespace: $metafieldNamespace, key: $styleKey) {
+      value
+      type
+    }
+    type: metafield(namespace: $metafieldNamespace, key: $typeKey) {
+      value
+      type
+    }
+    dimensions: metafield(namespace: $metafieldNamespace, key: $dimensionsKey) {
+      value
+      type
+    }
+  }
+}
+
+query GetProductsForCheckout($ids: [ID!]!) {
+  products: nodes(ids: $ids) {
+    __typename
+    ... on Product {
+      id
+      handle
+      title
+      availableForSale
+      variants(first: 1) {
+        edges {
+          node {
+            id
+            availableForSale
+            quantityAvailable
+            price {
+              amount
+              currencyCode
+            }
+          }
+        }
+      }
+    }
+  }
+}

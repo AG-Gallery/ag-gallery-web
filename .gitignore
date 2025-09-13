@@ -12,3 +12,5 @@ count.txt
 todos.json
 
 routeTree.gen.ts
+
+/src/graphql/generated
