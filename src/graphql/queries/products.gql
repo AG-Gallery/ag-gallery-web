@@ -1,3 +1,76 @@
+fragment ProductImageFields on Image {
+  id
+  url
+  altText
+  width
+  height
+}
+
+fragment ProductFields on Product {
+  id
+  title
+  handle
+  createdAt
+  descriptionHtml
+  images(first: $imagesFirst) {
+    edges {
+      node {
+        ...ProductImageFields
+      }
+    }
+  }
+  priceRange {
+    minVariantPrice {
+      amount
+      currencyCode
+    }
+  }
+  artMovements: metafield(namespace: "shopify", key: "art-movement") {
+    references(first: 4) {
+      nodes {
+        __typename
+        ...LabeledMetaobject
+      }
+    }
+  }
+  frameStyle: metafield(namespace: "shopify", key: "frame-style") {
+    references(first: 4) {
+      nodes {
+        __typename
+        ...LabeledMetaobject
+      }
+    }
+  }
+  medium: metafield(namespace: "shopify", key: "painting-medium") {
+    references(first: 4) {
+      nodes {
+        __typename
+        ...LabeledMetaobject
+      }
+    }
+  }
+  theme: metafield(namespace: "shopify", key: "theme") {
+    references(first: 4) {
+      nodes {
+        __typename
+        ...LabeledMetaobject
+      }
+    }
+  }
+  artist: metafield(namespace: $metafieldNamespace, key: $artistKey) {
+    value
+    type
+  }
+  category: metafield(namespace: $metafieldNamespace, key: $categoryKey) {
+    value
+    type
+  }
+  dimensions: metafield(namespace: $metafieldNamespace, key: $dimensionsKey) {
+    value
+    type
+  }
+}
+
 query Public_GetAllProducts(
   $first: Int = 12
   $after: String
@@ -5,10 +78,6 @@ query Public_GetAllProducts(
   $metafieldNamespace: String = "custom"
   $artistKey: String = "artist"
   $categoryKey: String = "category"
-  $genreKey: String = "genre"
-  $mediumKey: String = "medium"
-  $styleKey: String = "style"
-  $typeKey: String = "type"
   $dimensionsKey: String = "dimensions"
 ) {
   products(first: $first, after: $after) {
@@ -19,65 +88,13 @@ query Public_GetAllProducts(
     edges {
       cursor
       node {
-        id
-        title
-        handle
-        createdAt
-        descriptionHtml
-        images(first: $imagesFirst) {
-          edges {
-            node {
-              id
-              url
-              altText
-              width
-              height
-            }
-          }
-        }
-        priceRange {
-          minVariantPrice {
-            amount
-            currencyCode
-          }
-        }
-        artist: metafield(namespace: $metafieldNamespace, key: $artistKey) {
-          value
-          type
-        }
-        category: metafield(namespace: $metafieldNamespace, key: $categoryKey) {
-          value
-          type
-        }
-        genre: metafield(namespace: $metafieldNamespace, key: $genreKey) {
-          value
-          type
-        }
-        medium: metafield(namespace: $metafieldNamespace, key: $mediumKey) {
-          value
-          type
-        }
-        style: metafield(namespace: $metafieldNamespace, key: $styleKey) {
-          value
-          type
-        }
-        type: metafield(namespace: $metafieldNamespace, key: $typeKey) {
-          value
-          type
-        }
-        dimensions: metafield(
-          namespace: $metafieldNamespace
-          key: $dimensionsKey
-        ) {
-          value
-          type
-        }
+        ...ProductFields
       }
     }
   }
 }
 
-query GetRecentProducts(
+query Public_GetRecentProducts(
   $first: Int = 6
   $sortKey: ProductSortKeys = CREATED_AT
   $reverse: Boolean = true
@@ -85,75 +102,19 @@ query GetRecentProducts(
   $metafieldNamespace: String = "custom"
   $artistKey: String = "artist"
   $categoryKey: String = "category"
-  $genreKey: String = "genre"
-  $mediumKey: String = "medium"
-  $styleKey: String = "style"
-  $typeKey: String = "type"
   $dimensionsKey: String = "dimensions"
 ) {
   products(first: $first, sortKey: $sortKey, reverse: $reverse) {
     edges {
       cursor
       node {
-        id
-        title
-        handle
-        createdAt
-        descriptionHtml
-        images(first: $imagesFirst) {
-          edges {
-            node {
-              id
-              url
-              altText
-              width
-              height
-            }
-          }
-        }
-        priceRange {
-          minVariantPrice {
-            amount
-            currencyCode
-          }
-        }
-        artist: metafield(namespace: $metafieldNamespace, key: $artistKey) {
-          value
-          type
-        }
-        category: metafield(namespace: $metafieldNamespace, key: $categoryKey) {
-          value
-          type
-        }
-        genre: metafield(namespace: $metafieldNamespace, key: $genreKey) {
-          value
-          type
-        }
-        medium: metafield(namespace: $metafieldNamespace, key: $mediumKey) {
-          value
-          type
-        }
-        style: metafield(namespace: $metafieldNamespace, key: $styleKey) {
-          value
-          type
-        }
-        type: metafield(namespace: $metafieldNamespace, key: $typeKey) {
-          value
-          type
-        }
-        dimensions: metafield(
-          namespace: $metafieldNamespace
-          key: $dimensionsKey
-        ) {
-          value
-          type
-        }
+        ...ProductFields
       }
     }
   }
 }
 
-query GetCollectionProducts(
+query Public_GetCollectionProducts(
   $collectionHandle: String!
   $productsFirst: Int = 12
   $productsAfter: String
@@ -161,10 +122,6 @@ query GetCollectionProducts(
   $metafieldNamespace: String = "custom"
   $artistKey: String = "artist"
   $categoryKey: String = "category"
-  $genreKey: String = "genre"
-  $mediumKey: String = "medium"
-  $styleKey: String = "style"
-  $typeKey: String = "type"
   $dimensionsKey: String = "dimensions"
 ) {
   collectionByHandle(handle: $collectionHandle) {
@@ -176,131 +133,23 @@ query GetCollectionProducts(
       edges {
         cursor
         node {
-          id
-          title
-          handle
-          createdAt
-          descriptionHtml
-          images(first: $imagesFirst) {
-            edges {
-              node {
-                id
-                url
-                altText
-                width
-                height
-              }
-            }
-          }
-          priceRange {
-            minVariantPrice {
-              amount
-              currencyCode
-            }
-          }
-          artist: metafield(namespace: $metafieldNamespace, key: $artistKey) {
-            value
-            type
-          }
-          category: metafield(
-            namespace: $metafieldNamespace
-            key: $categoryKey
-          ) {
-            value
-            type
-          }
-          genre: metafield(namespace: $metafieldNamespace, key: $genreKey) {
-            value
-            type
-          }
-          medium: metafield(namespace: $metafieldNamespace, key: $mediumKey) {
-            value
-            type
-          }
-          style: metafield(namespace: $metafieldNamespace, key: $styleKey) {
-            value
-            type
-          }
-          type: metafield(namespace: $metafieldNamespace, key: $typeKey) {
-            value
-            type
-          }
-          dimensions: metafield(
-            namespace: $metafieldNamespace
-            key: $dimensionsKey
-          ) {
-            value
-            type
-          }
+          ...ProductFields
         }
       }
     }
   }
 }
 
-query GetProduct(
+query Public_GetProduct(
   $id: ID!
   $imagesFirst: Int = 6
   $metafieldNamespace: String = "custom"
   $artistKey: String = "artist"
   $categoryKey: String = "category"
-  $genreKey: String = "genre"
-  $mediumKey: String = "medium"
-  $styleKey: String = "style"
-  $typeKey: String = "type"
   $dimensionsKey: String = "dimensions"
 ) {
   product(id: $id) {
-    id
-    title
-    handle
-    createdAt
-    descriptionHtml
-    images(first: $imagesFirst) {
-      edges {
-        node {
-          id
-          url
-          altText
-          width
-          height
-        }
-      }
-    }
-    priceRange {
-      minVariantPrice {
-        amount
-        currencyCode
-      }
-    }
-    artist: metafield(namespace: $metafieldNamespace, key: $artistKey) {
-      value
-      type
-    }
-    category: metafield(namespace: $metafieldNamespace, key: $categoryKey) {
-      value
-      type
-    }
-    genre: metafield(namespace: $metafieldNamespace, key: $genreKey) {
-      value
-      type
-    }
-    medium: metafield(namespace: $metafieldNamespace, key: $mediumKey) {
-      value
-      type
-    }
-    style: metafield(namespace: $metafieldNamespace, key: $styleKey) {
-      value
-      type
-    }
-    type: metafield(namespace: $metafieldNamespace, key: $typeKey) {
-      value
-      type
-    }
-    dimensions: metafield(namespace: $metafieldNamespace, key: $dimensionsKey) {
-      value
-      type
-    }
+    ...ProductFields
   }
 }
 

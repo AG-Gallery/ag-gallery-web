@@ -1,0 +1,21 @@
+query Public_GetMetaobjects($first: Int = 10) {
+  metaobjects(type: "shopify--art-movement", first: $first) {
+    edges {
+      node {
+        id
+        handle
+        label: field(key: "label") {
+          value
+        }
+      }
+    }
+  }
+}
+
+fragment LabeledMetaobject on Metaobject {
+  id
+  handle
+  label: field(key: "label") {
+    value
+  }
+}

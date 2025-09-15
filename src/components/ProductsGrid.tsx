@@ -11,8 +11,8 @@ interface ProductsGridProps {
 export default function ProductsGrid({ products }: ProductsGridProps) {
   return (
     products !== undefined && (
-      <div className="animate-fade-in mb-8 pb-4">
-        <div className="grid gap-3 lg:grid-cols-3 lg:gap-4 2xl:gap-5">
+      <div className="featured-grid-container">
+        <div className="featured-grid">
           {products.map((product) => {
             const mainImage = product.images[0]
             const price = formatNumber(product.price)
@@ -23,7 +23,7 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
             return (
               <div key={product.cursor}>
                 <Link to={`/artworks/${product.handle}`}>
-                  <div className="flex aspect-[5/4] w-full flex-col items-center justify-center rounded bg-neutral-100 p-6 shadow-xs inset-shadow-sm transition-colors duration-150 ease-in select-none hover:bg-neutral-200/50">
+                  <div className="flex aspect-[5/4] w-full flex-col items-center justify-center rounded border border-neutral-200/80 bg-neutral-50 p-2 transition-colors duration-150 ease-in select-none hover:bg-neutral-200/50 lg:p-4 2xl:p-6">
                     <img
                       src={mainImage.url}
                       alt={mainImage.altText ?? ''}
@@ -36,33 +36,38 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
 
                 <div className="mt-5 flex flex-col">
                   <div className="flex items-center justify-between">
-                    <h3 className="hover:text-primary text-lg transition-colors duration-200">
+                    <h3 className="hover:text-primary text-lg font-medium transition-colors duration-200">
                       <Link to={`/artworks/${product.handle}`}>
                         {product.title}
                       </Link>
                     </h3>
-                    <span className="text-sm font-normal">
-                      {dimensions && dimensions[2]}
-                    </span>
+                    <div className="group relative pl-4 select-none">
+                      <span className="block text-sm font-normal text-neutral-500 transition-opacity duration-200 ease-in-out group-hover:opacity-0">
+                        {dimensions && dimensions[1]}
+                      </span>
+                      <span className="pointer-events-none absolute top-0 right-0 text-sm font-normal text-neutral-500 opacity-0 transition-opacity duration-200 ease-in-out group-hover:opacity-100">
+                        {dimensions && dimensions[2]}
+                      </span>
+                    </div>
                   </div>
 
                   <Link
                     to={`/artists/${artistSlug}`}
-                    className="hover:text-primary w-fit font-normal tracking-wide transition-colors duration-200"
+                    className="hover:text-primary w-fit tracking-wide transition-colors duration-200"
                   >
                     {product.artist}
                   </Link>
-                  <span className="mt-0.5 text-[15px] font-normal tracking-wide">
-                    {product.type} on {product.medium}
+                  <span className="mt-0.5 text-sm font-light tracking-wide">
+                    {product.medium[0].label} {product.category}
                   </span>
 
-                  <div className="my-2 flex items-center justify-start gap-1 font-normal">
+                  {/* <div className="my-2 flex items-center justify-start gap-1 font-normal">
                     <span>{price}</span>
                     <span>{product.currencyCode}</span>
-                  </div>
+                  </div> */}
                 </div>
 
-                <button>Add to bag</button>
+                {/* <button>Add to bag</button> */}
               </div>
             )
           })}

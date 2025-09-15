@@ -95,6 +95,18 @@ body {
   /* Fonts */
   --font-pretendard: 'Pretendard Variable', sans-serif;
 
+  /* Animations */
+  --animate-fade-in: fade-in 0.25s cubic-bezier(0.39, 0.575, 0.565, 1);
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -139,5 +151,15 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .featured-grid-container {
+    @apply animate-fade-in mb-8 pb-4;
+  }
+
+  .featured-grid {
+    @apply grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4 xl:gap-5;
   }
 }

@@ -11,7 +11,7 @@ type HeroVideoProps = {
  */
 export default function HeroVideo({ posterSrc, videoSrc }: HeroVideoProps) {
   return (
-    <section className="-z-50 h-screen overflow-hidden">
+    <section className="-z-50 -mx-3 h-screen overflow-hidden md:-mx-10">
       <video
         autoPlay
         muted

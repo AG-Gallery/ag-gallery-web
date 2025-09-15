@@ -4,12 +4,12 @@ export interface Product {
   title: string
   handle: string
   descriptionHtml: string
+  artMovements: LabeledMetaobject[]
+  frameStyle: LabeledMetaobject[]
+  medium: LabeledMetaobject[]
+  theme: LabeledMetaobject[]
   artist?: string | null
   category?: string | null
-  genre?: string | null
-  medium?: string | null
-  style?: string | null
-  type?: string | null
   dimensions?: string | null
   price: string
   currencyCode: string
@@ -21,4 +21,10 @@ export interface Product {
     width?: number | null
     height?: number | null
   }>
+}
+
+export type LabeledMetaobject = {
+  id: string
+  handle: string
+  label: string | null
 }
