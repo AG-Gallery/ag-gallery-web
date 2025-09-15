@@ -1,4 +1,4 @@
-import type { Public_GetFeaturedArtistsQuery } from '@/graphql/generated/react-query'
+import type { Public_GetFeaturedArtistsQuery } from '@/queries/graphql/generated/react-query'
 import type { Artist } from '@/types/artists'
 
 /**

@@ -26,12 +26,12 @@ const config: CodegenConfig = {
   documents: ['src/**/*.{graphql,gql}'],
   generates: {
     // Base schema types
-    'src/graphql/generated/types.ts': {
+    'src/queries/graphql/generated/types.ts': {
       plugins: ['typescript'],
     },
     // Generates TanStack Query hooks
-    'src/graphql/generated/react-query.ts': {
-      documents: 'src/graphql/queries/**/*.graphql',
+    'src/queries/graphql/generated/react-query.ts': {
+      documents: 'src/queries/graphql/queries/**/*.graphql',
       plugins: ['typescript-operations', 'typescript-react-query'],
       config: {
         reactQueryVersion: 5,
@@ -39,7 +39,7 @@ const config: CodegenConfig = {
         exposeDocument: true,
         addInfiniteQuery: true,
         useSuspenseQuery: false,
-        fetcher: { func: 'src/graphql/fetcher#fetcher' },
+        fetcher: { func: 'src/queries/graphql/fetcher#fetcher' },
       },
     },
     // 'src/graphql/generated/react-query.ts': {

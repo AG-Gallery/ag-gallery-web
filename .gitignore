@@ -13,4 +13,5 @@ todos.json
 
 routeTree.gen.ts
 
-/src/graphql/generated
+/src/queries/graphql/generated
+/src/queries/sanity/generated

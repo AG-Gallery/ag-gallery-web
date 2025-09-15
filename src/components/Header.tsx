@@ -1,6 +1,10 @@
+import { useEffect, useRef, useState } from 'react'
+
 import { Link } from '@tanstack/react-router'
 
 import { Search } from 'lucide-react'
+
+import { cn } from '@/lib/utils'
 
 import { Button } from './ui/button'
 import {
@@ -15,6 +19,33 @@ import {
 } from './ui/drawer'
 
 export default function Header() {
+  const [scrolled, setScrolled] = useState(false)
+  const headerRef = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    const onScroll = () => {
+      const doc = document.documentElement
+      const scrollable = Math.max(0, doc.scrollHeight - window.innerHeight)
+      const threshold = scrollable * 0.1 // 10% of page height
+      setScrolled(window.scrollY > threshold)
+    }
+    const onResize = () => {
+      const h = headerRef.current?.getBoundingClientRect().height
+      if (typeof h === 'number' && !Number.isNaN(h)) {
+        document.documentElement.style.setProperty('--header-height', `${h}px`)
+      }
+      onScroll()
+    }
+
+    onResize()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
+    }
+  }, [])
+
   const navLinks = [
     { title: 'Home', path: '/' },
     { title: 'Artists', path: '/artists' },
@@ -24,7 +55,18 @@ export default function Header() {
   ]
 
   return (
-    <header className="before:to-black-10 fixed top-0 right-0 left-0 z-50 w-full p-3 text-white before:absolute before:top-0 before:right-0 before:left-0 before:-z-10 before:h-20 before:w-full before:bg-gradient-to-b before:from-black/30 before:to-transparent md:px-10 md:py-10 md:before:h-28">
+    <header
+      ref={headerRef}
+      className={cn(
+        // positioning + base spacing
+        'fixed inset-x-0 top-0 z-50 w-full transition-colors duration-200 md:px-10 md:py-10',
+
+        scrolled ? 'bg-white text-black' : 'bg-transparent text-white',
+        // subtle gradient for readability only when not scrolled
+        !scrolled &&
+          'before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:-z-10 before:h-20 before:w-full before:bg-gradient-to-b before:from-black/30 before:to-transparent md:before:h-28',
+      )}
+    >
       <nav className="flex items-center justify-between">
         <Link
           to="/"
@@ -45,7 +87,11 @@ export default function Header() {
                   <li key={navLink.path}>
                     <Link
                       to={navLink.path}
-                      className="relative font-medium transition-all duration-200 after:absolute after:-bottom-px after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-white after:transition-transform after:duration-300 hover:after:scale-x-100"
+                      className={cn(
+                        'relative font-medium transition-all duration-200',
+                        'after:absolute after:-bottom-px after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:transition-transform after:duration-200 hover:after:scale-x-100',
+                        scrolled ? 'after:bg-black' : 'after:bg-white',
+                      )}
                     >
                       {navLink.title}
                     </Link>

@@ -3,12 +3,12 @@ import { createFileRoute } from '@tanstack/react-router'
 import ArtistsGrid from '@/components/ArtistsGrid'
 import HeroVideo from '@/components/HeroVideo'
 import ProductsGrid from '@/components/ProductsGrid'
+import { formatArtists } from '@/lib/normalizers/artists'
+import { formatProducts } from '@/lib/normalizers/products'
 import {
   usePublic_GetCollectionProductsQuery,
   usePublic_GetFeaturedArtistsQuery,
-} from '@/graphql/generated/react-query'
-import { formatArtists } from '@/lib/normalizers/artists'
-import { formatProducts } from '@/lib/normalizers/products'
+} from '@/queries/graphql/generated/react-query'
 
 export const Route = createFileRoute('/')({
   component: IndexPage,

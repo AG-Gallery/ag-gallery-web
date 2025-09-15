@@ -1,4 +1,4 @@
-import type { Public_GetAllProductsQuery } from '@/graphql/generated/react-query'
+import type { Public_GetAllProductsQuery } from '@/queries/graphql/generated/react-query'
 import type { LabeledMetaobject, Product } from '@/types/products'
 
 type ProductNode = NonNullable<
