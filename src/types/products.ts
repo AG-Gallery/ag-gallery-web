@@ -1,3 +1,11 @@
+export type FeaturedArt = {
+  gid: string
+  id: string
+  previewImageUrl: string
+  slug: string
+  title: string
+}
+
 export interface Product {
   cursor: string
   id: string

@@ -18,7 +18,7 @@ export default function ArtistsGrid({ artists }: ArtistsGridProps) {
             return (
               <Link
                 key={artist.id}
-                to={`/artists/${artist.handle}`}
+                to={`/artists/${artist.slug}`}
                 className="relative aspect-square size-full"
               >
                 <img

@@ -7,11 +7,11 @@ const allArtistsQuery = `
   _type == "artist"
   && defined(slug.current)
   ]{
-    _id,
-    slug,
+    "id": _id,
     name,
-    image,
-    bio
+    "slug": slug.current,
+    "imageUrl": image.asset->url,
+    bio,
   }
 `
 

@@ -22,7 +22,15 @@ function ArtistsPage() {
     <div>
       {artists.length > 0 &&
         artists.map((artist) => {
-          return <p key={artist._id}>{artist.name}</p>
+          return (
+            <div key={artist.id}>
+              <p>{artist.name}</p>
+              <img
+                src={artist.imageUrl}
+                className="aspect-square max-w-60 object-cover grayscale-100"
+              />
+            </div>
+          )
         })}
     </div>
   )
