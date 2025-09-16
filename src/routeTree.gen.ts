@@ -11,20 +11,38 @@
 import { createServerRootRoute } from '@tanstack/react-start/server'
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ArtistsRouteImport } from './routes/artists'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ArtworksIndexRouteImport } from './routes/artworks/index'
+import { Route as ArtistsIndexRouteImport } from './routes/artists/index'
+import { Route as ArtworksSlugIndexRouteImport } from './routes/artworks/$slug.index'
+import { Route as ArtistsSlugIndexRouteImport } from './routes/artists/$slug.index'
 import { ServerRoute as ApiShopifyGraphqlServerRouteImport } from './routes/api/shopify/graphql'
 
 const rootServerRouteImport = createServerRootRoute()
 
-const ArtistsRoute = ArtistsRouteImport.update({
-  id: '/artists',
-  path: '/artists',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArtworksIndexRoute = ArtworksIndexRouteImport.update({
+  id: '/artworks/',
+  path: '/artworks/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArtistsIndexRoute = ArtistsIndexRouteImport.update({
+  id: '/artists/',
+  path: '/artists/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArtworksSlugIndexRoute = ArtworksSlugIndexRouteImport.update({
+  id: '/artworks/$slug/',
+  path: '/artworks/$slug/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArtistsSlugIndexRoute = ArtistsSlugIndexRouteImport.update({
+  id: '/artists/$slug/',
+  path: '/artists/$slug/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiShopifyGraphqlServerRoute = ApiShopifyGraphqlServerRouteImport.update({
@@ -35,28 +53,51 @@ const ApiShopifyGraphqlServerRoute = ApiShopifyGraphqlServerRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/artists': typeof ArtistsRoute
+  '/artists': typeof ArtistsIndexRoute
+  '/artworks': typeof ArtworksIndexRoute
+  '/artists/$slug': typeof ArtistsSlugIndexRoute
+  '/artworks/$slug': typeof ArtworksSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/artists': typeof ArtistsRoute
+  '/artists': typeof ArtistsIndexRoute
+  '/artworks': typeof ArtworksIndexRoute
+  '/artists/$slug': typeof ArtistsSlugIndexRoute
+  '/artworks/$slug': typeof ArtworksSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/artists': typeof ArtistsRoute
+  '/artists/': typeof ArtistsIndexRoute
+  '/artworks/': typeof ArtworksIndexRoute
+  '/artists/$slug/': typeof ArtistsSlugIndexRoute
+  '/artworks/$slug/': typeof ArtworksSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/artists'
+  fullPaths:
+    | '/'
+    | '/artists'
+    | '/artworks'
+    | '/artists/$slug'
+    | '/artworks/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/artists'
-  id: '__root__' | '/' | '/artists'
+  to: '/' | '/artists' | '/artworks' | '/artists/$slug' | '/artworks/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/artists/'
+    | '/artworks/'
+    | '/artists/$slug/'
+    | '/artworks/$slug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ArtistsRoute: typeof ArtistsRoute
+  ArtistsIndexRoute: typeof ArtistsIndexRoute
+  ArtworksIndexRoute: typeof ArtworksIndexRoute
+  ArtistsSlugIndexRoute: typeof ArtistsSlugIndexRoute
+  ArtworksSlugIndexRoute: typeof ArtworksSlugIndexRoute
 }
 export interface FileServerRoutesByFullPath {
   '/api/shopify/graphql': typeof ApiShopifyGraphqlServerRoute
@@ -82,18 +123,39 @@ export interface RootServerRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/artists': {
-      id: '/artists'
-      path: '/artists'
-      fullPath: '/artists'
-      preLoaderRoute: typeof ArtistsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/artworks/': {
+      id: '/artworks/'
+      path: '/artworks'
+      fullPath: '/artworks'
+      preLoaderRoute: typeof ArtworksIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/artists/': {
+      id: '/artists/'
+      path: '/artists'
+      fullPath: '/artists'
+      preLoaderRoute: typeof ArtistsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/artworks/$slug/': {
+      id: '/artworks/$slug/'
+      path: '/artworks/$slug'
+      fullPath: '/artworks/$slug'
+      preLoaderRoute: typeof ArtworksSlugIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/artists/$slug/': {
+      id: '/artists/$slug/'
+      path: '/artists/$slug'
+      fullPath: '/artists/$slug'
+      preLoaderRoute: typeof ArtistsSlugIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -112,7 +174,10 @@ declare module '@tanstack/react-start/server' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ArtistsRoute: ArtistsRoute,
+  ArtistsIndexRoute: ArtistsIndexRoute,
+  ArtworksIndexRoute: ArtworksIndexRoute,
+  ArtistsSlugIndexRoute: ArtistsSlugIndexRoute,
+  ArtworksSlugIndexRoute: ArtworksSlugIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

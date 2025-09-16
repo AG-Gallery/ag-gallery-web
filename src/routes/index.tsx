@@ -37,7 +37,7 @@ function IndexPage() {
         <h2 className="mb-4 text-[26px] font-medium tracking-tight md:mb-8">
           Curator's Picks
         </h2>
-        {/*<ProductsGrid products={products} />*/}
+        <ProductsGrid products={curatorsPicks} />
       </section>
 
       <section className="animate-fade-in my-8">

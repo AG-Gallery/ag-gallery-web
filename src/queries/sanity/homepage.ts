@@ -8,8 +8,8 @@ const homeDataQuery = `
       "id": _id,
       "gid": store.gid,
       "title": store.title,
-      "previewImageUrl": store.previewImageUrl,
       "slug": store.slug.current,
+      "previewImageUrl": store.previewImageUrl,
     },
     featuredExhibitions[]->{
       "id": _id,

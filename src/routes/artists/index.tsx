@@ -1,6 +1,7 @@
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
+import ArtistsGrid from '@/components/ArtistsGrid'
 import { getAllArtists } from '@/queries/sanity/artists'
 
 const artistsQuery = queryOptions({
@@ -10,7 +11,7 @@ const artistsQuery = queryOptions({
   gcTime: 10 * 60 * 1000,
 })
 
-export const Route = createFileRoute('/artists')({
+export const Route = createFileRoute('/artists/')({
   loader: ({ context }) => context.queryClient.ensureQueryData(artistsQuery),
   component: ArtistsPage,
 })
@@ -18,20 +19,5 @@ export const Route = createFileRoute('/artists')({
 function ArtistsPage() {
   const { data: artists, isLoading, error } = useSuspenseQuery(artistsQuery)
 
-  return (
-    <div>
-      {artists.length > 0 &&
-        artists.map((artist) => {
-          return (
-            <div key={artist.id}>
-              <p>{artist.name}</p>
-              <img
-                src={artist.imageUrl}
-                className="aspect-square max-w-60 object-cover grayscale-100"
-              />
-            </div>
-          )
-        })}
-    </div>
-  )
+  return <ArtistsGrid artists={artists} />
 }
