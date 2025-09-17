@@ -5,7 +5,7 @@ import Header from '@/components/Header'
 import HeroVideo from '@/components/HeroVideo'
 import ProductsGrid from '@/components/ProductsGrid'
 import ArtistsGrid from '@/features/artists/ArtistsGrid'
-import EventGrid from '@/features/exhibitions/ExhibitionsGrid'
+import EventsGrid from '@/features/events/EventsGrid'
 import { getHomeData } from '@/queries/sanity/homepage'
 
 const homeDataQuery = queryOptions({
@@ -48,14 +48,14 @@ function IndexPage() {
           <h2 className="mb-4 text-lg font-medium tracking-tight md:mb-8 md:text-[26px]">
             Exhibitions
           </h2>
-          <EventGrid events={featuredExhibitions} />
+          <EventsGrid events={featuredExhibitions} />
         </section>
 
         <section>
           <h2 className="mb-4 text-lg font-medium tracking-tight md:mb-8 md:text-[26px]">
             Fairs
           </h2>
-          <EventGrid events={featuredFairs} />
+          <EventsGrid events={featuredFairs} />
         </section>
 
         <section>

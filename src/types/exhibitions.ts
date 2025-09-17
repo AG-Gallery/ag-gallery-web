@@ -1,6 +1,11 @@
 import type { PortableTextBlock } from '@portabletext/types'
 
-export type Exhibition = {
+type MinimalArtist = {
+  name: string
+  slug: string
+}
+
+type BaseExhibition = {
   id: string
   title: string
   slug: string
@@ -10,3 +15,19 @@ export type Exhibition = {
   startDate: string // ISO string
   endDate: string // ISO string
 }
+
+// Solo exhibition
+type SoloExhibition = BaseExhibition & {
+  isGroup: false
+  artist: MinimalArtist
+  artists?: undefined
+}
+
+// Group exhibition
+type GroupExhibition = BaseExhibition & {
+  isGroup: true
+  artist?: undefined
+  artists: MinimalArtist[]
+}
+
+export type Exhibition = SoloExhibition | GroupExhibition

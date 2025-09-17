@@ -26,9 +26,18 @@ const homeDataQuery = `
       "slug": slug.current,
       "coverImageUrl": coverImage.asset->url,
       "images": images[].asset->url,
+      "isGroup": groupToggle,
+      artist->{
+        name,
+        "slug": slug.current,
+      },
+      artists[]->{
+        name,
+        "slug": slug.current,
+      },
+      body,
       startDate,
       endDate,
-      body
     },
     featuredFairs[]->{
       "id": _id,

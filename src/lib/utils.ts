@@ -8,6 +8,27 @@ export function cn(...inputs: Array<ClassValue>) {
 }
 
 /**
+ * Formats a given date range into a readable string.
+ *
+ * @param start - Start date string in format YYYY-MM-DD
+ * @param end - End date string in format YYYY-MM-DD
+ * @returns A human-readable string for the date range.
+ */
+export function formatDateRange(start: string, end: string): string {
+  const startDate = new Date(start)
+  const endDate = new Date(end)
+
+  const startDay = startDate.getDate()
+  const startMonth = startDate.toLocaleString('en-US', { month: 'long' })
+
+  const endDay = endDate.getDate()
+  const endMonth = endDate.toLocaleString('en-US', { month: 'long' })
+  const endYear = endDate.getFullYear()
+
+  return `${startDay} ${startMonth} – ${endDay} ${endMonth}, ${endYear}`
+}
+
+/**
  * Formats a string to be a URL slug. This function should only
  * be used for simple strings without special characters.
  * @param s - String to slugify
