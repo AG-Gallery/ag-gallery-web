@@ -56,7 +56,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className="mx-3 md:mx-10">
-        <Header />
         <div className="mx-auto pt-[var(--header-height)]">{children}</div>
 
         {import.meta.env.DEV && <Devtools />}

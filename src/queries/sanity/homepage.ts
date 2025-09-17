@@ -8,6 +8,10 @@ const homeDataQuery = `
       "id": _id,
       "gid": store.gid,
       "title": store.title,
+      artist->{
+            name,
+            "slug": slug.current,
+          },
       "slug": store.slug.current,
       "previewImageUrl": store.previewImageUrl,
     },

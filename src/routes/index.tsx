@@ -1,9 +1,11 @@
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
-import ArtistsGrid from '@/components/ArtistsGrid'
+import Header from '@/components/Header'
 import HeroVideo from '@/components/HeroVideo'
 import ProductsGrid from '@/components/ProductsGrid'
+import ArtistsGrid from '@/features/artists/ArtistsGrid'
+import EventGrid from '@/features/exhibitions/ExhibitionsGrid'
 import { getHomeData } from '@/queries/sanity/homepage'
 
 const homeDataQuery = queryOptions({
@@ -27,37 +29,42 @@ function IndexPage() {
   const featuredFairs = data.featuredFairs
 
   return (
-    <main>
-      <HeroVideo
-        posterSrc="/hero/hero-image.png"
-        videoSrc="/hero/hero-video.webm"
-      />
+    <>
+      <Header isFloating={true} />
+      <main>
+        <HeroVideo
+          posterSrc="/hero/hero-image.png"
+          videoSrc="/hero/hero-video.webm"
+        />
 
-      <section className="animate-fade-in my-8 mt-16">
-        <h2 className="mb-4 text-[26px] font-medium tracking-tight md:mb-8">
-          Curator's Picks
-        </h2>
-        <ProductsGrid products={curatorsPicks} />
-      </section>
+        <section className="mt-16">
+          <h2 className="mb-4 text-lg font-medium tracking-tight md:mb-8 md:text-[26px]">
+            Curator's Picks
+          </h2>
+          <ProductsGrid products={curatorsPicks} />
+        </section>
 
-      <section className="animate-fade-in my-8">
-        <h2 className="mb-4 text-[26px] font-medium tracking-tight md:mb-8">
-          Exhibitions
-        </h2>
-      </section>
+        <section>
+          <h2 className="mb-4 text-lg font-medium tracking-tight md:mb-8 md:text-[26px]">
+            Exhibitions
+          </h2>
+          <EventGrid events={featuredExhibitions} />
+        </section>
 
-      <section className="animate-fade-in my-8">
-        <h2 className="mb-4 text-[26px] font-medium tracking-tight md:mb-8">
-          Highlighted Artists
-        </h2>
-        <ArtistsGrid artists={featuredArtists} />
-      </section>
+        <section>
+          <h2 className="mb-4 text-lg font-medium tracking-tight md:mb-8 md:text-[26px]">
+            Fairs
+          </h2>
+          <EventGrid events={featuredFairs} />
+        </section>
 
-      <section className="animate-fade-in my-8">
-        <h2 className="mb-4 text-[26px] font-medium tracking-tight md:mb-8">
-          Fairs
-        </h2>
-      </section>
-    </main>
+        <section>
+          <h2 className="mb-4 text-lg font-medium tracking-tight md:mb-8 md:text-[26px]">
+            Highlighted Artists
+          </h2>
+          <ArtistsGrid artists={featuredArtists} />
+        </section>
+      </main>
+    </>
   )
 }

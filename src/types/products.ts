@@ -1,4 +1,8 @@
 export type FeaturedArt = {
+  artist: {
+    name: string
+    slug: string
+  }
   gid: string
   id: string
   previewImageUrl: string

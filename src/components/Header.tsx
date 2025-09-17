@@ -18,7 +18,11 @@ import {
   DrawerTrigger,
 } from './ui/drawer'
 
-export default function Header() {
+type HeaderProps = {
+  isFloating?: boolean
+}
+
+export default function Header({ isFloating = false }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false)
   const headerRef = useRef<HTMLElement | null>(null)
 
@@ -49,10 +53,13 @@ export default function Header() {
   const navLinks = [
     { title: 'Home', path: '/' },
     { title: 'Artists', path: '/artists' },
-    { title: 'Exhibitions', path: '/exhibitions?filter=current' },
+    { title: 'Exhibitions & Fairs', path: '/events?filter=current' },
     { title: 'News', path: '/news' },
     { title: 'About', path: '/about' },
   ]
+
+  // When not floating, we want solid header styling immediately (as if scrolled)
+  const solidMode = !isFloating || scrolled
 
   return (
     <header
@@ -61,9 +68,9 @@ export default function Header() {
         // positioning + base spacing
         'fixed inset-x-0 top-0 z-50 w-full transition-colors duration-200 md:px-10 md:py-10',
 
-        scrolled ? 'bg-white text-black' : 'bg-transparent text-white',
+        solidMode ? 'bg-white text-black' : 'bg-transparent text-white',
         // subtle gradient for readability only when not scrolled
-        !scrolled &&
+        !solidMode &&
           'before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:-z-10 before:h-20 before:w-full before:bg-gradient-to-b before:from-black/30 before:to-transparent md:before:h-28',
       )}
     >
@@ -90,7 +97,7 @@ export default function Header() {
                       className={cn(
                         'relative font-medium transition-all duration-200',
                         'after:absolute after:-bottom-px after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:transition-transform after:duration-200 hover:after:scale-x-100',
-                        scrolled ? 'after:bg-black' : 'after:bg-white',
+                        solidMode ? 'after:bg-black' : 'after:bg-white',
                       )}
                     >
                       {navLink.title}

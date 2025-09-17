@@ -17,6 +17,9 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
                 <div className="flex aspect-[5/4] w-full flex-col items-center justify-center rounded border border-neutral-200/80 bg-neutral-50 p-2 transition-colors duration-150 ease-in select-none hover:bg-neutral-200/50 lg:p-4 2xl:p-6">
                   <img
                     src={product.previewImageUrl}
+                    // ----------
+                    // TODO: ALT TEXT
+                    // ----------
                     alt={'GET ALT TEXT'}
                     width="1920"
                     height="1080"
@@ -28,12 +31,23 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
               <div className="mt-5 flex flex-col">
                 <div className="flex items-center justify-between">
                   <h3 className="hover:text-primary text-lg font-medium transition-colors duration-200">
-                    <Link to={`/artworks/${product.slug}`}>
+                    <Link
+                      to={`/artworks/$slug`}
+                      params={{ slug: product.slug }}
+                    >
                       {product.title}
                     </Link>
                   </h3>
                 </div>
               </div>
+
+              <Link
+                to={`/artists/$slug`}
+                params={{ slug: product.artist.slug }}
+                className="hover:text-primary w-fit tracking-wide transition-colors duration-200"
+              >
+                {product.artist.name}
+              </Link>
             </div>
           )
         })}
