@@ -22,6 +22,7 @@ const homeDataQuery = `
     },
     featuredExhibitions[]->{
       "id": _id,
+      "type": _type,
       title,
       "slug": slug.current,
       "coverImageUrl": coverImage.asset->url,
@@ -41,6 +42,7 @@ const homeDataQuery = `
     },
     featuredFairs[]->{
       "id": _id,
+      "type": _type,
       title,
       "slug": slug.current,
       "coverImageUrl": coverImage.asset->url,

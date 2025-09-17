@@ -1,11 +1,8 @@
+import type { MinimalArtist } from './artists'
 import type { PortableTextBlock } from '@portabletext/types'
 
-type MinimalArtist = {
-  name: string
-  slug: string
-}
-
 type BaseExhibition = {
+  type: 'exhibition'
   id: string
   title: string
   slug: string
