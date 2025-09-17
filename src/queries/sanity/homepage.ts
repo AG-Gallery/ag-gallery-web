@@ -7,13 +7,18 @@ const homeDataQuery = `
     curatorsPicks[]->{
       "id": _id,
       "gid": store.gid,
-      "title": store.title,
       artist->{
-            name,
-            "slug": slug.current,
-          },
-      "slug": store.slug.current,
+        name,
+        "slug": slug.current,
+      },
+      artMovement,
+      dimensionsImperial,
+      dimensionsMetric,
+      medium,
       "previewImageUrl": store.previewImageUrl,
+      "slug": store.slug.current,
+      "title": store.title,
+      theme,
     },
     featuredExhibitions[]->{
       "id": _id,

@@ -33,22 +33,6 @@ fragment ProductFields on Product {
       }
     }
   }
-  frameStyle: metafield(namespace: "shopify", key: "frame-style") {
-    references(first: 4) {
-      nodes {
-        __typename
-        ...LabeledMetaobject
-      }
-    }
-  }
-  medium: metafield(namespace: "shopify", key: "painting-medium") {
-    references(first: 4) {
-      nodes {
-        __typename
-        ...LabeledMetaobject
-      }
-    }
-  }
   theme: metafield(namespace: "shopify", key: "theme") {
     references(first: 4) {
       nodes {

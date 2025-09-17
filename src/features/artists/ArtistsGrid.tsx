@@ -25,7 +25,7 @@ export default function ArtistsGrid({ artists }: ArtistsGridProps) {
                   />
 
                   <div className="mt-5 flex flex-col">
-                    <h3 className="hover:text-primary text-lg font-medium transition-colors duration-200">
+                    <h3 className="hover:text-accent text-lg font-medium transition-colors duration-200">
                       {artist.name}
                     </h3>
                   </div>
