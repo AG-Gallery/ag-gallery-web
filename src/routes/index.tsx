@@ -37,7 +37,22 @@ function IndexPage() {
           videoSrc="/hero/hero-video.webm"
         />
 
-        <section className="mt-16">
+        <section className="absolute top-1/2 left-1/2 z-40 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-8 text-white">
+          <span className="text-lg font-medium italic md:text-3xl">
+            Curated for the discerning eye.
+          </span>
+          <a
+            href="#curators-picks"
+            className="w-fit transform rounded-full border border-white bg-white/30 px-5 py-2 text-sm font-medium shadow-sm backdrop-blur-md transition duration-200 ease-in hover:bg-white hover:text-black md:px-6 md:py-3 md:text-base"
+          >
+            Explore the Gallery
+          </a>
+        </section>
+
+        <section
+          id="curators-picks"
+          className="mt-8 scroll-mt-[var(--header-height)]"
+        >
           <h2 className="featured-headline">Curator's Picks</h2>
           <ProductsGrid products={curatorsPicks} />
         </section>

@@ -69,9 +69,6 @@ export default function Header({ isFloating = false }: HeaderProps) {
         'fixed inset-x-0 top-0 z-50 w-full p-4 transition-colors duration-200 md:p-10',
 
         solidMode ? 'bg-white text-black' : 'bg-transparent text-white',
-        // subtle gradient for readability only when not scrolled
-        !solidMode &&
-          'before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:-z-10 before:h-20 before:w-full before:bg-gradient-to-b before:from-black/30 before:to-transparent md:before:h-28',
       )}
     >
       <nav className="flex items-center justify-between">
