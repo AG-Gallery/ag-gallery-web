@@ -38,30 +38,22 @@ function IndexPage() {
         />
 
         <section className="mt-16">
-          <h2 className="mb-4 text-lg font-medium tracking-tight md:mb-8 md:text-[26px]">
-            Curator's Picks
-          </h2>
+          <h2 className="featured-headline">Curator's Picks</h2>
           <ProductsGrid products={curatorsPicks} />
         </section>
 
         <section>
-          <h2 className="mb-4 text-lg font-medium tracking-tight md:mb-8 md:text-[26px]">
-            Exhibitions
-          </h2>
+          <h2 className="featured-headline">Exhibitions</h2>
           <EventsGrid events={featuredExhibitions} />
         </section>
 
         <section>
-          <h2 className="mb-4 text-lg font-medium tracking-tight md:mb-8 md:text-[26px]">
-            Fairs
-          </h2>
+          <h2 className="featured-headline">Fairs</h2>
           <EventsGrid events={featuredFairs} />
         </section>
 
         <section>
-          <h2 className="mb-4 text-lg font-medium tracking-tight md:mb-8 md:text-[26px]">
-            Highlighted Artists
-          </h2>
+          <h2 className="featured-headline">Highlighted Artists</h2>
           <ArtistsGrid artists={featuredArtists} />
         </section>
       </main>

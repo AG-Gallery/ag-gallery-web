@@ -168,4 +168,16 @@ body {
   .featured-grid {
     @apply grid grid-cols-2 gap-5 lg:grid-cols-4;
   }
+
+  .featured-headline {
+    @apply mb-4 text-lg font-medium tracking-tight md:mb-8 md:text-[1.625rem];
+  }
+
+  .page-main {
+    @apply mt-4;
+  }
+
+  .page-headline {
+    @apply mb-8 text-lg md:text-[1.625rem];
+  }
 }

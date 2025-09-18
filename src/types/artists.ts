@@ -10,5 +10,6 @@ export type Artist = {
   name: string
   slug: string
   imageUrl: string
+  tagline: string
   bio: PortableTextBlock[]
 }

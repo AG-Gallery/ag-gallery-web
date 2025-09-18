@@ -20,8 +20,8 @@ function ArtistsPage() {
   const { data: artists, isLoading, error } = useSuspenseQuery(artistsQuery)
 
   return (
-    <main>
-      <h2 className="mb-12 text-lg md:text-[26px]">Artists</h2>
+    <main className="page-main">
+      <h2 className="page-headline">Artists</h2>
       <ArtistsGrid artists={artists} />
     </main>
   )

@@ -28,6 +28,9 @@ export default function ArtistsGrid({ artists }: ArtistsGridProps) {
                     <h3 className="hover:text-accent text-lg font-medium transition-colors duration-200">
                       {artist.name}
                     </h3>
+                    <span className="text-sm font-medium text-neutral-600 italic">
+                      {artist.tagline}
+                    </span>
                   </div>
                 </Link>
               </div>

@@ -43,14 +43,14 @@ function RouteComponent() {
   } = useSuspenseQuery(fairsQuery)
 
   return (
-    <main className="mt-4">
+    <main className="page-main">
       <section className="mb-12">
-        <h2 className="mb-8 text-lg md:text-[26px]">Exhibitions</h2>
+        <h2 className="page-headline">Exhibitions</h2>
         <EventsGrid events={exhibitions} />
       </section>
 
       <section>
-        <h2 className="mb-8 text-lg md:text-[26px]">Fairs</h2>
+        <h2 className="page-headline">Fairs</h2>
         <EventsGrid events={fairs} />
       </section>
     </main>

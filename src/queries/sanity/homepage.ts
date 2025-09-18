@@ -54,6 +54,7 @@ const homeDataQuery = `
       name,
       "slug": slug.current,
       "imageUrl": image.asset->url,
+      tagline,
     },
   }
 `
