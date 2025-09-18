@@ -16,7 +16,8 @@ const allArtistsQuery = `
 `
 
 const artistQuery = `
-  *[_type == "artist"
+  *[
+  _type == "artist"
   && slug.current == $slug
   ][0]{
     "id": _id,

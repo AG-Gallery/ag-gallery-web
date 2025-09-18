@@ -1,9 +1,12 @@
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 
+import { PortableText } from '@portabletext/react'
+
 import ProductsGrid from '@/components/ProductsGrid'
 import EventsGrid from '@/features/events/EventsGrid'
 import { getArtist } from '@/queries/sanity/artists'
+import { getProductsByArtist } from '@/queries/sanity/products'
 
 function createArtistQuery(slug: string) {
   return queryOptions({
@@ -14,10 +17,22 @@ function createArtistQuery(slug: string) {
   })
 }
 
+function createProductsQuery(slug: string) {
+  return queryOptions({
+    queryKey: [`artist-${slug}-products`],
+    queryFn: () => getProductsByArtist(slug),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  })
+}
+
 export const Route = createFileRoute('/artists/_layout/$slug/')({
   loader: ({ context, params }) => {
     const artistQuery = createArtistQuery(params.slug)
-    return context.queryClient.ensureQueryData(artistQuery)
+    const artistResult = context.queryClient.ensureQueryData(artistQuery)
+    const productQuery = createProductsQuery(params.slug)
+    const productResult = context.queryClient.ensureQueryData(productQuery)
+    return { artistResult, productResult }
   },
   component: RouteComponent,
 })
@@ -25,9 +40,18 @@ export const Route = createFileRoute('/artists/_layout/$slug/')({
 function RouteComponent() {
   const { slug } = Route.useParams()
   const artistQuery = createArtistQuery(slug)
+  const productQuery = createProductsQuery(slug)
 
-  const { data: artist, isLoading, error } = useSuspenseQuery(artistQuery)
-  console.log(artist)
+  const {
+    data: artist,
+    isLoading: artistIsLoading,
+    error: artistError,
+  } = useSuspenseQuery(artistQuery)
+  const {
+    data: products,
+    isLoading: productIsLoading,
+    error: productError,
+  } = useSuspenseQuery(productQuery)
 
   return (
     <main className="page-main">
@@ -48,31 +72,14 @@ function RouteComponent() {
           </h2>
 
           <div className="w-full tracking-wide text-pretty">
-            <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odio
-              neque quis ratione debitis quos dicta distinctio, reiciendis odit
-              incidunt nisi enim, expedita sapiente deserunt officiis dolor
-              perferendis nam deleniti quia. Sed quos sapiente error, explicabo
-              assumenda nesciunt doloribus. Quas saepe obcaecati dolorum eaque
-              nemo exercitationem nihil minima voluptatum. Voluptatum, provident
-              porro quo ex id animi officiis quae eos, est ratione sit soluta,
-              quasi repellendus laudantium libero exercitationem. Nobis,
-              reprehenderit commodi. Lorem ipsum dolor sit amet, consectetur
-              adipisicing elit. Quas saepe obcaecati dolorum eaque nemo
-              exercitationem nihil minima voluptatum.
-              <br />
-              <br />
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Exercitationem sequi qui blanditiis ut odio, quas nostrum natus
-              laudantium. Nisi, doloremque. Quas saepe obcaecati dolorum eaque
-              nemo exercitationem nihil minima voluptatum. Eveniet rerum amet
-              repudiandae doloremque non quidem. Corporis id, assumenda
-              excepturi vel perferendis sunt provident. Quod minus, et ab
-              voluptatibus impedit ea. Lorem ipsum dolor, sit amet consectetur
-              adipisicing elit. Id tempore cupiditate voluptatem minima, quae
-              nulla maiores consectetur aliquid dolorem fugiat pariatur ratione
-              laudantium similique quis aspernatur quas. Saepe, numquam ipsam.
-            </p>
+            <PortableText
+              value={artist.bio}
+              components={{
+                block: {
+                  normal: ({ children }) => <p className="mb-4">{children}</p>,
+                },
+              }}
+            />
           </div>
         </article>
       </section>
@@ -80,7 +87,7 @@ function RouteComponent() {
       <hr className="bg-foreground w-full" />
 
       <section className="my-8 lg:my-10">
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-8 flex items-center justify-between">
           <h2 className="text-xl">Selected Works</h2>
           <Link
             to="/"
@@ -90,13 +97,13 @@ function RouteComponent() {
           </Link>
         </div>
 
-        {/*<ProductsGrid products={ } />*/}
+        <ProductsGrid products={products} />
       </section>
 
       <hr className="bg-foreground w-full" />
 
       <section className="my-8 lg:my-10">
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-8 flex items-center justify-between">
           <h2 className="text-xl">Exhibitions</h2>
           <Link
             to="/"

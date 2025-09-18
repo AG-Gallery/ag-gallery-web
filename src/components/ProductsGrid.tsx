@@ -1,16 +1,23 @@
 import type { FeaturedArt } from '@/types/products'
 
-import { Link } from '@tanstack/react-router'
+import { Link, useLocation } from '@tanstack/react-router'
 
 type ProductsGridProps = {
   products: FeaturedArt[]
 }
 
 export default function ProductsGrid({ products }: ProductsGridProps) {
+  const pathname = useLocation({
+    select: (location) => location.pathname,
+  })
+
   return (
     <div className="featured-grid-container">
       <div className="featured-grid">
         {products.map((product) => {
+          const href = `/artists/${product.artist.slug}`
+          const isActive = pathname === href
+
           return (
             <div key={product.id} className="group flex flex-col">
               <Link to="/artworks/$slug" params={{ slug: product.slug }}>
@@ -29,16 +36,21 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
               </Link>
 
               <div className="mt-4">
-                <h3 className="hover:text-accent font-medium transition-colors duration-200 md:text-lg">
-                  <Link to={`/artworks/$slug`} params={{ slug: product.slug }}>
+                <h3 className="hover:text-accent w-fit font-medium transition-colors duration-200 md:text-lg">
+                  <Link
+                    to={`/artworks/$slug`}
+                    params={{ slug: product.slug }}
+                    className="w-fit"
+                  >
                     {product.title}
                   </Link>
                 </h3>
 
                 <Link
-                  to={`/artists/$slug`}
+                  to={href}
                   params={{ slug: product.artist.slug }}
-                  className="hover:text-accent w-fit text-sm tracking-wide transition-colors duration-200 md:text-base"
+                  className={` ${!isActive && 'hover:text-accent'} 'w-fit md:text-base' text-sm tracking-wide transition-colors duration-200`}
+                  disabled={isActive}
                 >
                   {product.artist.name}
                 </Link>
