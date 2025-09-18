@@ -18,7 +18,6 @@ const homeDataQuery = `
       "previewImageUrl": store.previewImageUrl,
       "slug": store.slug.current,
       "title": store.title,
-      theme,
     },
     featuredExhibitions[]->{
       "id": _id,
@@ -36,7 +35,6 @@ const homeDataQuery = `
         name,
         "slug": slug.current,
       },
-      body,
       startDate,
       endDate,
     },
@@ -47,16 +45,15 @@ const homeDataQuery = `
       "slug": slug.current,
       "coverImageUrl": coverImage.asset->url,
       "images": images[].asset->url,
+      location,
       startDate,
       endDate,
-      body
     },
     featuredArtists[]->{
       "id": _id,
       name,
       "slug": slug.current,
       "imageUrl": image.asset->url,
-      bio,
     },
   }
 `

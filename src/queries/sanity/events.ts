@@ -38,9 +38,14 @@ const allFairsQuery = `
     "slug": slug.current,
     "coverImageUrl": coverImage.asset->url,
     "images": images[].asset->url,
-    body,
+    artists[]->{
+      name,
+      "slug": slug.current,
+    },
+    location,
     startDate,
     endDate,
+    body,
   }
 `
 

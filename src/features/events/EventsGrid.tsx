@@ -1,20 +1,15 @@
 import type { Exhibition } from '@/types/exhibitions'
 import type { Fair } from '@/types/fairs'
 
-import { Link, useLocation } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 
 import { formatDateRange } from '@/lib/utils'
-import { MinimalArtist } from '@/types/artists'
 
 type EventsGridProps = {
   events: Exhibition[] | Fair[]
 }
 
 export default function EventsGrid({ events }: EventsGridProps) {
-  const pathname = useLocation({
-    select: (location) => location.pathname,
-  })
-
   return (
     <div className="featured-grid-container">
       <div className="featured-grid">
@@ -26,7 +21,6 @@ export default function EventsGrid({ events }: EventsGridProps) {
           let slug: string
 
           if (event.type === 'exhibition') {
-            console.log(event)
             if (event.isGroup === false) {
               exhibitionSubtitle = event.artist.name
               slug = event.artist.slug
@@ -35,7 +29,7 @@ export default function EventsGrid({ events }: EventsGridProps) {
               slug = event.slug
             }
           } else {
-            fairSubtitle = 'Some Location'
+            fairSubtitle = event.location
             slug = event.slug
           }
 

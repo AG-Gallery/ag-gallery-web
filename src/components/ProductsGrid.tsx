@@ -45,10 +45,10 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
               </div>
 
               <div className="-mt-1 text-neutral-500">
-                <span className="text-[0.8125rem] font-light tracking-wide">
+                <span className="text-[0.8125rem] font-light tracking-wide md:font-normal">
                   {product.medium}
                 </span>
-                <div className="relative text-xs font-light tracking-tight select-none md:tracking-normal">
+                <div className="relative text-xs font-light tracking-tight select-none md:font-normal md:tracking-normal">
                   <span className="block transition-opacity duration-200 ease-in-out group-hover:opacity-0">
                     {product.dimensionsImperial}
                   </span>
