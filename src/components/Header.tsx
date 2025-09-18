@@ -66,7 +66,7 @@ export default function Header({ isFloating = false }: HeaderProps) {
       ref={headerRef}
       className={cn(
         // positioning + base spacing
-        'fixed inset-x-0 top-0 z-50 w-full transition-colors duration-200 md:px-10 md:py-10',
+        'fixed inset-x-0 top-0 z-50 w-full p-4 transition-colors duration-200 md:p-10',
 
         solidMode ? 'bg-white text-black' : 'bg-transparent text-white',
         // subtle gradient for readability only when not scrolled
@@ -127,8 +127,11 @@ export default function Header({ isFloating = false }: HeaderProps) {
                   <ul>
                     {navLinks.map((navLink) => {
                       return (
-                        <li key={navLink.path}>
-                          <a href={navLink.path} className="font-medium">
+                        <li key={navLink.path} className="mb-5">
+                          <a
+                            href={navLink.path}
+                            className="text-lg font-medium"
+                          >
                             {navLink.title}
                           </a>
                         </li>
