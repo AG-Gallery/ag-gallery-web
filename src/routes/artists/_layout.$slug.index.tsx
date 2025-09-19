@@ -18,21 +18,18 @@ function createArtistQuery(slug: string) {
     queryFn: () => getArtist(slug),
   })
 }
-
-function createExhibitionsQuery(slug: string) {
-  return queryOptions({
-    queryKey: [`${slug}-exhibitions`],
-    queryFn: () => getExhibitionsWithArtist(slug),
-  })
-}
-
 function createProductsQuery(slug: string) {
   return queryOptions({
     queryKey: [`${slug}-products-limited`],
     queryFn: () => getProductsByArtist(slug, 0, 11),
   })
 }
-
+function createExhibitionsQuery(slug: string) {
+  return queryOptions({
+    queryKey: [`${slug}-exhibitions`],
+    queryFn: () => getExhibitionsWithArtist(slug),
+  })
+}
 function createFairsQuery(slug: string) {
   return queryOptions({
     queryKey: [`${slug}-fairs`],
