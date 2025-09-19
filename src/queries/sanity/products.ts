@@ -1,4 +1,4 @@
-import type { Product } from '@/types/products'
+import type { Artwork } from '@/types/products'
 
 import { sanityClient } from '@/lib/sanity-client'
 
@@ -8,12 +8,11 @@ const productsByArtistQuery = `
     !(_id in path("drafts.**")) &&
     store.isDeleted != true &&
     artist->slug.current == $slug
-  ]{
+  ]
+  | order(lower(store.title) asc, _id asc)
+  [$start..$end]{
     "id": _id,
-    artist->{
-      name,
-      "slug": slug.current,
-    },
+    artist->{ name, "slug": slug.current },
     artMovement,
     dimensionsImperial,
     dimensionsMetric,
@@ -27,6 +26,10 @@ const productsByArtistQuery = `
   }
 `
 
-export async function getProductsByArtist(slug: string): Promise<Product> {
-  return sanityClient.fetch(productsByArtistQuery, { slug })
+export async function getProductsByArtist(
+  slug: string,
+  start = 0,
+  end?: number,
+): Promise<Artwork[]> {
+  return sanityClient.fetch(productsByArtistQuery, { slug, start, end })
 }

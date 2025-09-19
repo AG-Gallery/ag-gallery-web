@@ -6,33 +6,53 @@ import { PortableText } from '@portabletext/react'
 import ProductsGrid from '@/components/ProductsGrid'
 import EventsGrid from '@/features/events/EventsGrid'
 import { getArtist } from '@/queries/sanity/artists'
+import {
+  getExhibitionsWithArtist,
+  getFairsWithArtist,
+} from '@/queries/sanity/events'
 import { getProductsByArtist } from '@/queries/sanity/products'
 
 function createArtistQuery(slug: string) {
   return queryOptions({
     queryKey: [`artist-${slug}`],
     queryFn: () => getArtist(slug),
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+  })
+}
+
+function createExhibitionsQuery(slug: string) {
+  return queryOptions({
+    queryKey: [`${slug}-exhibitions`],
+    queryFn: () => getExhibitionsWithArtist(slug),
   })
 }
 
 function createProductsQuery(slug: string) {
   return queryOptions({
-    queryKey: [`artist-${slug}-products`],
-    queryFn: () => getProductsByArtist(slug),
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    queryKey: [`${slug}-products-limited`],
+    queryFn: () => getProductsByArtist(slug, 0, 11),
+  })
+}
+
+function createFairsQuery(slug: string) {
+  return queryOptions({
+    queryKey: [`${slug}-fairs`],
+    queryFn: () => getFairsWithArtist(slug),
   })
 }
 
 export const Route = createFileRoute('/artists/_layout/$slug/')({
   loader: ({ context, params }) => {
     const artistQuery = createArtistQuery(params.slug)
-    const artistResult = context.queryClient.ensureQueryData(artistQuery)
     const productQuery = createProductsQuery(params.slug)
+    const exhibitionsQuery = createExhibitionsQuery(params.slug)
+    const fairsQuery = createFairsQuery(params.slug)
+
+    const artistResult = context.queryClient.ensureQueryData(artistQuery)
     const productResult = context.queryClient.ensureQueryData(productQuery)
-    return { artistResult, productResult }
+    const exhibitionsResult =
+      context.queryClient.ensureQueryData(exhibitionsQuery)
+    const fairsResult = context.queryClient.ensureQueryData(fairsQuery)
+    return { artistResult, productResult, exhibitionsResult }
   },
   component: RouteComponent,
 })
@@ -41,6 +61,8 @@ function RouteComponent() {
   const { slug } = Route.useParams()
   const artistQuery = createArtistQuery(slug)
   const productQuery = createProductsQuery(slug)
+  const exhibitionsQuery = createExhibitionsQuery(slug)
+  const fairsQuery = createFairsQuery(slug)
 
   const {
     data: artist,
@@ -52,6 +74,16 @@ function RouteComponent() {
     isLoading: productIsLoading,
     error: productError,
   } = useSuspenseQuery(productQuery)
+  const {
+    data: exhibitions,
+    isLoading: exhibitionIsLoading,
+    error: exhibitionError,
+  } = useSuspenseQuery(exhibitionsQuery)
+  const {
+    data: fairs,
+    isLoading: fairIsLoading,
+    error: fairError,
+  } = useSuspenseQuery(fairsQuery)
 
   return (
     <main className="page-main">
@@ -105,15 +137,19 @@ function RouteComponent() {
       <section className="my-8 lg:my-10">
         <div className="mb-8 flex items-center justify-between">
           <h2 className="text-xl">Exhibitions</h2>
-          <Link
-            to="/"
-            className="hover:text-foreground text-sm text-neutral-500 transition-colors duration-200"
-          >
-            View all
-          </Link>
         </div>
 
-        {/*<EventsGrid events={} />*/}
+        <EventsGrid events={exhibitions} />
+      </section>
+
+      <hr className="bg-foreground w-full" />
+
+      <section className="my-8 lg:my-10">
+        <div className="mb-8 flex items-center justify-between">
+          <h2 className="text-xl">Fairs</h2>
+        </div>
+
+        <EventsGrid events={fairs} />
       </section>
     </main>
   )

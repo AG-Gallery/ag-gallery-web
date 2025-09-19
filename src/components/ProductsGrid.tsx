@@ -1,9 +1,9 @@
-import type { FeaturedArt } from '@/types/products'
+import type { Artwork } from '@/types/products'
 
 import { Link, useLocation } from '@tanstack/react-router'
 
 type ProductsGridProps = {
-  products: FeaturedArt[]
+  products: Artwork[]
 }
 
 export default function ProductsGrid({ products }: ProductsGridProps) {

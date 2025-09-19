@@ -66,7 +66,7 @@ export default function Header({ isFloating = false }: HeaderProps) {
       ref={headerRef}
       className={cn(
         // positioning + base spacing
-        'fixed inset-x-0 top-0 z-50 w-full p-4 transition-colors duration-200 md:p-10',
+        'fixed inset-x-0 top-0 z-50 w-full p-4 transition-colors duration-200 md:p-8 xl:p-10',
 
         solidMode ? 'bg-white text-black' : 'bg-transparent text-white',
       )}
