@@ -22,7 +22,7 @@ import { Route as ArtistsLayoutIndexRouteImport } from './routes/artists/_layout
 import { Route as EventsLayoutSlugIndexRouteImport } from './routes/events/_layout.$slug.index'
 import { Route as ArtworksLayoutSlugIndexRouteImport } from './routes/artworks/_layout.$slug.index'
 import { Route as ArtistsLayoutSlugIndexRouteImport } from './routes/artists/_layout.$slug.index'
-import { Route as ArtistsLayoutSlugArtworksPageRouteImport } from './routes/artists/_layout.$slug.artworks.$page'
+import { Route as ArtistsLayoutSlugArtworksIndexRouteImport } from './routes/artists/_layout.$slug.artworks.index'
 import { ServerRoute as ApiShopifyGraphqlServerRouteImport } from './routes/api/shopify/graphql'
 
 const EventsRouteImport = createFileRoute('/events')()
@@ -92,10 +92,10 @@ const ArtistsLayoutSlugIndexRoute = ArtistsLayoutSlugIndexRouteImport.update({
   path: '/$slug/',
   getParentRoute: () => ArtistsLayoutRoute,
 } as any)
-const ArtistsLayoutSlugArtworksPageRoute =
-  ArtistsLayoutSlugArtworksPageRouteImport.update({
-    id: '/$slug/artworks/$page',
-    path: '/$slug/artworks/$page',
+const ArtistsLayoutSlugArtworksIndexRoute =
+  ArtistsLayoutSlugArtworksIndexRouteImport.update({
+    id: '/$slug/artworks/',
+    path: '/$slug/artworks/',
     getParentRoute: () => ArtistsLayoutRoute,
   } as any)
 const ApiShopifyGraphqlServerRoute = ApiShopifyGraphqlServerRouteImport.update({
@@ -115,7 +115,7 @@ export interface FileRoutesByFullPath {
   '/artists/$slug': typeof ArtistsLayoutSlugIndexRoute
   '/artworks/$slug': typeof ArtworksLayoutSlugIndexRoute
   '/events/$slug': typeof EventsLayoutSlugIndexRoute
-  '/artists/$slug/artworks/$page': typeof ArtistsLayoutSlugArtworksPageRoute
+  '/artists/$slug/artworks': typeof ArtistsLayoutSlugArtworksIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -125,7 +125,7 @@ export interface FileRoutesByTo {
   '/artists/$slug': typeof ArtistsLayoutSlugIndexRoute
   '/artworks/$slug': typeof ArtworksLayoutSlugIndexRoute
   '/events/$slug': typeof EventsLayoutSlugIndexRoute
-  '/artists/$slug/artworks/$page': typeof ArtistsLayoutSlugArtworksPageRoute
+  '/artists/$slug/artworks': typeof ArtistsLayoutSlugArtworksIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -142,7 +142,7 @@ export interface FileRoutesById {
   '/artists/_layout/$slug/': typeof ArtistsLayoutSlugIndexRoute
   '/artworks/_layout/$slug/': typeof ArtworksLayoutSlugIndexRoute
   '/events/_layout/$slug/': typeof EventsLayoutSlugIndexRoute
-  '/artists/_layout/$slug/artworks/$page': typeof ArtistsLayoutSlugArtworksPageRoute
+  '/artists/_layout/$slug/artworks/': typeof ArtistsLayoutSlugArtworksIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -157,7 +157,7 @@ export interface FileRouteTypes {
     | '/artists/$slug'
     | '/artworks/$slug'
     | '/events/$slug'
-    | '/artists/$slug/artworks/$page'
+    | '/artists/$slug/artworks'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -167,7 +167,7 @@ export interface FileRouteTypes {
     | '/artists/$slug'
     | '/artworks/$slug'
     | '/events/$slug'
-    | '/artists/$slug/artworks/$page'
+    | '/artists/$slug/artworks'
   id:
     | '__root__'
     | '/'
@@ -183,7 +183,7 @@ export interface FileRouteTypes {
     | '/artists/_layout/$slug/'
     | '/artworks/_layout/$slug/'
     | '/events/_layout/$slug/'
-    | '/artists/_layout/$slug/artworks/$page'
+    | '/artists/_layout/$slug/artworks/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -307,11 +307,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArtistsLayoutSlugIndexRouteImport
       parentRoute: typeof ArtistsLayoutRoute
     }
-    '/artists/_layout/$slug/artworks/$page': {
-      id: '/artists/_layout/$slug/artworks/$page'
-      path: '/$slug/artworks/$page'
-      fullPath: '/artists/$slug/artworks/$page'
-      preLoaderRoute: typeof ArtistsLayoutSlugArtworksPageRouteImport
+    '/artists/_layout/$slug/artworks/': {
+      id: '/artists/_layout/$slug/artworks/'
+      path: '/$slug/artworks'
+      fullPath: '/artists/$slug/artworks'
+      preLoaderRoute: typeof ArtistsLayoutSlugArtworksIndexRouteImport
       parentRoute: typeof ArtistsLayoutRoute
     }
   }
@@ -331,13 +331,13 @@ declare module '@tanstack/react-start/server' {
 interface ArtistsLayoutRouteChildren {
   ArtistsLayoutIndexRoute: typeof ArtistsLayoutIndexRoute
   ArtistsLayoutSlugIndexRoute: typeof ArtistsLayoutSlugIndexRoute
-  ArtistsLayoutSlugArtworksPageRoute: typeof ArtistsLayoutSlugArtworksPageRoute
+  ArtistsLayoutSlugArtworksIndexRoute: typeof ArtistsLayoutSlugArtworksIndexRoute
 }
 
 const ArtistsLayoutRouteChildren: ArtistsLayoutRouteChildren = {
   ArtistsLayoutIndexRoute: ArtistsLayoutIndexRoute,
   ArtistsLayoutSlugIndexRoute: ArtistsLayoutSlugIndexRoute,
-  ArtistsLayoutSlugArtworksPageRoute: ArtistsLayoutSlugArtworksPageRoute,
+  ArtistsLayoutSlugArtworksIndexRoute: ArtistsLayoutSlugArtworksIndexRoute,
 }
 
 const ArtistsLayoutRouteWithChildren = ArtistsLayoutRoute._addFileChildren(

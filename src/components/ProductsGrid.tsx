@@ -19,7 +19,7 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
           const isActive = pathname === href
 
           return (
-            <div key={product.id} className="group flex flex-col">
+            <div key={product.id} className="group flex flex-col animate-fade-in">
               <Link to="/artworks/$slug" params={{ slug: product.slug }}>
                 <div className="flex aspect-[5/4] w-full flex-col items-center justify-center rounded border border-neutral-200/80 bg-neutral-50 p-2 transition-colors duration-150 ease-in select-none hover:bg-neutral-200/50 lg:p-4 2xl:p-6">
                   <img

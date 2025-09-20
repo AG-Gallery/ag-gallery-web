@@ -119,7 +119,8 @@ function RouteComponent() {
         <div className="mb-8 flex items-center justify-between">
           <h2 className="text-xl">Selected Works</h2>
           <Link
-            to="/"
+            to="/artists/$slug/artworks"
+            params={{ slug: artist.slug }}
             className="hover:text-foreground text-sm text-neutral-500 transition-colors duration-200"
           >
             View all
