@@ -11,7 +11,7 @@ const artistsQuery = queryOptions({
   gcTime: 10 * 60 * 1000,
 })
 
-export const Route = createFileRoute('/artists/_layout/')({
+export const Route = createFileRoute('/artists/_pathlessLayout/')({
   loader: ({ context }) => context.queryClient.ensureQueryData(artistsQuery),
   component: ArtistsPage,
 })

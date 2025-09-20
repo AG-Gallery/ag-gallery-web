@@ -9,7 +9,6 @@ import {
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import pretendardFontUrl from '../assets/fonts/pretendard-variable.woff2?url'
-import Header from '../components/Header'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import appCss from '../styles.css?url'
 

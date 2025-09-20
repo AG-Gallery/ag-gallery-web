@@ -37,7 +37,7 @@ function createFairsQuery(slug: string) {
   })
 }
 
-export const Route = createFileRoute('/artists/_layout/$slug/')({
+export const Route = createFileRoute('/artists/_pathlessLayout/$slug/')({
   loader: ({ context, params }) => {
     const artistQuery = createArtistQuery(params.slug)
     const productQuery = createProductsQuery(params.slug)

@@ -18,7 +18,7 @@ function createArtistQuery(slug: string) {
 
 const PAGE_SIZE = 20
 
-export const Route = createFileRoute('/artists/_layout/$slug/artworks/')({
+export const Route = createFileRoute('/artists/_pathlessLayout/$slug/artworks/')({
   loader: ({ context, params }) => {
     const artistQuery = createArtistQuery(params.slug)
     const artistResult = context.queryClient.ensureQueryData(artistQuery)

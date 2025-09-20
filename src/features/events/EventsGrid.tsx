@@ -35,7 +35,10 @@ export default function EventsGrid({ events }: EventsGridProps) {
 
           return (
             <div key={event.id} className="flex flex-col">
-              <Link to="/events/$slug" params={{ slug: event.slug }}>
+              <Link
+                to={`/events/${event.type}s/$slug`}
+                params={{ slug: event.slug }}
+              >
                 <img
                   src={event.coverImageUrl}
                   alt={`An image of the event ${event.title}`}

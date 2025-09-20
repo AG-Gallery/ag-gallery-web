@@ -13,16 +13,17 @@ import { createServerRootRoute } from '@tanstack/react-start/server'
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as EventsLayoutRouteImport } from './routes/events/_layout'
-import { Route as ArtworksLayoutRouteImport } from './routes/artworks/_layout'
-import { Route as ArtistsLayoutRouteImport } from './routes/artists/_layout'
-import { Route as EventsLayoutIndexRouteImport } from './routes/events/_layout.index'
-import { Route as ArtworksLayoutIndexRouteImport } from './routes/artworks/_layout.index'
-import { Route as ArtistsLayoutIndexRouteImport } from './routes/artists/_layout.index'
-import { Route as EventsLayoutSlugIndexRouteImport } from './routes/events/_layout.$slug.index'
-import { Route as ArtworksLayoutSlugIndexRouteImport } from './routes/artworks/_layout.$slug.index'
-import { Route as ArtistsLayoutSlugIndexRouteImport } from './routes/artists/_layout.$slug.index'
-import { Route as ArtistsLayoutSlugArtworksIndexRouteImport } from './routes/artists/_layout.$slug.artworks.index'
+import { Route as EventsPathlessLayoutRouteRouteImport } from './routes/events/_pathlessLayout/route'
+import { Route as ArtworksPathlessLayoutRouteRouteImport } from './routes/artworks/_pathlessLayout/route'
+import { Route as ArtistsPathlessLayoutRouteRouteImport } from './routes/artists/_pathlessLayout/route'
+import { Route as EventsPathlessLayoutIndexRouteImport } from './routes/events/_pathlessLayout/index'
+import { Route as ArtworksPathlessLayoutIndexRouteImport } from './routes/artworks/_pathlessLayout/index'
+import { Route as ArtistsPathlessLayoutIndexRouteImport } from './routes/artists/_pathlessLayout/index'
+import { Route as ArtworksPathlessLayoutSlugIndexRouteImport } from './routes/artworks/_pathlessLayout/$slug.index'
+import { Route as ArtistsPathlessLayoutSlugIndexRouteImport } from './routes/artists/_pathlessLayout/$slug/index'
+import { Route as EventsPathlessLayoutFairsSlugIndexRouteImport } from './routes/events/_pathlessLayout/fairs/$slug.index'
+import { Route as EventsPathlessLayoutExhibitionsSlugIndexRouteImport } from './routes/events/_pathlessLayout/exhibitions/$slug.index'
+import { Route as ArtistsPathlessLayoutSlugArtworksIndexRouteImport } from './routes/artists/_pathlessLayout/$slug/artworks.index'
 import { ServerRoute as ApiShopifyGraphqlServerRouteImport } from './routes/api/shopify/graphql'
 
 const EventsRouteImport = createFileRoute('/events')()
@@ -50,53 +51,68 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EventsLayoutRoute = EventsLayoutRouteImport.update({
-  id: '/_layout',
-  getParentRoute: () => EventsRoute,
-} as any)
-const ArtworksLayoutRoute = ArtworksLayoutRouteImport.update({
-  id: '/_layout',
-  getParentRoute: () => ArtworksRoute,
-} as any)
-const ArtistsLayoutRoute = ArtistsLayoutRouteImport.update({
-  id: '/_layout',
-  getParentRoute: () => ArtistsRoute,
-} as any)
-const EventsLayoutIndexRoute = EventsLayoutIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => EventsLayoutRoute,
-} as any)
-const ArtworksLayoutIndexRoute = ArtworksLayoutIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ArtworksLayoutRoute,
-} as any)
-const ArtistsLayoutIndexRoute = ArtistsLayoutIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ArtistsLayoutRoute,
-} as any)
-const EventsLayoutSlugIndexRoute = EventsLayoutSlugIndexRouteImport.update({
-  id: '/$slug/',
-  path: '/$slug/',
-  getParentRoute: () => EventsLayoutRoute,
-} as any)
-const ArtworksLayoutSlugIndexRoute = ArtworksLayoutSlugIndexRouteImport.update({
-  id: '/$slug/',
-  path: '/$slug/',
-  getParentRoute: () => ArtworksLayoutRoute,
-} as any)
-const ArtistsLayoutSlugIndexRoute = ArtistsLayoutSlugIndexRouteImport.update({
-  id: '/$slug/',
-  path: '/$slug/',
-  getParentRoute: () => ArtistsLayoutRoute,
-} as any)
-const ArtistsLayoutSlugArtworksIndexRoute =
-  ArtistsLayoutSlugArtworksIndexRouteImport.update({
+const EventsPathlessLayoutRouteRoute =
+  EventsPathlessLayoutRouteRouteImport.update({
+    id: '/_pathlessLayout',
+    getParentRoute: () => EventsRoute,
+  } as any)
+const ArtworksPathlessLayoutRouteRoute =
+  ArtworksPathlessLayoutRouteRouteImport.update({
+    id: '/_pathlessLayout',
+    getParentRoute: () => ArtworksRoute,
+  } as any)
+const ArtistsPathlessLayoutRouteRoute =
+  ArtistsPathlessLayoutRouteRouteImport.update({
+    id: '/_pathlessLayout',
+    getParentRoute: () => ArtistsRoute,
+  } as any)
+const EventsPathlessLayoutIndexRoute =
+  EventsPathlessLayoutIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => EventsPathlessLayoutRouteRoute,
+  } as any)
+const ArtworksPathlessLayoutIndexRoute =
+  ArtworksPathlessLayoutIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => ArtworksPathlessLayoutRouteRoute,
+  } as any)
+const ArtistsPathlessLayoutIndexRoute =
+  ArtistsPathlessLayoutIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => ArtistsPathlessLayoutRouteRoute,
+  } as any)
+const ArtworksPathlessLayoutSlugIndexRoute =
+  ArtworksPathlessLayoutSlugIndexRouteImport.update({
+    id: '/$slug/',
+    path: '/$slug/',
+    getParentRoute: () => ArtworksPathlessLayoutRouteRoute,
+  } as any)
+const ArtistsPathlessLayoutSlugIndexRoute =
+  ArtistsPathlessLayoutSlugIndexRouteImport.update({
+    id: '/$slug/',
+    path: '/$slug/',
+    getParentRoute: () => ArtistsPathlessLayoutRouteRoute,
+  } as any)
+const EventsPathlessLayoutFairsSlugIndexRoute =
+  EventsPathlessLayoutFairsSlugIndexRouteImport.update({
+    id: '/fairs/$slug/',
+    path: '/fairs/$slug/',
+    getParentRoute: () => EventsPathlessLayoutRouteRoute,
+  } as any)
+const EventsPathlessLayoutExhibitionsSlugIndexRoute =
+  EventsPathlessLayoutExhibitionsSlugIndexRouteImport.update({
+    id: '/exhibitions/$slug/',
+    path: '/exhibitions/$slug/',
+    getParentRoute: () => EventsPathlessLayoutRouteRoute,
+  } as any)
+const ArtistsPathlessLayoutSlugArtworksIndexRoute =
+  ArtistsPathlessLayoutSlugArtworksIndexRouteImport.update({
     id: '/$slug/artworks/',
     path: '/$slug/artworks/',
-    getParentRoute: () => ArtistsLayoutRoute,
+    getParentRoute: () => ArtistsPathlessLayoutRouteRoute,
   } as any)
 const ApiShopifyGraphqlServerRoute = ApiShopifyGraphqlServerRouteImport.update({
   id: '/api/shopify/graphql',
@@ -106,43 +122,46 @@ const ApiShopifyGraphqlServerRoute = ApiShopifyGraphqlServerRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/artists': typeof ArtistsLayoutRouteWithChildren
-  '/artworks': typeof ArtworksLayoutRouteWithChildren
-  '/events': typeof EventsLayoutRouteWithChildren
-  '/artists/': typeof ArtistsLayoutIndexRoute
-  '/artworks/': typeof ArtworksLayoutIndexRoute
-  '/events/': typeof EventsLayoutIndexRoute
-  '/artists/$slug': typeof ArtistsLayoutSlugIndexRoute
-  '/artworks/$slug': typeof ArtworksLayoutSlugIndexRoute
-  '/events/$slug': typeof EventsLayoutSlugIndexRoute
-  '/artists/$slug/artworks': typeof ArtistsLayoutSlugArtworksIndexRoute
+  '/artists': typeof ArtistsPathlessLayoutRouteRouteWithChildren
+  '/artworks': typeof ArtworksPathlessLayoutRouteRouteWithChildren
+  '/events': typeof EventsPathlessLayoutRouteRouteWithChildren
+  '/artists/': typeof ArtistsPathlessLayoutIndexRoute
+  '/artworks/': typeof ArtworksPathlessLayoutIndexRoute
+  '/events/': typeof EventsPathlessLayoutIndexRoute
+  '/artists/$slug': typeof ArtistsPathlessLayoutSlugIndexRoute
+  '/artworks/$slug': typeof ArtworksPathlessLayoutSlugIndexRoute
+  '/artists/$slug/artworks': typeof ArtistsPathlessLayoutSlugArtworksIndexRoute
+  '/events/exhibitions/$slug': typeof EventsPathlessLayoutExhibitionsSlugIndexRoute
+  '/events/fairs/$slug': typeof EventsPathlessLayoutFairsSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/artists': typeof ArtistsLayoutIndexRoute
-  '/artworks': typeof ArtworksLayoutIndexRoute
-  '/events': typeof EventsLayoutIndexRoute
-  '/artists/$slug': typeof ArtistsLayoutSlugIndexRoute
-  '/artworks/$slug': typeof ArtworksLayoutSlugIndexRoute
-  '/events/$slug': typeof EventsLayoutSlugIndexRoute
-  '/artists/$slug/artworks': typeof ArtistsLayoutSlugArtworksIndexRoute
+  '/artists': typeof ArtistsPathlessLayoutIndexRoute
+  '/artworks': typeof ArtworksPathlessLayoutIndexRoute
+  '/events': typeof EventsPathlessLayoutIndexRoute
+  '/artists/$slug': typeof ArtistsPathlessLayoutSlugIndexRoute
+  '/artworks/$slug': typeof ArtworksPathlessLayoutSlugIndexRoute
+  '/artists/$slug/artworks': typeof ArtistsPathlessLayoutSlugArtworksIndexRoute
+  '/events/exhibitions/$slug': typeof EventsPathlessLayoutExhibitionsSlugIndexRoute
+  '/events/fairs/$slug': typeof EventsPathlessLayoutFairsSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/artists': typeof ArtistsRouteWithChildren
-  '/artists/_layout': typeof ArtistsLayoutRouteWithChildren
+  '/artists/_pathlessLayout': typeof ArtistsPathlessLayoutRouteRouteWithChildren
   '/artworks': typeof ArtworksRouteWithChildren
-  '/artworks/_layout': typeof ArtworksLayoutRouteWithChildren
+  '/artworks/_pathlessLayout': typeof ArtworksPathlessLayoutRouteRouteWithChildren
   '/events': typeof EventsRouteWithChildren
-  '/events/_layout': typeof EventsLayoutRouteWithChildren
-  '/artists/_layout/': typeof ArtistsLayoutIndexRoute
-  '/artworks/_layout/': typeof ArtworksLayoutIndexRoute
-  '/events/_layout/': typeof EventsLayoutIndexRoute
-  '/artists/_layout/$slug/': typeof ArtistsLayoutSlugIndexRoute
-  '/artworks/_layout/$slug/': typeof ArtworksLayoutSlugIndexRoute
-  '/events/_layout/$slug/': typeof EventsLayoutSlugIndexRoute
-  '/artists/_layout/$slug/artworks/': typeof ArtistsLayoutSlugArtworksIndexRoute
+  '/events/_pathlessLayout': typeof EventsPathlessLayoutRouteRouteWithChildren
+  '/artists/_pathlessLayout/': typeof ArtistsPathlessLayoutIndexRoute
+  '/artworks/_pathlessLayout/': typeof ArtworksPathlessLayoutIndexRoute
+  '/events/_pathlessLayout/': typeof EventsPathlessLayoutIndexRoute
+  '/artists/_pathlessLayout/$slug/': typeof ArtistsPathlessLayoutSlugIndexRoute
+  '/artworks/_pathlessLayout/$slug/': typeof ArtworksPathlessLayoutSlugIndexRoute
+  '/artists/_pathlessLayout/$slug/artworks/': typeof ArtistsPathlessLayoutSlugArtworksIndexRoute
+  '/events/_pathlessLayout/exhibitions/$slug/': typeof EventsPathlessLayoutExhibitionsSlugIndexRoute
+  '/events/_pathlessLayout/fairs/$slug/': typeof EventsPathlessLayoutFairsSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -156,8 +175,9 @@ export interface FileRouteTypes {
     | '/events/'
     | '/artists/$slug'
     | '/artworks/$slug'
-    | '/events/$slug'
     | '/artists/$slug/artworks'
+    | '/events/exhibitions/$slug'
+    | '/events/fairs/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -166,24 +186,26 @@ export interface FileRouteTypes {
     | '/events'
     | '/artists/$slug'
     | '/artworks/$slug'
-    | '/events/$slug'
     | '/artists/$slug/artworks'
+    | '/events/exhibitions/$slug'
+    | '/events/fairs/$slug'
   id:
     | '__root__'
     | '/'
     | '/artists'
-    | '/artists/_layout'
+    | '/artists/_pathlessLayout'
     | '/artworks'
-    | '/artworks/_layout'
+    | '/artworks/_pathlessLayout'
     | '/events'
-    | '/events/_layout'
-    | '/artists/_layout/'
-    | '/artworks/_layout/'
-    | '/events/_layout/'
-    | '/artists/_layout/$slug/'
-    | '/artworks/_layout/$slug/'
-    | '/events/_layout/$slug/'
-    | '/artists/_layout/$slug/artworks/'
+    | '/events/_pathlessLayout'
+    | '/artists/_pathlessLayout/'
+    | '/artworks/_pathlessLayout/'
+    | '/events/_pathlessLayout/'
+    | '/artists/_pathlessLayout/$slug/'
+    | '/artworks/_pathlessLayout/$slug/'
+    | '/artists/_pathlessLayout/$slug/artworks/'
+    | '/events/_pathlessLayout/exhibitions/$slug/'
+    | '/events/_pathlessLayout/fairs/$slug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -244,75 +266,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/events/_layout': {
-      id: '/events/_layout'
+    '/events/_pathlessLayout': {
+      id: '/events/_pathlessLayout'
       path: '/events'
       fullPath: '/events'
-      preLoaderRoute: typeof EventsLayoutRouteImport
+      preLoaderRoute: typeof EventsPathlessLayoutRouteRouteImport
       parentRoute: typeof EventsRoute
     }
-    '/artworks/_layout': {
-      id: '/artworks/_layout'
+    '/artworks/_pathlessLayout': {
+      id: '/artworks/_pathlessLayout'
       path: '/artworks'
       fullPath: '/artworks'
-      preLoaderRoute: typeof ArtworksLayoutRouteImport
+      preLoaderRoute: typeof ArtworksPathlessLayoutRouteRouteImport
       parentRoute: typeof ArtworksRoute
     }
-    '/artists/_layout': {
-      id: '/artists/_layout'
+    '/artists/_pathlessLayout': {
+      id: '/artists/_pathlessLayout'
       path: '/artists'
       fullPath: '/artists'
-      preLoaderRoute: typeof ArtistsLayoutRouteImport
+      preLoaderRoute: typeof ArtistsPathlessLayoutRouteRouteImport
       parentRoute: typeof ArtistsRoute
     }
-    '/events/_layout/': {
-      id: '/events/_layout/'
+    '/events/_pathlessLayout/': {
+      id: '/events/_pathlessLayout/'
       path: '/'
       fullPath: '/events/'
-      preLoaderRoute: typeof EventsLayoutIndexRouteImport
-      parentRoute: typeof EventsLayoutRoute
+      preLoaderRoute: typeof EventsPathlessLayoutIndexRouteImport
+      parentRoute: typeof EventsPathlessLayoutRouteRoute
     }
-    '/artworks/_layout/': {
-      id: '/artworks/_layout/'
+    '/artworks/_pathlessLayout/': {
+      id: '/artworks/_pathlessLayout/'
       path: '/'
       fullPath: '/artworks/'
-      preLoaderRoute: typeof ArtworksLayoutIndexRouteImport
-      parentRoute: typeof ArtworksLayoutRoute
+      preLoaderRoute: typeof ArtworksPathlessLayoutIndexRouteImport
+      parentRoute: typeof ArtworksPathlessLayoutRouteRoute
     }
-    '/artists/_layout/': {
-      id: '/artists/_layout/'
+    '/artists/_pathlessLayout/': {
+      id: '/artists/_pathlessLayout/'
       path: '/'
       fullPath: '/artists/'
-      preLoaderRoute: typeof ArtistsLayoutIndexRouteImport
-      parentRoute: typeof ArtistsLayoutRoute
+      preLoaderRoute: typeof ArtistsPathlessLayoutIndexRouteImport
+      parentRoute: typeof ArtistsPathlessLayoutRouteRoute
     }
-    '/events/_layout/$slug/': {
-      id: '/events/_layout/$slug/'
-      path: '/$slug'
-      fullPath: '/events/$slug'
-      preLoaderRoute: typeof EventsLayoutSlugIndexRouteImport
-      parentRoute: typeof EventsLayoutRoute
-    }
-    '/artworks/_layout/$slug/': {
-      id: '/artworks/_layout/$slug/'
+    '/artworks/_pathlessLayout/$slug/': {
+      id: '/artworks/_pathlessLayout/$slug/'
       path: '/$slug'
       fullPath: '/artworks/$slug'
-      preLoaderRoute: typeof ArtworksLayoutSlugIndexRouteImport
-      parentRoute: typeof ArtworksLayoutRoute
+      preLoaderRoute: typeof ArtworksPathlessLayoutSlugIndexRouteImport
+      parentRoute: typeof ArtworksPathlessLayoutRouteRoute
     }
-    '/artists/_layout/$slug/': {
-      id: '/artists/_layout/$slug/'
+    '/artists/_pathlessLayout/$slug/': {
+      id: '/artists/_pathlessLayout/$slug/'
       path: '/$slug'
       fullPath: '/artists/$slug'
-      preLoaderRoute: typeof ArtistsLayoutSlugIndexRouteImport
-      parentRoute: typeof ArtistsLayoutRoute
+      preLoaderRoute: typeof ArtistsPathlessLayoutSlugIndexRouteImport
+      parentRoute: typeof ArtistsPathlessLayoutRouteRoute
     }
-    '/artists/_layout/$slug/artworks/': {
-      id: '/artists/_layout/$slug/artworks/'
+    '/events/_pathlessLayout/fairs/$slug/': {
+      id: '/events/_pathlessLayout/fairs/$slug/'
+      path: '/fairs/$slug'
+      fullPath: '/events/fairs/$slug'
+      preLoaderRoute: typeof EventsPathlessLayoutFairsSlugIndexRouteImport
+      parentRoute: typeof EventsPathlessLayoutRouteRoute
+    }
+    '/events/_pathlessLayout/exhibitions/$slug/': {
+      id: '/events/_pathlessLayout/exhibitions/$slug/'
+      path: '/exhibitions/$slug'
+      fullPath: '/events/exhibitions/$slug'
+      preLoaderRoute: typeof EventsPathlessLayoutExhibitionsSlugIndexRouteImport
+      parentRoute: typeof EventsPathlessLayoutRouteRoute
+    }
+    '/artists/_pathlessLayout/$slug/artworks/': {
+      id: '/artists/_pathlessLayout/$slug/artworks/'
       path: '/$slug/artworks'
       fullPath: '/artists/$slug/artworks'
-      preLoaderRoute: typeof ArtistsLayoutSlugArtworksIndexRouteImport
-      parentRoute: typeof ArtistsLayoutRoute
+      preLoaderRoute: typeof ArtistsPathlessLayoutSlugArtworksIndexRouteImport
+      parentRoute: typeof ArtistsPathlessLayoutRouteRoute
     }
   }
 }
@@ -328,79 +357,91 @@ declare module '@tanstack/react-start/server' {
   }
 }
 
-interface ArtistsLayoutRouteChildren {
-  ArtistsLayoutIndexRoute: typeof ArtistsLayoutIndexRoute
-  ArtistsLayoutSlugIndexRoute: typeof ArtistsLayoutSlugIndexRoute
-  ArtistsLayoutSlugArtworksIndexRoute: typeof ArtistsLayoutSlugArtworksIndexRoute
+interface ArtistsPathlessLayoutRouteRouteChildren {
+  ArtistsPathlessLayoutIndexRoute: typeof ArtistsPathlessLayoutIndexRoute
+  ArtistsPathlessLayoutSlugIndexRoute: typeof ArtistsPathlessLayoutSlugIndexRoute
+  ArtistsPathlessLayoutSlugArtworksIndexRoute: typeof ArtistsPathlessLayoutSlugArtworksIndexRoute
 }
 
-const ArtistsLayoutRouteChildren: ArtistsLayoutRouteChildren = {
-  ArtistsLayoutIndexRoute: ArtistsLayoutIndexRoute,
-  ArtistsLayoutSlugIndexRoute: ArtistsLayoutSlugIndexRoute,
-  ArtistsLayoutSlugArtworksIndexRoute: ArtistsLayoutSlugArtworksIndexRoute,
-}
+const ArtistsPathlessLayoutRouteRouteChildren: ArtistsPathlessLayoutRouteRouteChildren =
+  {
+    ArtistsPathlessLayoutIndexRoute: ArtistsPathlessLayoutIndexRoute,
+    ArtistsPathlessLayoutSlugIndexRoute: ArtistsPathlessLayoutSlugIndexRoute,
+    ArtistsPathlessLayoutSlugArtworksIndexRoute:
+      ArtistsPathlessLayoutSlugArtworksIndexRoute,
+  }
 
-const ArtistsLayoutRouteWithChildren = ArtistsLayoutRoute._addFileChildren(
-  ArtistsLayoutRouteChildren,
-)
+const ArtistsPathlessLayoutRouteRouteWithChildren =
+  ArtistsPathlessLayoutRouteRoute._addFileChildren(
+    ArtistsPathlessLayoutRouteRouteChildren,
+  )
 
 interface ArtistsRouteChildren {
-  ArtistsLayoutRoute: typeof ArtistsLayoutRouteWithChildren
+  ArtistsPathlessLayoutRouteRoute: typeof ArtistsPathlessLayoutRouteRouteWithChildren
 }
 
 const ArtistsRouteChildren: ArtistsRouteChildren = {
-  ArtistsLayoutRoute: ArtistsLayoutRouteWithChildren,
+  ArtistsPathlessLayoutRouteRoute: ArtistsPathlessLayoutRouteRouteWithChildren,
 }
 
 const ArtistsRouteWithChildren =
   ArtistsRoute._addFileChildren(ArtistsRouteChildren)
 
-interface ArtworksLayoutRouteChildren {
-  ArtworksLayoutIndexRoute: typeof ArtworksLayoutIndexRoute
-  ArtworksLayoutSlugIndexRoute: typeof ArtworksLayoutSlugIndexRoute
+interface ArtworksPathlessLayoutRouteRouteChildren {
+  ArtworksPathlessLayoutIndexRoute: typeof ArtworksPathlessLayoutIndexRoute
+  ArtworksPathlessLayoutSlugIndexRoute: typeof ArtworksPathlessLayoutSlugIndexRoute
 }
 
-const ArtworksLayoutRouteChildren: ArtworksLayoutRouteChildren = {
-  ArtworksLayoutIndexRoute: ArtworksLayoutIndexRoute,
-  ArtworksLayoutSlugIndexRoute: ArtworksLayoutSlugIndexRoute,
-}
+const ArtworksPathlessLayoutRouteRouteChildren: ArtworksPathlessLayoutRouteRouteChildren =
+  {
+    ArtworksPathlessLayoutIndexRoute: ArtworksPathlessLayoutIndexRoute,
+    ArtworksPathlessLayoutSlugIndexRoute: ArtworksPathlessLayoutSlugIndexRoute,
+  }
 
-const ArtworksLayoutRouteWithChildren = ArtworksLayoutRoute._addFileChildren(
-  ArtworksLayoutRouteChildren,
-)
+const ArtworksPathlessLayoutRouteRouteWithChildren =
+  ArtworksPathlessLayoutRouteRoute._addFileChildren(
+    ArtworksPathlessLayoutRouteRouteChildren,
+  )
 
 interface ArtworksRouteChildren {
-  ArtworksLayoutRoute: typeof ArtworksLayoutRouteWithChildren
+  ArtworksPathlessLayoutRouteRoute: typeof ArtworksPathlessLayoutRouteRouteWithChildren
 }
 
 const ArtworksRouteChildren: ArtworksRouteChildren = {
-  ArtworksLayoutRoute: ArtworksLayoutRouteWithChildren,
+  ArtworksPathlessLayoutRouteRoute:
+    ArtworksPathlessLayoutRouteRouteWithChildren,
 }
 
 const ArtworksRouteWithChildren = ArtworksRoute._addFileChildren(
   ArtworksRouteChildren,
 )
 
-interface EventsLayoutRouteChildren {
-  EventsLayoutIndexRoute: typeof EventsLayoutIndexRoute
-  EventsLayoutSlugIndexRoute: typeof EventsLayoutSlugIndexRoute
+interface EventsPathlessLayoutRouteRouteChildren {
+  EventsPathlessLayoutIndexRoute: typeof EventsPathlessLayoutIndexRoute
+  EventsPathlessLayoutExhibitionsSlugIndexRoute: typeof EventsPathlessLayoutExhibitionsSlugIndexRoute
+  EventsPathlessLayoutFairsSlugIndexRoute: typeof EventsPathlessLayoutFairsSlugIndexRoute
 }
 
-const EventsLayoutRouteChildren: EventsLayoutRouteChildren = {
-  EventsLayoutIndexRoute: EventsLayoutIndexRoute,
-  EventsLayoutSlugIndexRoute: EventsLayoutSlugIndexRoute,
-}
+const EventsPathlessLayoutRouteRouteChildren: EventsPathlessLayoutRouteRouteChildren =
+  {
+    EventsPathlessLayoutIndexRoute: EventsPathlessLayoutIndexRoute,
+    EventsPathlessLayoutExhibitionsSlugIndexRoute:
+      EventsPathlessLayoutExhibitionsSlugIndexRoute,
+    EventsPathlessLayoutFairsSlugIndexRoute:
+      EventsPathlessLayoutFairsSlugIndexRoute,
+  }
 
-const EventsLayoutRouteWithChildren = EventsLayoutRoute._addFileChildren(
-  EventsLayoutRouteChildren,
-)
+const EventsPathlessLayoutRouteRouteWithChildren =
+  EventsPathlessLayoutRouteRoute._addFileChildren(
+    EventsPathlessLayoutRouteRouteChildren,
+  )
 
 interface EventsRouteChildren {
-  EventsLayoutRoute: typeof EventsLayoutRouteWithChildren
+  EventsPathlessLayoutRouteRoute: typeof EventsPathlessLayoutRouteRouteWithChildren
 }
 
 const EventsRouteChildren: EventsRouteChildren = {
-  EventsLayoutRoute: EventsLayoutRouteWithChildren,
+  EventsPathlessLayoutRouteRoute: EventsPathlessLayoutRouteRouteWithChildren,
 }
 
 const EventsRouteWithChildren =

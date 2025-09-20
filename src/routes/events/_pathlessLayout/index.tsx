@@ -1,6 +1,3 @@
-import type { Exhibition } from '@/types/exhibitions'
-import type { Fair } from '@/types/fairs'
-
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -21,7 +18,7 @@ const fairsQuery = queryOptions({
   gcTime: 10 * 60 * 1000,
 })
 
-export const Route = createFileRoute('/events/_layout/')({
+export const Route = createFileRoute('/events/_pathlessLayout/')({
   loader: ({ context }) => {
     ;(context.queryClient.ensureQueryData(exhibitionsQuery),
       context.queryClient.ensureQueryData(fairsQuery))

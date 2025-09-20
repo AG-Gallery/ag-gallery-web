@@ -2,6 +2,8 @@
 
 @import 'tw-animate-css';
 
+@import '@fontsource-variable/lora';
+
 /* Fonts */
 @font-face {
   font-family: 'Pretendard Variable';
@@ -98,6 +100,7 @@ body {
   --color-accent: var(--color-accent);
 
   /* Fonts */
+  --font-lora: 'Lora Variable', serif;
   --font-pretendard: 'Pretendard Variable', sans-serif;
 
   /* Animations */
