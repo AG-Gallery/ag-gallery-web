@@ -8,7 +8,13 @@ export type Fair = {
   slug: string
   coverImageUrl: string
   images: string[]
-  artists: MinimalArtist[]
+  artists: {
+    id: string
+    name: string
+    slug: string
+    imageUrl: string
+    tagline: string
+  }[]
   location: string
   startDate: string // ISO string
   endDate: string // ISO string

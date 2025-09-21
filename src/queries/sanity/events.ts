@@ -100,12 +100,14 @@ const fairQuery = `
     "images": images[].asset->url,
     "isGroup": groupToggle,
     artist->{
+      "id": _id,
       name,
       "slug": slug.current,
       "imageUrl": image.asset->url,
       tagline,
     },
     artists[]->{
+      "id": _id,
       name,
       "slug": slug.current,
       "imageUrl": image.asset->url,

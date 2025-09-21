@@ -3,7 +3,7 @@ import type { Artist } from '@/types/artists'
 import { Link } from '@tanstack/react-router'
 
 type ArtistsGridProps = {
-  artists: Artist[] | undefined
+  artists: Omit<Artist, 'id' | 'bio'>[] | undefined
 }
 
 export default function ArtistsGrid({ artists }: ArtistsGridProps) {

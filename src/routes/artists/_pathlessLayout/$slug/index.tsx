@@ -117,7 +117,7 @@ function RouteComponent() {
 
       <section className="my-8 lg:my-10">
         <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-xl">Selected Works</h2>
+          <h2 className="text-xl font-medium">Selected Works</h2>
           <Link
             to="/artists/$slug/artworks"
             params={{ slug: artist.slug }}
@@ -132,9 +132,9 @@ function RouteComponent() {
 
       <hr className="bg-foreground w-full" />
 
-      <section className="my-8 lg:my-10">
-        <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-xl">Exhibitions</h2>
+      <section className="my-6 lg:my-8">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-xl font-medium">Exhibitions</h2>
         </div>
 
         <EventsGrid events={exhibitions} />
@@ -142,9 +142,9 @@ function RouteComponent() {
 
       <hr className="bg-foreground w-full" />
 
-      <section className="my-8 lg:my-10">
-        <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-xl">Fairs</h2>
+      <section className="my-6 lg:my-8">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-xl font-medium">Fairs</h2>
         </div>
 
         <EventsGrid events={fairs} />

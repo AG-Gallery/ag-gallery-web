@@ -173,7 +173,7 @@ body {
   }
 
   .featured-headline {
-    @apply mb-4 text-xl font-medium tracking-tight md:mb-8 md:text-[1.625rem];
+    @apply font-lora mb-4 text-xl font-medium md:mb-8 md:text-[1.625rem];
   }
 
   .page-main {
@@ -181,6 +181,6 @@ body {
   }
 
   .page-headline {
-    @apply mb-8 text-lg md:text-[1.625rem];
+    @apply font-lora mb-8 text-lg font-medium md:text-[1.625rem];
   }
 }

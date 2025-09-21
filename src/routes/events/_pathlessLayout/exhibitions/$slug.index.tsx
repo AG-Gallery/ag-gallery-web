@@ -71,8 +71,8 @@ function RouteComponent() {
 
       <hr className="bg-foreground w-full" />
 
-      <section className="my-8 lg:my-10">
-        <h2 className="mb-8 text-xl">Selected Works</h2>
+      <section className="my-6 lg:my-8">
+        <h2 className="mb-6 text-xl font-medium">Selected Works</h2>
 
         {/* <ProductsGrid products={exhibition.} /> */}
       </section>

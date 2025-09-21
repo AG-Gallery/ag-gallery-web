@@ -65,8 +65,8 @@ function RouteComponent() {
 
       <hr className="bg-foreground w-full" />
 
-      <section className="my-8 lg:my-10">
-        <h2 className="mb-8 text-xl">Artists</h2>
+      <section className="my-6 lg:my-8">
+        <h2 className="mb-6 text-xl font-medium">Artists</h2>
 
         <ArtistsGrid artists={fair.artists} />
       </section>
