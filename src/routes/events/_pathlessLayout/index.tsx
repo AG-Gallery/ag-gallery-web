@@ -46,6 +46,8 @@ function RouteComponent() {
         <EventsGrid events={exhibitions} />
       </section>
 
+      <hr className="mb-4 w-full bg-neutral-400 md:mb-8" />
+
       <section>
         <h2 className="page-headline">Fairs</h2>
         <EventsGrid events={fairs} />

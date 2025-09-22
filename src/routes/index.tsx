@@ -38,12 +38,12 @@ function IndexPage() {
         />
 
         <section className="absolute top-1/2 left-1/2 z-40 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-8 text-white md:gap-10">
-          <span className="font-lora w-full text-[1.625rem] text-nowrap md:text-4xl md:tracking-tight">
+          <p className="font-lora w-full text-2xl font-medium tracking-wide text-nowrap md:text-4xl md:tracking-tight">
             Curated for the discerning eye.
-          </span>
+          </p>
           <a
             href="#curators-picks"
-            className="w-fit transform rounded-full border border-white bg-white/30 px-6 py-3 font-medium shadow-sm backdrop-blur-md transition duration-200 ease-in hover:bg-white hover:text-black"
+            className="w-fit transform rounded-full border border-white bg-white/30 px-6 py-3 text-lg font-medium tracking-wide shadow-sm backdrop-blur-md transition duration-200 ease-in hover:bg-white hover:text-black"
           >
             Explore the Gallery
           </a>
@@ -57,15 +57,21 @@ function IndexPage() {
           <ProductsGrid products={curatorsPicks} />
         </section>
 
+        <hr className="mb-4 w-full bg-neutral-400 md:mb-8" />
+
         <section>
           <h2 className="featured-headline">Exhibitions</h2>
           <EventsGrid events={featuredExhibitions} />
         </section>
 
+        <hr className="mb-4 w-full bg-neutral-400 md:mb-8" />
+
         <section>
           <h2 className="featured-headline">Fairs</h2>
           <EventsGrid events={featuredFairs} />
         </section>
+
+        <hr className="mb-4 w-full bg-neutral-400 md:mb-8" />
 
         <section>
           <h2 className="featured-headline">Highlighted Artists</h2>

@@ -48,7 +48,7 @@ const productsByArtistQuery = `
   }
 `
 
-export async function getProduct(slug: string) {
+export async function getProduct(slug: string): Promise<Artwork> {
   return sanityClient.fetch(productQuery, { slug })
 }
 

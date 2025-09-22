@@ -51,28 +51,24 @@ function RouteComponent() {
           className="animate-fade-in aspect-square self-start object-cover lg:max-w-[400px] xl:max-w-[500px]"
         />
 
-        <article className="my-8 flex items-start gap-4 align-top lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-24 2xl:w-[700px]">
-          <h2 className="mb-3 text-xl font-medium tracking-wide lg:mb-0 lg:text-base">
-            Biography
-          </h2>
-
-          <div className="w-full tracking-wide text-pretty">
-            <PortableText
-              value={exhibition.body}
-              components={{
-                block: {
-                  normal: ({ children }) => <p className="mb-4">{children}</p>,
-                },
-              }}
-            />
-          </div>
+        <article className="my-8 w-full gap-4 align-top tracking-wide text-pretty lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-24 2xl:w-[700px]">
+          <PortableText
+            value={exhibition.body}
+            components={{
+              block: {
+                normal: ({ children }) => <p className="mb-4">{children}</p>,
+              },
+            }}
+          />
         </article>
       </section>
 
-      <hr className="bg-foreground w-full" />
+      <hr className="w-full bg-neutral-400" />
 
       <section className="my-6 lg:my-8">
-        <h2 className="mb-6 text-xl font-medium">Selected Works</h2>
+        <h2 className="font-lora mb-6 text-xl font-medium md:text-2xl md:tracking-tight">
+          Selected Works
+        </h2>
 
         {/* <ProductsGrid products={exhibition.} /> */}
       </section>

@@ -51,7 +51,7 @@ export default function EventsGrid({ events }: EventsGridProps) {
                     {event.title}
                   </h3>
 
-                  <span>{eventDates}</span>
+                  <p>{eventDates}</p>
                 </div>
               </Link>
 

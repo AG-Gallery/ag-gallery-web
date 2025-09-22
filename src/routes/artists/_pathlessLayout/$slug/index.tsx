@@ -113,11 +113,13 @@ function RouteComponent() {
         </article>
       </section>
 
-      <hr className="bg-foreground w-full" />
+      <hr className="w-full bg-neutral-400" />
 
       <section className="my-8 lg:my-10">
         <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-xl font-medium">Selected Works</h2>
+          <h2 className="font-lora text-xl font-medium md:text-2xl md:tracking-tight">
+            Selected Works
+          </h2>
           <Link
             to="/artists/$slug/artworks"
             params={{ slug: artist.slug }}
@@ -130,21 +132,25 @@ function RouteComponent() {
         <ProductsGrid products={products} />
       </section>
 
-      <hr className="bg-foreground w-full" />
+      <hr className="w-full bg-neutral-400" />
 
       <section className="my-6 lg:my-8">
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-medium">Exhibitions</h2>
+          <h2 className="font-lora text-xl font-medium md:text-2xl md:tracking-tight">
+            Exhibitions
+          </h2>
         </div>
 
         <EventsGrid events={exhibitions} />
       </section>
 
-      <hr className="bg-foreground w-full" />
+      <hr className="w-full bg-neutral-400" />
 
       <section className="my-6 lg:my-8">
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-medium">Fairs</h2>
+          <h2 className="font-lora text-xl font-medium md:text-2xl md:tracking-tight">
+            Fairs
+          </h2>
         </div>
 
         <EventsGrid events={fairs} />

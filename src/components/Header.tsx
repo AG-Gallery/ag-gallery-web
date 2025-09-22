@@ -78,9 +78,9 @@ export default function Header({ isFloating = false }: HeaderProps) {
           className="tracking flex flex-col items-start justify-center tracking-tight"
         >
           <h1 className="text-lg font-medium md:text-2xl">AG Gallery</h1>
-          <span className="text-xs tracking-wider md:text-sm md:tracking-wide">
+          <p className="text-xs tracking-wider md:text-sm md:tracking-wide">
             Glendale
-          </span>
+          </p>
         </Link>
 
         <div className="flex items-center">

@@ -19,7 +19,10 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
           const isActive = pathname === href
 
           return (
-            <div key={product.id} className="group flex flex-col animate-fade-in">
+            <div
+              key={product.id}
+              className="group animate-fade-in flex flex-col"
+            >
               <Link to="/artworks/$slug" params={{ slug: product.slug }}>
                 <div className="flex aspect-[5/4] w-full flex-col items-center justify-center rounded border border-neutral-200/80 bg-neutral-50 p-2 transition-colors duration-150 ease-in select-none hover:bg-neutral-200/50 lg:p-4 2xl:p-6">
                   <img
@@ -57,16 +60,16 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
               </div>
 
               <div className="-mt-1 text-neutral-500">
-                <span className="text-[0.8125rem] font-light tracking-wide md:font-normal">
+                <p className="text-[0.8125rem] font-light tracking-wide md:font-normal">
                   {product.medium}
-                </span>
+                </p>
                 <div className="relative text-xs font-light tracking-tight select-none md:font-normal md:tracking-normal">
-                  <span className="block transition-opacity duration-200 ease-in-out group-hover:opacity-0">
+                  <p className="block transition-opacity duration-200 ease-in-out group-hover:opacity-0">
                     {product.dimensionsImperial}
-                  </span>
-                  <span className="pointer-events-none absolute top-0 opacity-0 transition-opacity duration-200 ease-in-out group-hover:opacity-100">
+                  </p>
+                  <p className="pointer-events-none absolute top-0 opacity-0 transition-opacity duration-200 ease-in-out group-hover:opacity-100">
                     {product.dimensionsMetric}
-                  </span>
+                  </p>
                 </div>
               </div>
             </div>
