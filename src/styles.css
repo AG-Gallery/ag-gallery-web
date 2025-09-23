@@ -169,7 +169,7 @@ body {
   }
 
   .featured-grid {
-    @apply grid grid-cols-2 gap-5 lg:grid-cols-4;
+    @apply grid grid-cols-2 gap-5 md:grid-cols-4;
   }
 
   .featured-headline {

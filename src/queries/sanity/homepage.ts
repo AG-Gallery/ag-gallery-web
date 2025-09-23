@@ -53,7 +53,8 @@ const homeDataQuery = `
       "id": _id,
       name,
       "slug": slug.current,
-      "imageUrl": image.asset->url,
+      "artistImage": artistImage.asset->url,
+      "backgroundImage": backgroundImage.asset->url,
       tagline,
     },
   }

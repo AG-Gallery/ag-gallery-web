@@ -88,7 +88,7 @@ function RouteComponent() {
 
       <section className="animate-fade-in my-5 items-center justify-center lg:my-14 lg:flex">
         <img
-          src={artist.imageUrl}
+          src={artist.backgroundImage}
           alt=""
           width="1920"
           height="1080"

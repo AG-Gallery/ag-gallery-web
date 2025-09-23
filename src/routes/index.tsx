@@ -6,6 +6,7 @@ import HeroVideo from '@/components/HeroVideo'
 import ProductsGrid from '@/components/ProductsGrid'
 import ArtistsGrid from '@/features/artists/ArtistsGrid'
 import EventsGrid from '@/features/events/EventsGrid'
+import HighlightedArtistsGrid from '@/features/home/HighlightedArtistsGrid'
 import { getHomeData } from '@/queries/sanity/homepage'
 
 const homeDataQuery = queryOptions({
@@ -37,11 +38,13 @@ function IndexPage() {
           videoSrc="/hero/hero-video.webm"
         />
 
-        <section className="absolute top-1/2 left-1/2 z-40 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-8 text-white md:gap-10">
-          <p className="text-xl font-medium opacity-80">
-            <span>Welcome to the Agajanian Gallery</span>
+        <section className="absolute top-[45%] left-1/2 z-40 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-8 text-white md:gap-10">
+          <p className="mb-4 text-xl font-medium tracking-wide text-nowrap md:text-[1.75rem]">
+            <span className="bg-white/85 bg-clip-text text-transparent">
+              Welcome to the Agajanian Gallery
+            </span>
           </p>
-          <p className="font-lora w-full text-2xl font-medium tracking-wide text-nowrap md:text-4xl md:tracking-tight">
+          <p className="font-lora w-full text-2xl font-medium tracking-wide text-nowrap md:text-[2.5rem] md:tracking-tight">
             Curated for the discerning eye.
           </p>
           <a
@@ -78,7 +81,7 @@ function IndexPage() {
 
         <section>
           <h2 className="featured-headline">Highlighted Artists</h2>
-          <ArtistsGrid artists={featuredArtists} />
+          <HighlightedArtistsGrid artists={featuredArtists} />
         </section>
       </main>
     </>

@@ -1,4 +1,3 @@
-import type { MinimalArtist } from './artists'
 import type { PortableTextBlock } from '@portabletext/types'
 
 export type Fair = {
@@ -12,7 +11,8 @@ export type Fair = {
     id: string
     name: string
     slug: string
-    imageUrl: string
+    artistImage: string
+    backgroundImage: string
     tagline: string
   }[]
   location: string

@@ -6,12 +6,12 @@ type ArtistsGridProps = {
   artists: Omit<Artist, 'bio'>[] | undefined
 }
 
-export default function ArtistsGrid({ artists }: ArtistsGridProps) {
+export default function HighlightedArtistsGrid({ artists }: ArtistsGridProps) {
   return (
     artists &&
     artists.length !== 0 && (
-      <div className="animate-fade-in mb-8 pb-4">
-        <div className="grid grid-cols-2 gap-5">
+      <div className="featured-grid-container">
+        <div className="featured-grid">
           {artists.map((artist) => {
             return (
               <div key={artist.id}>
@@ -22,22 +22,22 @@ export default function ArtistsGrid({ artists }: ArtistsGridProps) {
                       alt={`A portrait image of the artist ${artist.name}`}
                       width={1920}
                       height={1080}
-                      className="z-10 aspect-[3/2] rounded object-cover lg:aspect-[4/2] lg:object-contain 2xl:aspect-[2.25]"
+                      className="z-10 aspect-[5/4] rounded object-cover"
                     />
                     <img
                       src={artist.backgroundImage}
                       alt={`A portrait image of the artist ${artist.name}`}
                       width={1920}
                       height={1080}
-                      className="absolute top-0 right-0 left-0 -z-10 aspect-[3/2] rounded object-cover opacity-40 transition-all duration-150 ease-in group-hover:opacity-85 lg:aspect-[4/2] 2xl:aspect-[2.25]"
+                      className="absolute top-0 right-0 left-0 -z-10 aspect-[5/4] rounded object-cover opacity-40 transition-all duration-[125ms] ease-in-out group-hover:opacity-85"
                     />
                   </div>
 
                   <div className="mt-5 flex flex-col">
-                    <h3 className="hover:text-accent w-fit text-lg font-medium transition-colors duration-200 md:text-2xl">
+                    <h3 className="hover:text-accent text-lg font-medium transition-colors duration-200">
                       {artist.name}
                     </h3>
-                    <p className="text-sm font-medium text-neutral-500 italic md:text-base">
+                    <p className="text-sm font-medium text-neutral-500 italic">
                       {artist.tagline}
                     </p>
                   </div>

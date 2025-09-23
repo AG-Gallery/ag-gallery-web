@@ -9,7 +9,8 @@ export type Artist = {
   id: string
   name: string
   slug: string
-  imageUrl: string
+  artistImage: string
+  backgroundImage: string
   tagline: string
   bio: PortableTextBlock[]
 }
