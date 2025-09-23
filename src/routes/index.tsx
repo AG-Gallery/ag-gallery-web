@@ -38,6 +38,9 @@ function IndexPage() {
         />
 
         <section className="absolute top-1/2 left-1/2 z-40 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-8 text-white md:gap-10">
+          <p className="text-xl font-medium opacity-80">
+            <span>Welcome to the Agajanian Gallery</span>
+          </p>
           <p className="font-lora w-full text-2xl font-medium tracking-wide text-nowrap md:text-4xl md:tracking-tight">
             Curated for the discerning eye.
           </p>
