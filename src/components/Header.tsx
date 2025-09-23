@@ -53,8 +53,9 @@ export default function Header({ isFloating = false }: HeaderProps) {
   const navLinks = [
     { title: 'Home', path: '/' },
     { title: 'Artists', path: '/artists' },
+    { title: 'Artworks', path: '/artworks' },
     { title: 'Exhibitions & Fairs', path: '/events?filter=current' },
-    { title: 'News', path: '/news' },
+    { title: 'Magazine', path: '/magazine' },
     { title: 'About', path: '/about' },
   ]
 

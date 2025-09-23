@@ -42,8 +42,8 @@ function RouteComponent() {
           className="animate-fade-in aspect-square self-start object-cover lg:max-w-[400px] xl:max-w-[500px]"
         />
 
-        <div className="my-8 gap-4 align-top text-nowrap lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-24 2xl:w-[700px]">
-          <section>
+        <div className="my-8 align-top text-nowrap lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] 2xl:ml-24 2xl:w-[700px]">
+          <section className="space-y-1">
             <h2 className="font-lora text-xl font-medium md:text-[1.625rem]">
               {artwork.title}
             </h2>
@@ -59,7 +59,7 @@ function RouteComponent() {
             </p>
           </section>
 
-          <article className="mt-4 w-full leading-tight text-pretty">
+          <article className="mt-5 w-full leading-tight text-pretty">
             <p className="text-lg">
               Lorem ipsum dolor, sit amet consectetur adipisicing elit.
               Voluptatum eveniet ipsam vero tempore, in aliquam vel quis beatae
@@ -105,7 +105,7 @@ function RouteComponent() {
           </section>
 
           <section className="mt-8">
-            <button className="cursor-pointer rounded-full bg-neutral-900 px-6 py-2 font-medium text-white transition-colors duration-300 ease-in md:px-8 md:py-3">
+            <button className="w-full cursor-pointer rounded-full bg-neutral-900 px-6 py-3 font-medium text-white transition-colors duration-300 ease-in md:w-fit md:px-12">
               Add to bag
             </button>
           </section>

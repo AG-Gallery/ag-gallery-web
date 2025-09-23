@@ -51,14 +51,14 @@ export default function EventsGrid({ events }: EventsGridProps) {
                     {event.title}
                   </h3>
 
-                  <p>{eventDates}</p>
+                  <p className="text-sm">{eventDates}</p>
                 </div>
               </Link>
 
               <Link
                 to="/artists/$slug"
                 params={{ slug: slug }}
-                className={` ${event.type === 'exhibition' && !event.isGroup && 'hover:text-accent'} w-fit transition-colors duration-200`}
+                className={` ${event.type === 'exhibition' && !event.isGroup && 'hover:text-accent'} w-fit text-sm text-neutral-500 transition-colors duration-200`}
                 disabled={event.type !== 'exhibition' || event.isGroup}
               >
                 {exhibitionSubtitle ?? fairSubtitle}

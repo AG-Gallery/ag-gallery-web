@@ -95,7 +95,7 @@ function RouteComponent() {
           className="animate-fade-in aspect-square self-start object-cover grayscale-100 lg:max-w-[400px] xl:max-w-[500px]"
         />
 
-        <article className="my-8 flex items-start gap-4 align-top lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-24 2xl:w-[700px]">
+        <article className="my-6 flex flex-col items-start gap-2 align-top md:my-8 md:flex-row md:gap-4 lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-24 2xl:w-[700px]">
           <h2 className="mb-3 text-xl font-medium tracking-wide lg:mb-0 lg:text-base">
             Biography
           </h2>
