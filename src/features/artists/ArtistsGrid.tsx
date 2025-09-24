@@ -33,7 +33,7 @@ export default function ArtistsGrid({ artists }: ArtistsGridProps) {
                       alt={`A portrait image of the artist ${artist.name}`}
                       width={1920}
                       height={1080}
-                      className="absolute top-0 right-0 left-0 -z-10 aspect-[3/2] rounded-xs object-cover opacity-50 transition-all duration-100 ease-in group-hover:opacity-85 lg:aspect-[4/2] 2xl:aspect-[2.25]"
+                      className="absolute top-0 right-0 left-0 -z-10 aspect-[3/2] rounded-xs object-cover opacity-45 transition-all duration-100 ease-in group-hover:opacity-85 lg:aspect-[4/2] 2xl:aspect-[2.25]"
                     />
                   </div>
 
@@ -46,7 +46,7 @@ export default function ArtistsGrid({ artists }: ArtistsGridProps) {
                     </p>
                   </div>
 
-                  <div className="absolute top-0 right-0 left-0 -z-10 mx-auto h-[45%] w-full bg-gradient-to-b group-hover:from-black/30 group-hover:via-black/20 group-hover:to-transparent" />
+                  <div className="absolute top-0 right-0 left-0 -z-10 mx-auto h-[45%] w-full bg-gradient-to-b from-white/30 via-white/20 to-transparent transition-colors duration-200 ease-in group-hover:from-black/30 group-hover:via-black/20" />
                 </Link>
               </div>
             )
