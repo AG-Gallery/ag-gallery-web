@@ -5,6 +5,7 @@ import { PortableText } from '@portabletext/react'
 
 import Carousel from '@/components/Carousel'
 import ArtistsGrid from '@/features/artists/ArtistsGrid'
+import { formatDateRange } from '@/lib/utils'
 import { getFair } from '@/queries/sanity/events'
 
 function createFairQuery(slug: string) {
@@ -33,9 +34,16 @@ function RouteComponent() {
 
   const { data: fair, isLoading, error } = useSuspenseQuery(fairQuery)
 
+  const eventDates = formatDateRange(fair.startDate, fair.endDate)
+
   return (
     <main className="page-main">
-      <h2 className="page-headline">{fair.title}</h2>
+      <h2 className="page-headline flex items-center gap-4">
+        {fair.title} <span className="text-lg">•</span> {fair.location}
+      </h2>
+      <h3 className="-mt-6 font-medium tracking-wide text-neutral-500">
+        {eventDates}
+      </h3>
 
       <section className="animate-fade-in my-5 items-center justify-center lg:my-14 lg:flex">
         <Carousel images={fair.images} />

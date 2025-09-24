@@ -5,6 +5,8 @@ import { Link } from '@tanstack/react-router'
 
 import { formatDateRange } from '@/lib/utils'
 
+import EventSlideshow from './EventSlideshow'
+
 type EventsGridProps = {
   events: Exhibition[] | Fair[]
 }
@@ -39,12 +41,10 @@ export default function EventsGrid({ events }: EventsGridProps) {
                 to={`/events/${event.type}s/$slug`}
                 params={{ slug: event.slug }}
               >
-                <img
-                  src={event.coverImageUrl}
+                <EventSlideshow
+                  cover={event.coverImageUrl}
+                  images={event.images}
                   alt={`An image of the event ${event.title}`}
-                  width={1920}
-                  height={1080}
-                  className="aspect-[5/4] rounded object-cover"
                 />
                 <div className="mt-4 flex flex-col gap-1">
                   <h3 className="hover:text-accent text-lg font-medium transition-colors duration-200">

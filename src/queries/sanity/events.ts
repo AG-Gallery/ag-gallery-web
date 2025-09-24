@@ -139,9 +139,10 @@ const fairQuery = `
       "backgroundImage": backgroundImage.asset->url,
       tagline,
     },
-    body,
+    location,
     startDate,
     endDate,
+    body,
   }
 `
 

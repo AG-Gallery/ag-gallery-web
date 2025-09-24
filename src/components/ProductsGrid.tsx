@@ -52,25 +52,20 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
                 <Link
                   to={href}
                   params={{ slug: product.artist.slug }}
-                  className={` ${!isActive && 'hover:text-accent'} 'w-fit md:text-base' text-sm tracking-wide transition-colors duration-200`}
+                  className={` ${!isActive && 'hover:text-accent'} w-fit text-sm tracking-wide transition-colors duration-200 md:text-base`}
                   disabled={isActive}
                 >
                   {product.artist.name}
                 </Link>
               </div>
 
-              <div className="-mt-1 text-neutral-500">
+              <div className="space-y-0.5 text-neutral-500">
                 <p className="text-[0.8125rem] font-light tracking-wide md:font-normal">
                   {product.medium}
                 </p>
-                <div className="relative text-xs font-light tracking-tight select-none md:font-normal md:tracking-normal">
-                  <p className="block transition-opacity duration-200 ease-in-out group-hover:opacity-0">
-                    {product.dimensionsImperial}
-                  </p>
-                  <p className="pointer-events-none absolute top-0 opacity-0 transition-opacity duration-200 ease-in-out group-hover:opacity-100">
-                    {product.dimensionsMetric}
-                  </p>
-                </div>
+                <p className="text-xs font-light tracking-tight select-none md:font-normal md:tracking-normal">
+                  {product.dimensionsImperial}
+                </p>
               </div>
             </div>
           )

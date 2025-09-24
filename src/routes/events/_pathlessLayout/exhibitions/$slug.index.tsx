@@ -1,11 +1,12 @@
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 
 import { PortableText } from '@portabletext/react'
 
 import Carousel from '@/components/Carousel'
 import ProductsGrid from '@/components/ProductsGrid'
 import ArtistsGrid from '@/features/artists/ArtistsGrid'
+import { formatDateRange } from '@/lib/utils'
 import { getExhibition } from '@/queries/sanity/events'
 
 function createExhibitionQuery(slug: string) {
@@ -40,14 +41,19 @@ function RouteComponent() {
     error,
   } = useSuspenseQuery(exhibitionQuery)
 
+  const eventDates = formatDateRange(exhibition.startDate, exhibition.endDate)
+
   return (
     <main className="page-main">
       <h2 className="page-headline">{exhibition.title}</h2>
+      <h3 className="-mt-6 font-medium tracking-wide text-neutral-500">
+        {eventDates}
+      </h3>
 
       <section className="animate-fade-in my-5 items-center justify-center lg:my-14 lg:flex">
         <Carousel images={exhibition.images} />
 
-        <article className="my-8 w-full gap-4 tracking-wide text-pretty lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-24 2xl:w-[700px]">
+        <article className="my-8 w-full gap-4 self-start tracking-wide text-pretty lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-24 2xl:w-[700px]">
           <PortableText
             value={exhibition.body}
             components={{
@@ -57,6 +63,20 @@ function RouteComponent() {
             }}
           />
         </article>
+      </section>
+
+      <hr className="w-full bg-neutral-400" />
+
+      <section className="my-6 lg:my-8">
+        <h2 className="font-lora mb-6 text-xl font-medium md:text-2xl md:tracking-tight">
+          Artists
+        </h2>
+
+        <ArtistsGrid
+          artists={
+            exhibition.isGroup ? exhibition.artists : [exhibition.artist]
+          }
+        />
       </section>
     </main>
   )
