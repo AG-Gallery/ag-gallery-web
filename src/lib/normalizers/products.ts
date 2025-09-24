@@ -1,5 +1,5 @@
 import type { Public_GetAllProductsQuery } from '@/queries/graphql/generated/react-query'
-import type { LabeledMetaobject, Product } from '@/types/products'
+import type { Artwork, LabeledMetaobject, Product } from '@/types/products'
 
 type ProductNode = NonNullable<
   NonNullable<Public_GetAllProductsQuery['products']>['edges'][number]
@@ -34,15 +34,9 @@ function formatImages(images: ProductNode['images']) {
   }))
 }
 
-// Reusable for any of the four metaobject-list metafields
+// Reusable for metaobject-list metafields (style/theme)
 function formatLabeledMetaobjects(
-  field:
-    | ProductNode['artMovements']
-    | ProductNode['frameStyle']
-    | ProductNode['medium']
-    | ProductNode['theme']
-    | null
-    | undefined,
+  field: ProductNode['style'] | ProductNode['theme'] | null | undefined,
 ): LabeledMetaobject[] {
   const nodes = field?.references?.nodes ?? []
   return nodes.filter(isMetaobjectNode).map((n) => ({
@@ -70,14 +64,44 @@ export function formatProducts(
     descriptionHtml: String(node.descriptionHtml),
     artist: node.artist?.value ?? null,
     category: node.category?.value ?? null,
-    dimensions: node.dimensions?.value ?? null,
-    price: String(node.priceRange.minVariantPrice.amount),
-    currencyCode: String(node.priceRange.minVariantPrice.currencyCode),
+    dimensionsImperial: node.dimensionsImperial?.value ?? null,
+    dimensionsMetric: node.dimensionsMetric?.value ?? null,
+    medium: node.medium?.value ?? null,
+    price: String(node.priceRange.maxVariantPrice.amount),
+    currencyCode: String(node.priceRange.maxVariantPrice.currencyCode),
     createdAt: String(node.createdAt),
     images: formatImages(node.images),
-    artMovements: formatLabeledMetaobjects(node.artMovements),
-    frameStyle: formatLabeledMetaobjects(node.frameStyle),
-    medium: formatLabeledMetaobjects(node.medium),
+    style: formatLabeledMetaobjects(node.style),
     theme: formatLabeledMetaobjects(node.theme),
   }))
+}
+
+function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+}
+
+export function productsToArtworks(products: Product[]): Artwork[] {
+  const firstLabel = (list: LabeledMetaobject[]) =>
+    list[0]?.label ?? list[0]?.handle
+
+  return products.map((p) => {
+    const artistName = p.artist ?? 'Unknown'
+    return {
+      id: p.id,
+      gid: p.id,
+      title: p.title,
+      slug: p.handle,
+      previewImageUrl: p.images[0]?.url ?? '',
+      artist: { name: artistName, slug: slugify(artistName) },
+      style: firstLabel(p.style),
+      medium: p.medium ?? '',
+      theme: firstLabel(p.theme),
+      dimensionsImperial: p.dimensionsImperial ?? '',
+      dimensionsMetric: p.dimensionsMetric ?? '',
+    }
+  })
 }

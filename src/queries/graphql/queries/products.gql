@@ -20,12 +20,32 @@ fragment ProductFields on Product {
     }
   }
   priceRange {
-    minVariantPrice {
+    maxVariantPrice {
       amount
       currencyCode
     }
   }
-  artMovements: metafield(namespace: "shopify", key: "art-movement") {
+  artist: metafield(namespace: "custom", key: "artist") {
+    value
+    type
+  }
+  category: metafield(namespace: "custom", key: "category") {
+    value
+    type
+  }
+  dimensionsImperial: metafield(namespace: "custom", key: "dimensions_us") {
+    value
+    type
+  }
+  dimensionsMetric: metafield(namespace: "custom", key: "dimensions_global") {
+    value
+    type
+  }
+  medium: metafield(namespace: "custom", key: "medium") {
+    value
+    type
+  }
+  style: metafield(namespace: "shopify", key: "art-movement") {
     references(first: 4) {
       nodes {
         __typename
@@ -41,28 +61,12 @@ fragment ProductFields on Product {
       }
     }
   }
-  artist: metafield(namespace: $metafieldNamespace, key: $artistKey) {
-    value
-    type
-  }
-  category: metafield(namespace: $metafieldNamespace, key: $categoryKey) {
-    value
-    type
-  }
-  dimensions: metafield(namespace: $metafieldNamespace, key: $dimensionsKey) {
-    value
-    type
-  }
 }
 
 query Public_GetAllProducts(
-  $first: Int = 12
+  $first: Int = 24
   $after: String
   $imagesFirst: Int = 1
-  $metafieldNamespace: String = "custom"
-  $artistKey: String = "artist"
-  $categoryKey: String = "category"
-  $dimensionsKey: String = "dimensions"
 ) {
   products(first: $first, after: $after) {
     pageInfo {
