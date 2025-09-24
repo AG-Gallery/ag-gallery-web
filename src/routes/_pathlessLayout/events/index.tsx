@@ -18,11 +18,12 @@ const fairsQuery = queryOptions({
   gcTime: 10 * 60 * 1000,
 })
 
-export const Route = createFileRoute('/events/_pathlessLayout/')({
-  loader: ({ context }) => {
-    ;(context.queryClient.ensureQueryData(exhibitionsQuery),
-      context.queryClient.ensureQueryData(fairsQuery))
-  },
+export const Route = createFileRoute('/_pathlessLayout/events/')({
+  loader: ({ context }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(exhibitionsQuery),
+      context.queryClient.ensureQueryData(fairsQuery),
+    ]),
   component: RouteComponent,
 })
 

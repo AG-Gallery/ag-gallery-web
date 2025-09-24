@@ -10,14 +10,12 @@ function createArtworkQuery(slug: string) {
   const artworkQuery = queryOptions({
     queryKey: ['artwork', slug],
     queryFn: () => getProduct(slug),
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
   })
 
   return artworkQuery
 }
 
-export const Route = createFileRoute('/artworks/_pathlessLayout/$slug/')({
+export const Route = createFileRoute('/_pathlessLayout/artworks/$slug/')({
   loader: ({ context, params }) => {
     const queryOpts = createArtworkQuery(params.slug)
     const queryResult = context.queryClient.ensureQueryData(queryOpts)

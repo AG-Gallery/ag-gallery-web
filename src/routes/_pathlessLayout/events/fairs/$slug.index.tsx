@@ -19,7 +19,7 @@ function createFairQuery(slug: string) {
   return fairQuery
 }
 
-export const Route = createFileRoute('/events/_pathlessLayout/fairs/$slug/')({
+export const Route = createFileRoute('/_pathlessLayout/events/fairs/$slug/')({
   loader: ({ context, params }) => {
     const queryOpts = createFairQuery(params.slug)
     const queryResult = context.queryClient.ensureQueryData(queryOpts)

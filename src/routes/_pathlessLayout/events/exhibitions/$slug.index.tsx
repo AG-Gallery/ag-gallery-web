@@ -21,7 +21,7 @@ function createExhibitionQuery(slug: string) {
 }
 
 export const Route = createFileRoute(
-  '/events/_pathlessLayout/exhibitions/$slug/',
+  '/_pathlessLayout/events/exhibitions/$slug/',
 )({
   loader: ({ context, params }) => {
     const queryOpts = createExhibitionQuery(params.slug)

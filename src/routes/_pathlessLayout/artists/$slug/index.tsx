@@ -37,20 +37,14 @@ function createFairsQuery(slug: string) {
   })
 }
 
-export const Route = createFileRoute('/artists/_pathlessLayout/$slug/')({
-  loader: ({ context, params }) => {
-    const artistQuery = createArtistQuery(params.slug)
-    const productQuery = createProductsQuery(params.slug)
-    const exhibitionsQuery = createExhibitionsQuery(params.slug)
-    const fairsQuery = createFairsQuery(params.slug)
-
-    const artistResult = context.queryClient.ensureQueryData(artistQuery)
-    const productResult = context.queryClient.ensureQueryData(productQuery)
-    const exhibitionsResult =
-      context.queryClient.ensureQueryData(exhibitionsQuery)
-    const fairsResult = context.queryClient.ensureQueryData(fairsQuery)
-    return { artistResult, productResult, exhibitionsResult }
-  },
+export const Route = createFileRoute('/_pathlessLayout/artists/$slug/')({
+  loader: ({ context, params }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(createArtistQuery(params.slug)),
+      context.queryClient.ensureQueryData(createProductsQuery(params.slug)),
+      context.queryClient.ensureQueryData(createExhibitionsQuery(params.slug)),
+      context.queryClient.ensureQueryData(createFairsQuery(params.slug)),
+    ]).then(() => undefined),
   component: RouteComponent,
 })
 
