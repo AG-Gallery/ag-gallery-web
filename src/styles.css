@@ -3,6 +3,7 @@
 @import 'tw-animate-css';
 
 @import '@fontsource-variable/lora';
+@import '@fontsource-variable/playfair-display';
 
 /* Fonts */
 @font-face {
@@ -100,8 +101,9 @@ body {
   --color-accent: var(--color-accent);
 
   /* Fonts */
-  --font-lora: 'Lora Variable', serif;
   --font-pretendard: 'Pretendard Variable', sans-serif;
+  --font-lora: 'Lora Variable', serif;
+  --font-playfair: 'Playfair Display Variable', serif;
 
   /* Animations */
   --animate-fade-in: fade-in 0.25s cubic-bezier(0.39, 0.575, 0.565, 1);
@@ -173,7 +175,7 @@ body {
   }
 
   .featured-headline {
-    @apply font-lora mb-4 text-xl font-medium md:mb-8 md:text-[1.625rem] md:tracking-tight;
+    @apply font-lora mb-4 text-xl font-medium tracking-[-0.0125rem] md:mb-8 md:text-[1.625rem] lg:text-3xl;
   }
 
   .page-main {
@@ -181,6 +183,6 @@ body {
   }
 
   .page-headline {
-    @apply font-lora mb-8 text-xl font-medium md:text-3xl md:tracking-tight;
+    @apply font-playfair mb-8 text-xl font-medium md:text-[1.625rem] lg:text-3xl;
   }
 }

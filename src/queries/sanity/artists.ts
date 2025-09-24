@@ -4,8 +4,8 @@ import { sanityClient } from '@/lib/sanity-client'
 
 const allArtistsQuery = `
   *[
-  _type == "artist"
-  ]{
+    _type == "artist"
+  ] | order(name asc) {
     "id": _id,
     name,
     "slug": slug.current,

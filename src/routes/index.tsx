@@ -38,12 +38,12 @@ function IndexPage() {
         />
 
         <section className="absolute top-[45%] left-1/2 z-40 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-8 text-white md:gap-10">
-          <p className="mb-4 text-xl font-medium tracking-wide text-nowrap md:text-[1.75rem]">
+          <p className="mb-2 text-xl font-medium tracking-wide text-nowrap md:text-[1.75rem]">
             <span className="bg-white/85 bg-clip-text text-transparent">
               Welcome to the Agajanian Gallery
             </span>
           </p>
-          <p className="font-lora w-full text-2xl font-medium tracking-wide text-nowrap md:text-[2.5rem] md:tracking-tight">
+          <p className="font-playfair mb-4 w-full text-2xl font-medium tracking-wide text-nowrap md:text-5xl md:tracking-[-0.0125rem]">
             Curated for the discerning eye.
           </p>
           <a
