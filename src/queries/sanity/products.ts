@@ -11,7 +11,7 @@ const productQuery = `
   ][0]{
     "id": _id,
     artist->{ name, "slug": slug.current },
-    artMovement,
+    "style": artMovement,
     dimensionsImperial,
     dimensionsMetric,
     "gid": store.gid,
@@ -35,7 +35,7 @@ const productsByArtistQuery = `
   [$start..$end]{
     "id": _id,
     artist->{ name, "slug": slug.current },
-    artMovement,
+    "style": artMovement,
     dimensionsImperial,
     dimensionsMetric,
     "gid": store.gid,

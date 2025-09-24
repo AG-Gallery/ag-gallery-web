@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { PortableText } from '@portabletext/react'
 
+import Carousel from '@/components/Carousel'
 import ArtistsGrid from '@/features/artists/ArtistsGrid'
 import { getFair } from '@/queries/sanity/events'
 
@@ -37,13 +38,7 @@ function RouteComponent() {
       <h2 className="page-headline">{fair.title}</h2>
 
       <section className="animate-fade-in my-5 items-center justify-center lg:my-14 lg:flex">
-        <img
-          src={fair.coverImageUrl}
-          alt=""
-          width="1920"
-          height="1080"
-          className="animate-fade-in aspect-square self-start object-cover lg:max-w-[400px] xl:max-w-[500px]"
-        />
+        <Carousel images={fair.images} />
 
         <article className="my-8 w-full gap-4 align-top tracking-wide text-pretty lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-24 2xl:w-[700px]">
           <PortableText

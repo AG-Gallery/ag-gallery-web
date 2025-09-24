@@ -3,7 +3,7 @@ export type Artwork = {
     name: string
     slug: string
   }
-  artMovement: string
+  style: string
   dimensionsImperial: string
   dimensionsMetric: string
   gid: string

@@ -3,6 +3,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 
 import { PortableText } from '@portabletext/react'
 
+import Carousel from '@/components/Carousel'
 import { getProduct } from '@/queries/sanity/products'
 
 function createArtworkQuery(slug: string) {
@@ -31,16 +32,13 @@ function RouteComponent() {
 
   const { data: artwork, isLoading, error } = useSuspenseQuery(queryOpts)
 
+  // TODO: Update query to get product details from shopify
+  const images = [artwork.previewImageUrl, artwork.previewImageUrl]
+
   return (
     <main className="page-main">
       <div className="animate-fade-in my-5 items-start justify-center lg:my-14 lg:flex">
-        <img
-          src={artwork.previewImageUrl}
-          alt=""
-          width="1920"
-          height="1080"
-          className="animate-fade-in aspect-square self-start object-cover lg:max-w-[400px] xl:max-w-[500px]"
-        />
+        <Carousel images={images} />
 
         <div className="my-8 align-top text-nowrap lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] 2xl:ml-24 2xl:w-[700px]">
           <section className="space-y-1">
@@ -83,12 +81,7 @@ function RouteComponent() {
 
           <section className="mt-8 space-y-1 tracking-wide">
             <p className="font-medium">
-              Art Movement:{' '}
-              <span className="font-normal">{artwork.artMovement}</span>
-            </p>
-
-            <p className="font-medium">
-              Theme: <span className="font-normal">{artwork.theme}</span>
+              Style: <span className="font-normal">{artwork.style}</span>
             </p>
 
             <p className="font-medium">

@@ -1,4 +1,4 @@
-import type { MinimalArtist } from './artists'
+import type { Artist } from './artists'
 import type { PortableTextBlock } from '@portabletext/types'
 
 type BaseExhibition = {
@@ -16,7 +16,7 @@ type BaseExhibition = {
 // Solo exhibition
 type SoloExhibition = BaseExhibition & {
   isGroup: false
-  artist: MinimalArtist
+  artist: Omit<Artist, 'bio'>
   artists?: undefined
 }
 
@@ -24,7 +24,7 @@ type SoloExhibition = BaseExhibition & {
 type GroupExhibition = BaseExhibition & {
   isGroup: true
   artist?: undefined
-  artists: MinimalArtist[]
+  artists: Omit<Artist, 'bio'>[]
 }
 
 export type Exhibition = SoloExhibition | GroupExhibition

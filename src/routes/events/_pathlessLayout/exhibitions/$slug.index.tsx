@@ -3,7 +3,9 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 
 import { PortableText } from '@portabletext/react'
 
+import Carousel from '@/components/Carousel'
 import ProductsGrid from '@/components/ProductsGrid'
+import ArtistsGrid from '@/features/artists/ArtistsGrid'
 import { getExhibition } from '@/queries/sanity/events'
 
 function createExhibitionQuery(slug: string) {
@@ -43,15 +45,9 @@ function RouteComponent() {
       <h2 className="page-headline">{exhibition.title}</h2>
 
       <section className="animate-fade-in my-5 items-center justify-center lg:my-14 lg:flex">
-        <img
-          src={exhibition.coverImageUrl}
-          alt=""
-          width="1920"
-          height="1080"
-          className="animate-fade-in aspect-square self-start object-cover lg:max-w-[400px] xl:max-w-[500px]"
-        />
+        <Carousel images={exhibition.images} />
 
-        <article className="my-8 w-full gap-4 align-top tracking-wide text-pretty lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-24 2xl:w-[700px]">
+        <article className="my-8 w-full gap-4 tracking-wide text-pretty lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-24 2xl:w-[700px]">
           <PortableText
             value={exhibition.body}
             components={{
@@ -61,16 +57,6 @@ function RouteComponent() {
             }}
           />
         </article>
-      </section>
-
-      <hr className="w-full bg-neutral-400" />
-
-      <section className="my-6 lg:my-8">
-        <h2 className="font-lora mb-6 text-xl font-medium md:text-2xl md:tracking-tight">
-          Selected Works
-        </h2>
-
-        {/* <ProductsGrid products={exhibition.} /> */}
       </section>
     </main>
   )
