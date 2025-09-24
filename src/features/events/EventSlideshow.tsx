@@ -9,20 +9,20 @@ export default function EventSlideshow({
   images: string[]
   alt: string
 }) {
-  const delayMs = 250 // wait before starting on hover
-  const intervalMs = 2000 // time each image stays on screen
-  const fadeMs = 300 // cross-fade duration
+  const delayMs = 200
+  const intervalMs = 2000
+  const fadeMs = 200
 
   const hoverCapable = useMemo(
     () =>
       typeof window !== 'undefined' &&
-      window.matchMedia?.('(hover: hover)').matches,
+      window.matchMedia('(hover: hover)').matches,
     [],
   )
   const reduceMotion = useMemo(
     () =>
       typeof window !== 'undefined' &&
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
     [],
   )
 
@@ -69,26 +69,34 @@ export default function EventSlideshow({
     switchingRef.current = false
   }
 
-  function preloadAndDecode(src: string) {
+  // Decode helper with a tiny cache to avoid decoding the same URL repeatedly
+  const decodedSetRef = useRef<Set<string>>(new Set())
+  function decodeImage(src: string) {
     return new Promise<void>((resolve) => {
       if (!src) return resolve()
+      const cache = decodedSetRef.current
+      if (cache.has(src)) return resolve()
+
       const img = new Image()
       img.decoding = 'async'
       img.src = src
 
-      const finish = () => resolve()
-      const tryDecode = () => {
-        // Some browsers lack decode(); resolve after load
-        // @ts-expect-error - decode may not exist on type
-        const d = img.decode?.()
-        if (d && typeof d.then === 'function') d.then(finish).catch(finish)
-        else finish()
+      const finalize = () => {
+        cache.add(src)
+        resolve()
       }
-
-      if (img.complete) tryDecode()
-      else {
-        img.onload = tryDecode
-        img.onerror = finish
+      const canDecode = typeof img.decode === 'function'
+      if (img.complete) {
+        if (canDecode) {
+          img.decode().then(finalize).catch(finalize)
+        } else finalize()
+      } else {
+        img.onload = () => {
+          if (canDecode) {
+            img.decode().then(finalize).catch(finalize)
+          } else finalize()
+        }
+        img.onerror = finalize
       }
     })
   }
@@ -108,17 +116,13 @@ export default function EventSlideshow({
     const nextIdx = (idxRef.current + 1) % slides.length
     const nextSrc = slides[nextIdx]
 
-    await preloadAndDecode(nextSrc)
-    if (!activeRef.current) {
-      switchingRef.current = false
-      return
-    }
+    await decodeImage(nextSrc)
 
     // Load into hidden buffer
     if (frontRef.current) setBSrc(nextSrc)
     else setASrc(nextSrc)
 
-    // Preload one ahead (optional)
+    // Preload one ahead
     const pre = new Image()
     pre.src = slides[(nextIdx + 1) % slides.length]
 
@@ -146,9 +150,8 @@ export default function EventSlideshow({
       if (!activeRef.current) return
       idxRef.current = 0
 
-      // Gate the FIRST fade on decode of slides[0]
-      await preloadAndDecode(slides[0])
-      if (!activeRef.current) return
+      // Gate the first fade on decode of slides[0]
+      await decodeImage(slides[0])
 
       // Put first slide into A, keep hidden, then flip visible after commit
       setASrc(slides[0])
@@ -195,7 +198,7 @@ export default function EventSlideshow({
           width: '100%',
           height: '100%',
           objectFit: 'cover',
-          transition: reduceMotion ? 'none' : `opacity ${fadeMs}ms ease-in-out`,
+          transition: reduceMotion ? 'none' : `opacity ${fadeMs}ms ease-in`,
           opacity: playing ? 0 : 1,
         }}
       />
@@ -216,9 +219,7 @@ export default function EventSlideshow({
             height: '100%',
             objectFit: 'cover',
             opacity: playing && frontIsA ? 1 : 0,
-            transition: reduceMotion
-              ? 'none'
-              : `opacity ${fadeMs}ms ease-in-out`,
+            transition: reduceMotion ? 'none' : `opacity ${fadeMs}ms ease-in`,
             willChange: 'opacity',
           }}
         />
@@ -240,9 +241,7 @@ export default function EventSlideshow({
             height: '100%',
             objectFit: 'cover',
             opacity: playing && !frontIsA ? 1 : 0,
-            transition: reduceMotion
-              ? 'none'
-              : `opacity ${fadeMs}ms ease-in-out`,
+            transition: reduceMotion ? 'none' : `opacity ${fadeMs}ms ease-in`,
             willChange: 'opacity',
           }}
         />

@@ -24,7 +24,7 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
               className="group animate-fade-in flex flex-col"
             >
               <Link to="/artworks/$slug" params={{ slug: product.slug }}>
-                <div className="flex aspect-[5/4] w-full flex-col items-center justify-center rounded border border-neutral-200/80 bg-neutral-50 p-2 transition-colors duration-150 ease-in select-none hover:bg-neutral-200/50 lg:p-4 2xl:p-6">
+                <div className="flex aspect-[5/4] w-full flex-col items-center justify-center rounded border border-neutral-200/80 bg-neutral-50 p-2 transition-colors duration-100 ease-in select-none hover:bg-neutral-200/50 lg:p-4 2xl:p-6">
                   <img
                     src={product.previewImageUrl}
                     // ----------
@@ -39,7 +39,7 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
               </Link>
 
               <div className="mt-4">
-                <h3 className="hover:text-accent w-fit font-medium transition-colors duration-200 md:text-lg">
+                <h3 className="hover:text-accent w-fit font-medium transition-colors duration-100 md:text-lg">
                   <Link
                     to={`/artworks/$slug`}
                     params={{ slug: product.slug }}
@@ -52,7 +52,7 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
                 <Link
                   to={href}
                   params={{ slug: product.artist.slug }}
-                  className={` ${!isActive && 'hover:text-accent'} w-fit text-sm tracking-wide transition-colors duration-200 md:text-base`}
+                  className={` ${!isActive && 'hover:text-accent'} w-fit text-sm tracking-wide transition-colors duration-100 md:text-base`}
                   disabled={isActive}
                 >
                   {product.artist.name}
