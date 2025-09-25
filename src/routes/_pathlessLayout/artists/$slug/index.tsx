@@ -81,15 +81,24 @@ function RouteComponent() {
       <h2 className="page-headline">{artist.name}</h2>
 
       <section className="animate-fade-in my-5 items-center justify-center lg:my-14 lg:flex">
-        <img
-          src={artist.backgroundImage}
-          alt=""
-          width="1920"
-          height="1080"
-          className="animate-fade-in aspect-square self-start object-cover grayscale-100 lg:max-w-[400px] xl:max-w-[500px]"
-        />
+        <div className="group relative">
+          <img
+            src={artist.artistImage}
+            alt={`A portrait image of the artist ${artist.name}`}
+            width={1920}
+            height={1080}
+            className="animate-fade-in z-10 aspect-square self-start object-cover grayscale-100 lg:max-w-[400px] xl:max-w-[500px]"
+          />
+          <img
+            src={artist.backgroundImage}
+            alt={`A portrait image of the artist ${artist.name}`}
+            width={1920}
+            height={1080}
+            className="absolute top-0 right-0 left-0 -z-10 aspect-square object-cover opacity-45 transition-all duration-100 ease-in group-hover:opacity-85"
+          />
+        </div>
 
-        <article className="my-6 flex flex-col items-start gap-2 align-top md:my-8 md:flex-row md:gap-4 lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-24 2xl:w-[700px]">
+        <article className="my-6 flex flex-col items-start gap-2 self-start align-top md:my-8 md:flex-row md:gap-4 lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-24 2xl:w-[700px]">
           <h2 className="mb-3 text-xl font-medium tracking-wide lg:mb-0 lg:text-base">
             Biography
           </h2>

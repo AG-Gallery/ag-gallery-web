@@ -2,6 +2,8 @@ import type { Artwork } from '@/types/products'
 
 import { Link, useLocation } from '@tanstack/react-router'
 
+import { BagIcon } from './icons/BagIcon'
+
 type ProductsGridProps = {
   products: Artwork[]
 }
@@ -21,7 +23,7 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
           return (
             <div
               key={product.id}
-              className="group animate-fade-in flex flex-col"
+              className="group animate-fade-in flex flex-col items-start"
             >
               <Link to="/artworks/$slug" params={{ slug: product.slug }}>
                 <div className="flex aspect-[5/4] w-full flex-col items-center justify-center rounded border border-neutral-200/80 bg-neutral-50 p-2 transition-colors duration-100 ease-in select-none hover:bg-neutral-200/50 lg:p-4 2xl:p-6">
@@ -67,6 +69,11 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
                   {product.dimensionsImperial}
                 </p>
               </div>
+
+              {/*<button className="mt-2 flex cursor-pointer gap-1 text-sm transition-colors duration-150 ease-in hover:text-sky-700 md:text-[0.9375rem]">
+                <BagIcon classes="size-5" />
+                Add to Bag
+              </button>*/}
             </div>
           )
         })}
