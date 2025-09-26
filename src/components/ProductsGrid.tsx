@@ -70,10 +70,10 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
                 </p>
               </div>
 
-              {/*<button className="mt-2 flex cursor-pointer gap-1 text-sm transition-colors duration-150 ease-in hover:text-sky-700 md:text-[0.9375rem]">
+              {/* <button className="mt-2 flex cursor-pointer gap-1 text-sm transition-colors duration-150 ease-in hover:text-sky-700 md:text-[0.9375rem]">
                 <BagIcon classes="size-5" />
                 Add to Bag
-              </button>*/}
+              </button> */}
             </div>
           )
         })}

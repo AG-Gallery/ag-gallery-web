@@ -141,6 +141,16 @@ query Public_GetProduct(
   }
 }
 
+# Fetch a single product by handle (for detail pages)
+query Public_GetProductByHandle(
+  $handle: String!
+  $imagesFirst: Int = 6
+) {
+  productByHandle(handle: $handle) {
+    ...ProductFields
+  }
+}
+
 query GetProductsForCheckout($ids: [ID!]!) {
   products: nodes(ids: $ids) {
     __typename

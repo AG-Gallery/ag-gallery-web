@@ -5,6 +5,25 @@ type ProductNode = NonNullable<
   NonNullable<Public_GetAllProductsQuery['products']>['edges'][number]
 >['node']
 
+// Normalize a single product-like node into our Product shape
+type ProductLike = Pick<
+  ProductNode,
+  | 'id'
+  | 'title'
+  | 'handle'
+  | 'createdAt'
+  | 'descriptionHtml'
+  | 'images'
+  | 'priceRange'
+  | 'artist'
+  | 'category'
+  | 'dimensionsImperial'
+  | 'dimensionsMetric'
+  | 'medium'
+  | 'style'
+  | 'theme'
+>
+
 const isNonNull = <T>(v: T | null | undefined): v is T => v != null
 
 // Narrow Metaobject nodes inside list.metaobject_reference fields
@@ -46,18 +65,9 @@ function formatLabeledMetaobjects(
   }))
 }
 
-export function formatProducts(
-  conn: NonNullable<Public_GetAllProductsQuery['products']> | null | undefined,
-): Product[] | undefined {
-  const edges = conn?.edges
-  if (!edges) return undefined
-
-  const items = edges
-    .map((e) => ({ cursor: e.cursor, node: e.node }))
-    .filter((x): x is { cursor: string; node: ProductNode } => Boolean(x))
-
-  return items.map(({ cursor, node }) => ({
-    cursor,
+export function formatProduct(node: ProductLike, cursor?: string): Product {
+  return {
+    cursor: cursor ?? '',
     id: node.id,
     title: node.title,
     handle: node.handle,
@@ -73,7 +83,20 @@ export function formatProducts(
     images: formatImages(node.images),
     style: formatLabeledMetaobjects(node.style),
     theme: formatLabeledMetaobjects(node.theme),
-  }))
+  }
+}
+
+export function formatProducts(
+  conn: NonNullable<Public_GetAllProductsQuery['products']> | null | undefined,
+): Product[] | undefined {
+  const edges = conn?.edges
+  if (!edges) return undefined
+
+  const items = edges
+    .map((e) => ({ cursor: e.cursor, node: e.node }))
+    .filter((x): x is { cursor: string; node: ProductNode } => Boolean(x))
+
+  return items.map(({ cursor, node }) => formatProduct(node, cursor))
 }
 
 function slugify(input: string): string {
@@ -104,4 +127,23 @@ export function productsToArtworks(products: Product[]): Artwork[] {
       dimensionsMetric: p.dimensionsMetric ?? '',
     }
   })
+}
+
+export function productToArtwork(p: Product): Artwork {
+  const firstLabel = (list: LabeledMetaobject[]) =>
+    list[0]?.label ?? list[0]?.handle
+  const artistName = p.artist ?? 'Unknown'
+  return {
+    id: p.id,
+    gid: p.id,
+    title: p.title,
+    slug: p.handle,
+    previewImageUrl: p.images[0]?.url ?? '',
+    artist: { name: artistName, slug: slugify(artistName) },
+    style: firstLabel(p.style),
+    medium: p.medium ?? '',
+    theme: firstLabel(p.theme),
+    dimensionsImperial: p.dimensionsImperial ?? '',
+    dimensionsMetric: p.dimensionsMetric ?? '',
+  }
 }
