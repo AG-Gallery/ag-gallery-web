@@ -7,7 +7,11 @@ import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 
 import Carousel from '@/components/Carousel'
-import { formatProduct, productToArtwork } from '@/lib/normalizers/products'
+import {
+  formatMoney,
+  formatProduct,
+  productToArtwork,
+} from '@/lib/normalizers/products'
 import { fetcher } from '@/queries/graphql/fetcher'
 import { Public_GetProductByHandleDocument } from '@/queries/graphql/generated/react-query'
 
@@ -38,6 +42,9 @@ function RouteComponent() {
   const normalized = p ? formatProduct(p) : undefined
   const artwork = normalized ? productToArtwork(normalized) : undefined
   const images = normalized?.images.map((i) => i.url) ?? []
+  const priceDisplay = normalized
+    ? formatMoney(normalized.currencyCode, normalized.price)
+    : ''
 
   return (
     <main className="page-main">
@@ -60,6 +67,10 @@ function RouteComponent() {
               </Link>
             </p>
           </section>
+
+          {priceDisplay && (
+            <p className="mt-4 text-lg md:text-xl">{priceDisplay}</p>
+          )}
 
           <article className="mt-5 w-full leading-tight text-pretty">
             <div

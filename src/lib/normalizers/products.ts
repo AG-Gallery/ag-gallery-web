@@ -147,3 +147,26 @@ export function productToArtwork(p: Product): Artwork {
     dimensionsMetric: p.dimensionsMetric ?? '',
   }
 }
+
+// Price normalization/formatting helper for UI
+export function formatMoney(
+  currencyCode: string | null | undefined,
+  amount: string | number | null | undefined,
+  locale = 'en-US',
+  minimumFractionDigits = 0,
+  maximumFractionDigits = 0,
+): string {
+  if (!currencyCode || amount == null) return ''
+  const num = typeof amount === 'string' ? Number(amount) : amount
+  if (typeof num !== 'number' || !isFinite(num)) return ''
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currencyCode,
+      minimumFractionDigits,
+      maximumFractionDigits,
+    }).format(num)
+  } catch {
+    return String(amount)
+  }
+}

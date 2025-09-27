@@ -49,6 +49,26 @@ const productsByArtistQuery = `
   }
 `
 
+const allArtworksQuery = `
+  *[_type == "allArtworks" && slug.current == "all-artworks-page"][0]{
+    selectedArtworks[]->{
+      "id": _id,
+      artist->{ name, "slug": slug.current },
+      "description": store.descriptionHtml,
+      dimensionsImperial,
+      dimensionsMetric,
+      "gid": store.gid,
+      medium,
+      "previewImageUrl": store.previewImageUrl,
+      "price": store.priceRange.maxVariantPrice,
+      "slug": store.slug.current,
+      "style": artMovement,
+      theme,
+      "title": store.title
+    },
+  }
+`
+
 export async function getProduct(slug: string): Promise<Artwork> {
   return sanityClient.fetch(productQuery, { slug })
 }
@@ -59,4 +79,8 @@ export async function getProductsByArtist(
   end?: number,
 ): Promise<Artwork[]> {
   return sanityClient.fetch(productsByArtistQuery, { slug, start, end })
+}
+
+export async function getAllArtworks(): Promise<Artwork[]> {
+  return sanityClient.fetch(allArtworksQuery)
 }

@@ -29,25 +29,6 @@ export type ProductImage = {
   height: number | null
 }
 
-// Normalize a single product-like node into our Product shape
-type ProductLike = Pick<
-  ProductNode,
-  | 'id'
-  | 'title'
-  | 'handle'
-  | 'createdAt'
-  | 'descriptionHtml'
-  | 'images'
-  | 'priceRange'
-  | 'artist'
-  | 'category'
-  | 'dimensionsImperial'
-  | 'dimensionsMetric'
-  | 'medium'
-  | 'style'
-  | 'theme'
->
-
 // Normalized product from Shopify GraphQL
 export type Product = {
   cursor: string
