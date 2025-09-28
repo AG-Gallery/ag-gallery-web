@@ -1,9 +1,9 @@
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
+import ArtworksGrid from '@/components/ArtworksGrid'
 import Header from '@/components/Header'
 import HeroVideo from '@/components/HeroVideo'
-import ProductsGrid from '@/components/ProductsGrid'
 import EventsGrid from '@/features/events/EventsGrid'
 import HighlightedArtistsGrid from '@/features/home/HighlightedArtistsGrid'
 import { getHomeData } from '@/queries/sanity/homepage'
@@ -59,7 +59,7 @@ function IndexPage() {
           className="mt-8 scroll-mt-[var(--header-height)]"
         >
           <h2 className="featured-headline">Curator's Picks</h2>
-          <ProductsGrid products={curatorsPicks} />
+          <ArtworksGrid artworks={curatorsPicks} />
         </section>
 
         <hr className="mb-4 w-full bg-neutral-400 md:mb-8" />

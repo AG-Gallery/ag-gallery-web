@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
-import ProductsGrid from '@/components/ProductsGrid'
+import ArtworksGrid from '@/components/ArtworksGrid'
 import { getArtist } from '@/queries/sanity/artists'
 import { getProductsByArtist } from '@/queries/sanity/products'
 
@@ -18,7 +18,9 @@ function createArtistQuery(slug: string) {
 
 const PAGE_SIZE = 20
 
-export const Route = createFileRoute('/_pathlessLayout/artists/$slug/artworks/')({
+export const Route = createFileRoute(
+  '/_pathlessLayout/artists/$slug/artworks/',
+)({
   loader: ({ context, params }) => {
     const artistQuery = createArtistQuery(params.slug)
     const artistResult = context.queryClient.ensureQueryData(artistQuery)
@@ -62,7 +64,7 @@ function RouteComponent() {
     maxPages: 3,
   })
 
-  const products = data.pages.flatMap((p) => p.items)
+  const artworks = data.pages.flatMap((p) => p.items)
 
   return (
     <main className="page-main">
@@ -71,7 +73,7 @@ function RouteComponent() {
       </h2>
 
       <section className="animate-fade-in mt-5 items-center justify-center lg:mt-14 lg:flex">
-        <ProductsGrid products={products} />
+        <ArtworksGrid artworks={artworks} />
       </section>
 
       {hasNextPage && (

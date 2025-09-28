@@ -1,7 +1,7 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
-import ProductsGrid from '@/components/ProductsGrid'
+import ArtworksGrid from '@/components/ArtworksGrid'
 import { fetchArtworksPage, getNextArtworksPageParam } from '@/queries/artworks'
 
 const PAGE_SIZE = 24
@@ -12,7 +12,7 @@ export const Route = createFileRoute('/_pathlessLayout/artworks/')({
 
 function RouteComponent() {
   const {
-    data: products,
+    data: artworks,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -29,7 +29,7 @@ function RouteComponent() {
   return (
     <main className="page-main">
       <h2 className="page-headline">Artworks</h2>
-      <ProductsGrid products={products} />
+      <ArtworksGrid artworks={artworks} />
       {hasNextPage && (
         <button
           onClick={() => fetchNextPage()}

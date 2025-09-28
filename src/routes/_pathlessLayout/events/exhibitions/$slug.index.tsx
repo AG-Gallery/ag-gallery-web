@@ -4,7 +4,6 @@ import { createFileRoute } from '@tanstack/react-router'
 import { PortableText } from '@portabletext/react'
 
 import Carousel from '@/components/Carousel'
-import ProductsGrid from '@/components/ProductsGrid'
 import ArtistsGrid from '@/features/artists/ArtistsGrid'
 import { formatDateRange } from '@/lib/utils'
 import { getExhibition } from '@/queries/sanity/events'

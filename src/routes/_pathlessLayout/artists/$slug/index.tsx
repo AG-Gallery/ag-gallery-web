@@ -3,7 +3,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 
 import { PortableText } from '@portabletext/react'
 
-import ProductsGrid from '@/components/ProductsGrid'
+import ArtworksGrid from '@/components/ArtworksGrid'
 import EventsGrid from '@/features/events/EventsGrid'
 import { getArtist } from '@/queries/sanity/artists'
 import {
@@ -61,7 +61,7 @@ function RouteComponent() {
     error: artistError,
   } = useSuspenseQuery(artistQuery)
   const {
-    data: products,
+    data: artworks,
     isLoading: productIsLoading,
     error: productError,
   } = useSuspenseQuery(productQuery)
@@ -76,7 +76,7 @@ function RouteComponent() {
     error: fairError,
   } = useSuspenseQuery(fairsQuery)
 
-  const hasProducts = Array.isArray(products) && products.length > 0
+  const hasProducts = Array.isArray(artworks) && artworks.length > 0
   const hasExhibitions = Array.isArray(exhibitions) && exhibitions.length > 0
   const hasFairs = Array.isArray(fairs) && fairs.length > 0
 
@@ -137,7 +137,7 @@ function RouteComponent() {
               </Link>
             </div>
 
-            <ProductsGrid products={products} />
+            <ArtworksGrid artworks={artworks} />
           </section>
         </>
       )}
