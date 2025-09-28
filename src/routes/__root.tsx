@@ -5,12 +5,15 @@ import {
   createRootRouteWithContext,
   HeadContent,
   Scripts,
+  useLocation,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import pretendardFontUrl from '../assets/fonts/pretendard-variable.woff2?url'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import appCss from '../styles.css?url'
+
+import { cn } from '@/lib/utils'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -49,12 +52,23 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const pathname = useLocation({
+    select: (location) => location.pathname,
+  })
+
+  const isMagazineRoute = pathname.startsWith('/magazine')
+
   return (
     <html lang="en" className="scroll-smooth">
       <head>
         <HeadContent />
       </head>
-      <body className="mx-3 md:mx-10">
+      <body
+        className={cn(
+          'mx-3 transition-colors duration-200 ease-in-out md:mx-10',
+          isMagazineRoute ? 'bg-black text-white' : 'bg-white text-black',
+        )}
+      >
         <div className="mx-auto pt-[var(--header-height)]">{children}</div>
 
         {import.meta.env.DEV && <Devtools />}

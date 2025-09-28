@@ -39,7 +39,7 @@ function IndexPage() {
 
         <section className="absolute top-[45%] left-1/2 z-40 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-8 text-white md:gap-10">
           <p className="mb-2 text-xl font-medium tracking-wide text-nowrap md:text-[1.75rem]">
-            <span className="bg-white/85 bg-clip-text text-transparent">
+            <span className="font-lora bg-white/85 bg-clip-text font-semibold text-transparent">
               Welcome to the Agajanian Gallery
             </span>
           </p>

@@ -1,14 +1,69 @@
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
+import { getAllArticles } from '@/queries/sanity/magazine'
+
+const allArticlesQueryOptions = queryOptions({
+  queryKey: ['all-articles'],
+  queryFn: () => getAllArticles(),
+})
+
 export const Route = createFileRoute('/_pathlessLayout/magazine/')({
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(allArticlesQueryOptions),
   component: RouteComponent,
 })
 
 function RouteComponent() {
+  const {
+    data: articles,
+    isLoading,
+    isError,
+  } = useSuspenseQuery(allArticlesQueryOptions)
+
   return (
     <main className="page-main">
       <section className="mb-12">
-        <h2 className="page-headline">AG Magazine</h2>
+        <h2 className="page-headline">Magazine</h2>
+      </section>
+
+      <section className="animate-fade-in">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {articles.map((a) => {
+            const date = new Date(a.date).toLocaleDateString(undefined, {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })
+
+            return (
+              <article
+                key={a.id}
+                className={
+                  'group flex flex-col overflow-hidden rounded border border-neutral-800 bg-neutral-900 transition-colors duration-200 ease-in hover:bg-neutral-800'
+                }
+              >
+                <div className="aspect-[5/4] w-full bg-neutral-800">
+                  <img
+                    src={a.coverImage}
+                    alt={a.title}
+                    loading="lazy"
+                    width={1920}
+                    height={1536}
+                    className="size-full object-cover"
+                  />
+                </div>
+
+                <div className="flex h-full flex-col justify-between p-4">
+                  <h3 className="font-medium tracking-tight md:text-lg">
+                    {a.title}
+                  </h3>
+                  <p className="mt-1 text-sm text-neutral-300">{date}</p>
+                </div>
+              </article>
+            )
+          })}
+        </div>
       </section>
     </main>
   )

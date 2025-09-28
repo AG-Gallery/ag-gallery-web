@@ -29,7 +29,7 @@ export default function HighlightedArtistsGrid({ artists }: ArtistsGridProps) {
                       alt={`A portrait image of the artist ${artist.name}`}
                       width={1920}
                       height={1080}
-                      className="absolute top-0 right-0 left-0 -z-10 aspect-[5/4] rounded object-cover opacity-40 transition-all duration-[125ms] ease-in-out group-hover:opacity-85"
+                      className="absolute top-0 right-0 left-0 -z-10 aspect-[5/4] rounded object-cover opacity-40 transition-all duration-200 ease-in-out group-hover:opacity-85"
                     />
                   </div>
 
