@@ -66,33 +66,15 @@ fragment ProductFields on Product {
 query Public_GetAllProducts(
   $first: Int = 24
   $after: String
+  $sortKey: ProductSortKeys = TITLE
+  $reverse: Boolean = false
   $imagesFirst: Int = 1
 ) {
-  products(first: $first, after: $after) {
+  products(first: $first, after: $after, sortKey: $sortKey, reverse: $reverse) {
     pageInfo {
       hasNextPage
       endCursor
     }
-    edges {
-      cursor
-      node {
-        ...ProductFields
-      }
-    }
-  }
-}
-
-query Public_GetRecentProducts(
-  $first: Int = 6
-  $sortKey: ProductSortKeys = CREATED_AT
-  $reverse: Boolean = true
-  $imagesFirst: Int = 1
-  $metafieldNamespace: String = "custom"
-  $artistKey: String = "artist"
-  $categoryKey: String = "category"
-  $dimensionsKey: String = "dimensions"
-) {
-  products(first: $first, sortKey: $sortKey, reverse: $reverse) {
     edges {
       cursor
       node {
@@ -128,24 +110,8 @@ query Public_GetCollectionProducts(
   }
 }
 
-query Public_GetProduct(
-  $id: ID!
-  $imagesFirst: Int = 6
-  $metafieldNamespace: String = "custom"
-  $artistKey: String = "artist"
-  $categoryKey: String = "category"
-  $dimensionsKey: String = "dimensions"
-) {
-  product(id: $id) {
-    ...ProductFields
-  }
-}
-
 # Fetch a single product by handle (for detail pages)
-query Public_GetProductByHandle(
-  $handle: String!
-  $imagesFirst: Int = 6
-) {
+query Public_GetProductByHandle($handle: String!, $imagesFirst: Int = 6) {
   productByHandle(handle: $handle) {
     ...ProductFields
   }

@@ -76,18 +76,22 @@ function RouteComponent() {
     error: fairError,
   } = useSuspenseQuery(fairsQuery)
 
+  const hasProducts = Array.isArray(products) && products.length > 0
+  const hasExhibitions = Array.isArray(exhibitions) && exhibitions.length > 0
+  const hasFairs = Array.isArray(fairs) && fairs.length > 0
+
   return (
     <main className="page-main">
       <h2 className="page-headline">{artist.name}</h2>
 
-      <section className="animate-fade-in my-5 items-center justify-center lg:my-14 lg:flex">
+      <section className="animate-fade-in my-5 items-start justify-center lg:my-14 lg:flex">
         <div className="group relative">
           <img
             src={artist.artistImage}
             alt={`A portrait image of the artist ${artist.name}`}
             width={1920}
             height={1080}
-            className="animate-fade-in z-10 aspect-square self-start object-cover grayscale-100 lg:max-w-[400px] xl:max-w-[500px]"
+            className="animate-fade-in z-10 aspect-square self-start object-cover grayscale-100 lg:max-w-[400px] xl:max-w-[500px] 2xl:max-w-[600px]"
           />
           <img
             src={artist.backgroundImage}
@@ -116,48 +120,57 @@ function RouteComponent() {
         </article>
       </section>
 
-      <hr className="w-full bg-neutral-400" />
+      {hasProducts && (
+        <>
+          <hr className="w-full bg-neutral-400" />
+          <section className="my-8 lg:my-10">
+            <div className="mb-8 flex items-center justify-between">
+              <h2 className="font-lora text-xl font-medium md:text-2xl md:tracking-tight">
+                Selected Works
+              </h2>
+              <Link
+                to="/artists/$slug/artworks"
+                params={{ slug: artist.slug }}
+                className="hover:text-foreground text-sm text-neutral-500 transition-colors duration-200"
+              >
+                View all
+              </Link>
+            </div>
 
-      <section className="my-8 lg:my-10">
-        <div className="mb-8 flex items-center justify-between">
-          <h2 className="font-lora text-xl font-medium md:text-2xl md:tracking-tight">
-            Selected Works
-          </h2>
-          <Link
-            to="/artists/$slug/artworks"
-            params={{ slug: artist.slug }}
-            className="hover:text-foreground text-sm text-neutral-500 transition-colors duration-200"
-          >
-            View all
-          </Link>
-        </div>
+            <ProductsGrid products={products} />
+          </section>
+        </>
+      )}
 
-        <ProductsGrid products={products} />
-      </section>
+      {hasExhibitions && (
+        <>
+          <hr className="w-full bg-neutral-400" />
+          <section className="my-6 lg:my-8">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="font-lora text-xl font-medium md:text-2xl md:tracking-tight">
+                Exhibitions
+              </h2>
+            </div>
 
-      <hr className="w-full bg-neutral-400" />
+            <EventsGrid events={exhibitions} />
+          </section>
+        </>
+      )}
 
-      <section className="my-6 lg:my-8">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-lora text-xl font-medium md:text-2xl md:tracking-tight">
-            Exhibitions
-          </h2>
-        </div>
+      {hasFairs && (
+        <>
+          <hr className="w-full bg-neutral-400" />
+          <section className="my-6 lg:my-8">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="font-lora text-xl font-medium md:text-2xl md:tracking-tight">
+                Fairs
+              </h2>
+            </div>
 
-        <EventsGrid events={exhibitions} />
-      </section>
-
-      <hr className="w-full bg-neutral-400" />
-
-      <section className="my-6 lg:my-8">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-lora text-xl font-medium md:text-2xl md:tracking-tight">
-            Fairs
-          </h2>
-        </div>
-
-        <EventsGrid events={fairs} />
-      </section>
+            <EventsGrid events={fairs} />
+          </section>
+        </>
+      )}
     </main>
   )
 }
