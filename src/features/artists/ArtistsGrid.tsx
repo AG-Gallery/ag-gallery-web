@@ -18,26 +18,26 @@ export default function ArtistsGrid({ artists }: ArtistsGridProps) {
                 <Link
                   to="/artists/$slug"
                   params={{ slug: artist.slug }}
-                  className="group relative"
+                  className="group relative block"
                 >
-                  <div>
-                    <img
-                      src={artist.artistImage}
-                      alt={`A portrait image of the artist ${artist.name}`}
-                      width={1920}
-                      height={1080}
-                      className="z-10 aspect-[3/2] rounded-xs object-cover lg:aspect-[4/2] lg:object-contain 2xl:aspect-[2.25]"
-                    />
+                  <div className="relative">
                     <img
                       src={artist.backgroundImage}
                       alt={`A portrait image of the artist ${artist.name}`}
                       width={1920}
                       height={1080}
-                      className="absolute top-0 right-0 left-0 -z-10 aspect-[3/2] rounded-xs object-cover opacity-45 transition-all duration-100 ease-in group-hover:opacity-85 lg:aspect-[4/2] 2xl:aspect-[2.25]"
+                      className="absolute inset-0 z-0 h-full w-full rounded-xs object-cover opacity-45 transition-opacity duration-100 ease-in group-hover:opacity-85"
+                    />
+                    <img
+                      src={artist.artistImage}
+                      alt={`A portrait image of the artist ${artist.name}`}
+                      width={1920}
+                      height={1080}
+                      className="relative z-20 aspect-[3/2] rounded-xs object-cover lg:aspect-[4/2] lg:object-contain 2xl:aspect-[2.25]"
                     />
                   </div>
 
-                  <div className="z-0 mt-5 flex w-fit flex-col items-center justify-center transition-colors duration-200 group-hover:text-white md:absolute md:top-8 md:right-0 md:left-0 md:mx-auto">
+                  <div className="relative z-30 mt-5 flex w-fit flex-col items-center justify-center transition-colors duration-200 group-hover:text-white md:absolute md:top-8 md:right-0 md:left-0 md:mx-auto">
                     <h3 className="font-playfair w-fit text-lg font-medium md:text-xl lg:text-2xl xl:text-4xl">
                       {artist.name}
                     </h3>
@@ -46,7 +46,7 @@ export default function ArtistsGrid({ artists }: ArtistsGridProps) {
                     </p>
                   </div>
 
-                  <div className="absolute top-0 right-0 left-0 -z-10 mx-auto h-[45%] w-full bg-gradient-to-b from-white/30 via-white/20 to-transparent transition-colors duration-200 ease-in group-hover:from-black/30 group-hover:via-black/20" />
+                  <div className="absolute inset-x-0 top-0 z-10 mx-auto h-[45%] w-full bg-gradient-to-b from-white/30 via-white/20 to-transparent transition-colors duration-200 ease-in group-hover:from-black/30 group-hover:via-black/20" />
                 </Link>
               </div>
             )
