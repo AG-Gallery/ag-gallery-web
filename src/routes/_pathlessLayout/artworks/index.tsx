@@ -1,11 +1,9 @@
-import { Suspense } from 'react'
-
-import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
 import ArtworksGrid from '@/components/ArtworksGrid'
 import ArtworksGridSkeleton from '@/components/ArtworksGridSkeleton'
-import { fetchArtworksPage, getNextArtworksPageParam } from '@/queries/artworks'
+import { createAllArtworksInfiniteQueryOptions } from '@/queries/artworks'
 
 const PAGE_SIZE = 24
 
@@ -17,9 +15,7 @@ function RouteComponent() {
   return (
     <main className="page-main">
       <h2 className="page-headline">Artworks</h2>
-      <Suspense fallback={<ArtworksGridSkeleton />}>
-        <ArtworksGridContent />
-      </Suspense>
+      <ArtworksGridContent />
     </main>
   )
 }
@@ -30,15 +26,23 @@ function ArtworksGridContent() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useSuspenseInfiniteQuery({
-    queryKey: ['all-artworks'],
-    initialPageParam: { source: 'sanity', after: undefined },
-    queryFn: (ctx) => fetchArtworksPage(ctx, PAGE_SIZE),
-    getNextPageParam: getNextArtworksPageParam,
-    gcTime: 7 * 60 * 1000,
-    maxPages: 5,
+    status,
+  } = useInfiniteQuery({
+    ...createAllArtworksInfiniteQueryOptions(PAGE_SIZE),
     select: (data) => data.pages.flatMap((p) => p.items),
   })
+
+  if (status === 'pending') {
+    return <ArtworksGridSkeleton />
+  }
+
+  if (status === 'error') {
+    return (
+      <p className="mt-4 text-center text-sm text-red-600">
+        Unable to load artworks. Please try again.
+      </p>
+    )
+  }
 
   return (
     <>
