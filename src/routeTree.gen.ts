@@ -8,8 +8,6 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createServerRootRoute } from '@tanstack/react-start/server'
-
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PathlessLayoutRouteRouteImport } from './routes/_pathlessLayout/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -24,9 +22,6 @@ import { Route as PathlessLayoutArtistsSlugIndexRouteImport } from './routes/_pa
 import { Route as PathlessLayoutEventsFairsSlugIndexRouteImport } from './routes/_pathlessLayout/events/fairs/$slug.index'
 import { Route as PathlessLayoutEventsExhibitionsSlugIndexRouteImport } from './routes/_pathlessLayout/events/exhibitions/$slug.index'
 import { Route as PathlessLayoutArtistsSlugArtworksIndexRouteImport } from './routes/_pathlessLayout/artists/$slug/artworks.index'
-import { ServerRoute as ApiShopifyGraphqlServerRouteImport } from './routes/api/shopify/graphql'
-
-const rootServerRouteImport = createServerRootRoute()
 
 const PathlessLayoutRouteRoute = PathlessLayoutRouteRouteImport.update({
   id: '/_pathlessLayout',
@@ -103,11 +98,6 @@ const PathlessLayoutArtistsSlugArtworksIndexRoute =
     path: '/artists/$slug/artworks/',
     getParentRoute: () => PathlessLayoutRouteRoute,
   } as any)
-const ApiShopifyGraphqlServerRoute = ApiShopifyGraphqlServerRouteImport.update({
-  id: '/api/shopify/graphql',
-  path: '/api/shopify/graphql',
-  getParentRoute: () => rootServerRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -200,27 +190,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PathlessLayoutRouteRoute: typeof PathlessLayoutRouteRouteWithChildren
-}
-export interface FileServerRoutesByFullPath {
-  '/api/shopify/graphql': typeof ApiShopifyGraphqlServerRoute
-}
-export interface FileServerRoutesByTo {
-  '/api/shopify/graphql': typeof ApiShopifyGraphqlServerRoute
-}
-export interface FileServerRoutesById {
-  __root__: typeof rootServerRouteImport
-  '/api/shopify/graphql': typeof ApiShopifyGraphqlServerRoute
-}
-export interface FileServerRouteTypes {
-  fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/api/shopify/graphql'
-  fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/api/shopify/graphql'
-  id: '__root__' | '/api/shopify/graphql'
-  fileServerRoutesById: FileServerRoutesById
-}
-export interface RootServerRouteChildren {
-  ApiShopifyGraphqlServerRoute: typeof ApiShopifyGraphqlServerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -318,17 +287,6 @@ declare module '@tanstack/react-router' {
     }
   }
 }
-declare module '@tanstack/react-start/server' {
-  interface ServerFileRoutesByPath {
-    '/api/shopify/graphql': {
-      id: '/api/shopify/graphql'
-      path: '/api/shopify/graphql'
-      fullPath: '/api/shopify/graphql'
-      preLoaderRoute: typeof ApiShopifyGraphqlServerRouteImport
-      parentRoute: typeof rootServerRouteImport
-    }
-  }
-}
 
 interface PathlessLayoutAboutRouteRouteChildren {
   PathlessLayoutAboutIndexRoute: typeof PathlessLayoutAboutIndexRoute
@@ -383,9 +341,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-const rootServerRouteChildren: RootServerRouteChildren = {
-  ApiShopifyGraphqlServerRoute: ApiShopifyGraphqlServerRoute,
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
 }
-export const serverRouteTree = rootServerRouteImport
-  ._addFileChildren(rootServerRouteChildren)
-  ._addFileTypes<FileServerRouteTypes>()

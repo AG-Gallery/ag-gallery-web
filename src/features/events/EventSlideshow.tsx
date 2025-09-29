@@ -201,6 +201,7 @@ export default function EventSlideshow({
           transition: reduceMotion ? 'none' : `opacity ${fadeMs}ms ease-in`,
           opacity: playing ? 0 : 1,
         }}
+        className="aspect-[5/4] object-cover"
       />
 
       {/* Overlay A */}
@@ -222,6 +223,7 @@ export default function EventSlideshow({
             transition: reduceMotion ? 'none' : `opacity ${fadeMs}ms ease-in`,
             willChange: 'opacity',
           }}
+          className="aspect-[5/4] object-cover"
         />
       )}
 
@@ -244,6 +246,7 @@ export default function EventSlideshow({
             transition: reduceMotion ? 'none' : `opacity ${fadeMs}ms ease-in`,
             willChange: 'opacity',
           }}
+          className="aspect-[5/4] object-cover"
         />
       )}
     </div>
