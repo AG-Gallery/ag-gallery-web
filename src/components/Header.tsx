@@ -144,9 +144,9 @@ export default function Header({ isFloating = false }: HeaderProps) {
                   <ul>
                     {navLinks.map((navLink) => (
                       <li key={navLink.path} className="mb-5">
-                        <a href={navLink.path} className="text-lg font-medium">
+                        <Link to={navLink.path} className="text-lg font-medium">
                           {navLink.title}
-                        </a>
+                        </Link>
                       </li>
                     ))}
                   </ul>

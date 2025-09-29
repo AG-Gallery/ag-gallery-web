@@ -9,20 +9,19 @@ export function AddToBagIcon({
   plusSize = 14,
   className,
 }: AddToBagIconProps) {
-  // Bag is a 24x24 viewBox originally
   const bagScale = bagSize / 24
 
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      viewBox="0 0 32 32" // extra space for badge
+      viewBox="0 0 32 32"
     >
       {/* Bag icon */}
       <g
-        transform={`scale(${bagScale}) translate(2,2)`} // center bag a bit
+        transform={`scale(${bagScale}) translate(2,2)`}
         stroke="currentColor"
-        strokeWidth="1.75"
+        strokeWidth="1.5"
         fill="none"
       >
         <path
@@ -44,7 +43,7 @@ export function AddToBagIcon({
         <path
           d="M0 -2.5v5M-2.5 0h5"
           stroke="white"
-          strokeWidth={1.75}
+          strokeWidth="1.5"
           strokeLinecap="round"
         />
       </g>

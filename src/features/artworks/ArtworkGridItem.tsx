@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Link } from '@tanstack/react-router'
 
-import { cn } from '@/lib/utils'
+import { AddToBagIcon } from '../../components/icons/AddToBagIcon'
+import { Skeleton } from '../../components/ui/skeleton'
 
-import { AddToBagIcon } from './icons/AddToBagIcon'
-import { Skeleton } from './ui/skeleton'
+import { cn } from '@/lib/utils'
 
 type ArtworkGridItemProps = {
   artwork: Artwork
@@ -38,7 +38,7 @@ export function ArtworkGridItem({
   }
 
   return (
-    <div className="group animate-fade-in flex flex-col items-start">
+    <div className="group animate-fade-in flex flex-col items-start justify-between">
       <Link
         to="/artworks/$slug"
         params={{ slug: artwork.slug }}
@@ -52,25 +52,23 @@ export function ArtworkGridItem({
               isImageLoaded && 'pointer-events-none animate-none opacity-0',
             )}
           />
-          <div className="flex h-full w-full items-center justify-center">
-            <img
-              ref={imageRef}
-              src={artwork.previewImageUrl}
-              // ----------
-              // TODO: ALT TEXT
-              // ----------
-              alt={'GET ALT TEXT'}
-              width="1920"
-              height="1080"
-              loading={index <= 8 ? 'eager' : 'lazy'}
-              onLoad={handleImageReady}
-              onError={handleImageReady}
-              className={cn(
-                'max-h-full max-w-full object-contain transition-opacity duration-200',
-                isImageLoaded ? 'opacity-100' : 'opacity-0',
-              )}
-            />
-          </div>
+          <img
+            ref={imageRef}
+            src={artwork.previewImageUrl}
+            // ----------
+            // TODO: ALT TEXT
+            // ----------
+            alt={'GET ALT TEXT'}
+            width="1920"
+            height="1080"
+            loading={index <= 8 ? 'eager' : 'lazy'}
+            onLoad={handleImageReady}
+            onError={handleImageReady}
+            className={cn(
+              'max-h-full max-w-full object-contain transition-opacity duration-200',
+              isImageLoaded ? 'opacity-100' : 'opacity-0',
+            )}
+          />
         </div>
       </Link>
 

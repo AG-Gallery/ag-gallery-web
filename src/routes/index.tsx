@@ -1,9 +1,9 @@
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
-import ArtworksGrid from '@/components/ArtworksGrid'
 import Header from '@/components/Header'
 import HeroVideo from '@/components/HeroVideo'
+import ArtworksGrid from '@/features/artworks/ArtworksGrid'
 import EventsGrid from '@/features/events/EventsGrid'
 import HighlightedArtistsGrid from '@/features/home/HighlightedArtistsGrid'
 import { getHomeData } from '@/queries/sanity/homepage'

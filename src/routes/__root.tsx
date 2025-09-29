@@ -13,6 +13,7 @@ import pretendardFontUrl from '../assets/fonts/pretendard-variable.woff2?url'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import appCss from '../styles.css?url'
 
+import Footer from '@/components/Footer'
 import { cn } from '@/lib/utils'
 
 interface MyRouterContext {
@@ -65,11 +66,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body
         className={cn(
-          'mx-3 transition-colors duration-200 ease-in-out md:mx-10',
+          'mx-3 flex min-h-screen flex-col transition-colors duration-200 ease-in-out md:mx-10',
           isMagazineRoute ? 'bg-black text-white' : 'bg-white text-black',
         )}
       >
-        <div className="mx-auto pt-[var(--header-height)]">{children}</div>
+        <div className="mx-auto flex w-full flex-1 flex-col">
+          <main className="flex-1 pt-[var(--header-height)]">{children}</main>
+          <Footer />
+        </div>
 
         {import.meta.env.DEV && <Devtools />}
         <Scripts />

@@ -1,0 +1,87 @@
+import { Link } from '@tanstack/react-router'
+
+export default function Footer() {
+  const navLinks = [
+    { title: 'Home', path: '/' },
+    { title: 'Artists', path: '/artists' },
+    { title: 'Artworks', path: '/artworks' },
+    { title: 'Exhibitions & Fairs', path: '/events?filter=current' },
+    { title: 'Magazine', path: '/magazine' },
+    { title: 'About', path: '/about' },
+  ]
+
+  const socialMediaLinks = [
+    { title: 'Instagram', link: 'https://instagram.com' },
+    { title: 'Facebook', link: 'https://facebook.com' },
+  ]
+
+  return (
+    <footer className="-mx-10 mt-10 bg-neutral-100/60 p-6 pb-10">
+      <div>
+        <h4 className="font-playfair text-2xl font-medium">AG Gallery</h4>
+        <p className="mt-1 text-sm">418 E Colorado Blvd, Glendale, CA 91205</p>
+      </div>
+
+      <div className="mt-5 flex items-start justify-center gap-20">
+        <section className="flex flex-col gap-3">
+          <h5 className="font-lora font-semibold tracking-wide">The Gallery</h5>
+          <nav>
+            <ul className="space-y-2">
+              {navLinks.map((navLink) => (
+                <li key={navLink.path} className="text-sm tracking-wide">
+                  <Link
+                    to={navLink.path}
+                    className="hover:text-accent transition-colors duration-150 ease-in-out"
+                  >
+                    {navLink.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <h5 className="font-lora font-semibold tracking-wide">
+            Social Media
+          </h5>
+          <ul className="space-y-2">
+            {socialMediaLinks.map((socialMedia) => (
+              <li key={socialMedia.link} className="text-sm tracking-wide">
+                <a
+                  href={socialMedia.link}
+                  target="_blank"
+                  className="hover:text-accent transition-colors duration-150 ease-in-out"
+                >
+                  {socialMedia.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <h5 className="font-lora font-semibold tracking-wide">Legal</h5>
+          <ul className="space-y-2">
+            <li className="text-sm tracking-wide">
+              <a
+                href="/"
+                className="hover:text-accent transition-colors duration-150 ease-in-out"
+              >
+                Privacy Policy
+              </a>
+            </li>
+            <li className="text-sm tracking-wide">
+              <a
+                href="/"
+                className="hover:text-accent transition-colors duration-150 ease-in-out"
+              >
+                {'Terms & Conditions'}
+              </a>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </footer>
+  )
+}

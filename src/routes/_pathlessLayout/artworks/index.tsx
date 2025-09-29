@@ -1,8 +1,8 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
-import ArtworksGrid from '@/components/ArtworksGrid'
-import ArtworksGridSkeleton from '@/components/ArtworksGridSkeleton'
+import ArtworksGrid from '@/features/artworks/ArtworksGrid'
+import ArtworksGridSkeleton from '@/features/artworks/ArtworksGridSkeleton'
 import { createAllArtworksInfiniteQueryOptions } from '@/queries/artworks'
 
 const PAGE_SIZE = 24

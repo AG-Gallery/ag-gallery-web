@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
-import ArtworksGrid from '@/components/ArtworksGrid'
+import ArtworksGrid from '@/features/artworks/ArtworksGrid'
 import { getArtist } from '@/queries/sanity/artists'
 import { getProductsByArtist } from '@/queries/sanity/products'
 

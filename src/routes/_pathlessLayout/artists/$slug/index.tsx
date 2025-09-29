@@ -3,7 +3,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 
 import { PortableText } from '@portabletext/react'
 
-import ArtworksGrid from '@/components/ArtworksGrid'
+import ArtworksGrid from '@/features/artworks/ArtworksGrid'
 import EventsGrid from '@/features/events/EventsGrid'
 import { getArtist } from '@/queries/sanity/artists'
 import {
