@@ -26,14 +26,16 @@ export default function ArtistsGrid({ artists }: ArtistsGridProps) {
                       alt={`A portrait image of the artist ${artist.name}`}
                       width={1920}
                       height={1080}
-                      className="absolute inset-0 z-0 h-full w-full rounded-xs object-cover opacity-45 transition-opacity duration-100 ease-in group-hover:opacity-85"
+                      draggable={false}
+                      className="absolute inset-0 z-0 h-full w-full rounded-xs object-cover opacity-45 transition-opacity duration-100 ease-in select-none group-hover:opacity-85"
                     />
                     <img
                       src={artist.artistImage}
                       alt={`A portrait image of the artist ${artist.name}`}
                       width={1920}
                       height={1080}
-                      className="relative z-20 aspect-[3/2] rounded-xs object-cover lg:aspect-[4/2] lg:object-contain 2xl:aspect-[2.25]"
+                      draggable={false}
+                      className="relative z-20 aspect-[3/2] rounded-xs object-cover select-none lg:aspect-[4/2] lg:object-contain 2xl:aspect-[2.25]"
                     />
                   </div>
 
