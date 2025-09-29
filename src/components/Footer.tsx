@@ -16,13 +16,15 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="-mx-10 mt-10 bg-neutral-100/60 p-6 pb-10">
-      <div>
-        <h4 className="font-playfair text-2xl font-medium">AG Gallery</h4>
-        <p className="mt-1 text-sm">418 E Colorado Blvd, Glendale, CA 91205</p>
-      </div>
+    <footer className="-mx-4 mt-10 bg-neutral-100/60 p-4 md:-mx-10 md:p-6">
+      <div className="mt-5 flex flex-col items-start justify-between gap-6 md:flex-row md:gap-0 lg:mx-32 xl:mx-56">
+        <div>
+          <h4 className="font-playfair text-2xl font-medium">AG Gallery</h4>
+          <p className="mt-1 text-sm">
+            418 E Colorado Blvd, Glendale, CA 91205
+          </p>
+        </div>
 
-      <div className="mt-5 flex items-start justify-center gap-20">
         <section className="flex flex-col gap-3">
           <h5 className="font-lora font-semibold tracking-wide">The Gallery</h5>
           <nav>
@@ -82,6 +84,10 @@ export default function Footer() {
           </ul>
         </section>
       </div>
+
+      <p className="mt-10 text-center text-sm md:mt-12">
+        Copyright © 2025 AG Gallery. All Rights Reserved
+      </p>
     </footer>
   )
 }
