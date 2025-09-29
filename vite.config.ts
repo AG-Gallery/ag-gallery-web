@@ -6,7 +6,7 @@ import viteReact from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
-const config = defineConfig({
+export default defineConfig({
   plugins: [
     // this is the plugin that enables path aliases
     viteTsConfigPaths({
@@ -17,6 +17,8 @@ const config = defineConfig({
     tanstackStart(),
     viteReact(),
   ],
+  resolve: { alias: { 'solid-js/web': 'solid-js/web/dist/web.js' } },
+  server: {
+    port: 3000,
+  },
 })
-
-export default config

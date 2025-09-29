@@ -17,6 +17,7 @@ import { Route as PathlessLayoutEventsIndexRouteImport } from './routes/_pathles
 import { Route as PathlessLayoutArtworksIndexRouteImport } from './routes/_pathlessLayout/artworks/index'
 import { Route as PathlessLayoutArtistsIndexRouteImport } from './routes/_pathlessLayout/artists/index'
 import { Route as PathlessLayoutAboutIndexRouteImport } from './routes/_pathlessLayout/about/index'
+import { Route as ApiShopifyGraphqlRouteImport } from './routes/api/shopify/graphql'
 import { Route as PathlessLayoutArtworksSlugIndexRouteImport } from './routes/_pathlessLayout/artworks/$slug.index'
 import { Route as PathlessLayoutArtistsSlugIndexRouteImport } from './routes/_pathlessLayout/artists/$slug/index'
 import { Route as PathlessLayoutEventsFairsSlugIndexRouteImport } from './routes/_pathlessLayout/events/fairs/$slug.index'
@@ -68,6 +69,11 @@ const PathlessLayoutAboutIndexRoute =
     path: '/',
     getParentRoute: () => PathlessLayoutAboutRouteRoute,
   } as any)
+const ApiShopifyGraphqlRoute = ApiShopifyGraphqlRouteImport.update({
+  id: '/api/shopify/graphql',
+  path: '/api/shopify/graphql',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PathlessLayoutArtworksSlugIndexRoute =
   PathlessLayoutArtworksSlugIndexRouteImport.update({
     id: '/artworks/$slug/',
@@ -102,6 +108,7 @@ const PathlessLayoutArtistsSlugArtworksIndexRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof PathlessLayoutAboutRouteRouteWithChildren
+  '/api/shopify/graphql': typeof ApiShopifyGraphqlRoute
   '/about/': typeof PathlessLayoutAboutIndexRoute
   '/artists': typeof PathlessLayoutArtistsIndexRoute
   '/artworks': typeof PathlessLayoutArtworksIndexRoute
@@ -115,6 +122,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/shopify/graphql': typeof ApiShopifyGraphqlRoute
   '/about': typeof PathlessLayoutAboutIndexRoute
   '/artists': typeof PathlessLayoutArtistsIndexRoute
   '/artworks': typeof PathlessLayoutArtworksIndexRoute
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_pathlessLayout': typeof PathlessLayoutRouteRouteWithChildren
   '/_pathlessLayout/about': typeof PathlessLayoutAboutRouteRouteWithChildren
+  '/api/shopify/graphql': typeof ApiShopifyGraphqlRoute
   '/_pathlessLayout/about/': typeof PathlessLayoutAboutIndexRoute
   '/_pathlessLayout/artists/': typeof PathlessLayoutArtistsIndexRoute
   '/_pathlessLayout/artworks/': typeof PathlessLayoutArtworksIndexRoute
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/api/shopify/graphql'
     | '/about/'
     | '/artists'
     | '/artworks'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/api/shopify/graphql'
     | '/about'
     | '/artists'
     | '/artworks'
@@ -175,6 +186,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_pathlessLayout'
     | '/_pathlessLayout/about'
+    | '/api/shopify/graphql'
     | '/_pathlessLayout/about/'
     | '/_pathlessLayout/artists/'
     | '/_pathlessLayout/artworks/'
@@ -190,6 +202,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PathlessLayoutRouteRoute: typeof PathlessLayoutRouteRouteWithChildren
+  ApiShopifyGraphqlRoute: typeof ApiShopifyGraphqlRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -249,6 +262,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/about/'
       preLoaderRoute: typeof PathlessLayoutAboutIndexRouteImport
       parentRoute: typeof PathlessLayoutAboutRouteRoute
+    }
+    '/api/shopify/graphql': {
+      id: '/api/shopify/graphql'
+      path: '/api/shopify/graphql'
+      fullPath: '/api/shopify/graphql'
+      preLoaderRoute: typeof ApiShopifyGraphqlRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_pathlessLayout/artworks/$slug/': {
       id: '/_pathlessLayout/artworks/$slug/'
@@ -337,6 +357,7 @@ const PathlessLayoutRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PathlessLayoutRouteRoute: PathlessLayoutRouteRouteWithChildren,
+  ApiShopifyGraphqlRoute: ApiShopifyGraphqlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
