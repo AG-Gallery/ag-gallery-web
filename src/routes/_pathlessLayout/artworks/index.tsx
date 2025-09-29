@@ -1,7 +1,10 @@
+import { Suspense } from 'react'
+
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
 import ArtworksGrid from '@/components/ArtworksGrid'
+import ArtworksGridSkeleton from '@/components/ArtworksGridSkeleton'
 import { fetchArtworksPage, getNextArtworksPageParam } from '@/queries/artworks'
 
 const PAGE_SIZE = 24
@@ -11,6 +14,17 @@ export const Route = createFileRoute('/_pathlessLayout/artworks/')({
 })
 
 function RouteComponent() {
+  return (
+    <main className="page-main">
+      <h2 className="page-headline">Artworks</h2>
+      <Suspense fallback={<ArtworksGridSkeleton />}>
+        <ArtworksGridContent />
+      </Suspense>
+    </main>
+  )
+}
+
+function ArtworksGridContent() {
   const {
     data: artworks,
     fetchNextPage,
@@ -27,8 +41,7 @@ function RouteComponent() {
   })
 
   return (
-    <main className="page-main">
-      <h2 className="page-headline">Artworks</h2>
+    <>
       <ArtworksGrid artworks={artworks} />
       {hasNextPage && (
         <button
@@ -39,6 +52,6 @@ function RouteComponent() {
           {isFetchingNextPage ? 'Loading…' : 'Show more'}
         </button>
       )}
-    </main>
+    </>
   )
 }
