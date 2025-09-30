@@ -4,6 +4,7 @@ import { Link, useLocation } from '@tanstack/react-router'
 
 import { Search } from 'lucide-react'
 
+import Bag from '@/features/bag/bag'
 import { cn } from '@/lib/utils'
 
 import { Button } from './ui/button'
@@ -116,9 +117,13 @@ export default function Header({ isFloating = false }: HeaderProps) {
             </ul>
           </nav>
 
-          <button className="mr-4 ml-10 cursor-pointer transition-colors duration-200 md:mr-0">
-            <Search className="w-5" />
-          </button>
+          <div className="mr-4 ml-10 flex gap-4 md:mr-0 md:gap-4">
+            <button className="cursor-pointer p-2 transition-colors duration-200">
+              <Search className="w-5" />
+            </button>
+
+            <Bag />
+          </div>
 
           <Drawer direction="top">
             <DrawerTrigger className="md:hidden">Menu</DrawerTrigger>

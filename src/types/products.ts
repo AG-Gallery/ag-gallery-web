@@ -1,3 +1,5 @@
+import type { CurrencyCode } from '@/queries/graphql/generated/types'
+
 export type Artwork = {
   artist: {
     name: string
@@ -42,7 +44,7 @@ export type Product = {
   dimensionsMetric: string | null
   medium: string | null
   price: string
-  currencyCode: string
+  currencyCode: CurrencyCode
   createdAt: string
   images: ProductImage[]
   style: LabeledMetaobject[]
