@@ -5,14 +5,16 @@ export type Artwork = {
     name: string
     slug: string
   }
-  style: string
+  currencyCode: CurrencyCode
   dimensionsImperial: string
   dimensionsMetric: string
   gid: string
   id: string
   medium: string
   previewImageUrl: string
+  price: string
   slug: string
+  style: string
   title: string
   theme: string
 }

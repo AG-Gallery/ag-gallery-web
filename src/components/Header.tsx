@@ -4,7 +4,7 @@ import { Link, useLocation } from '@tanstack/react-router'
 
 import { Search } from 'lucide-react'
 
-import Bag from '@/features/bag/bag'
+import Bag from '@/features/bag/Bag'
 import { cn } from '@/lib/utils'
 
 import { Button } from './ui/button'

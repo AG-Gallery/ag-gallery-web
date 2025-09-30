@@ -1,5 +1,5 @@
 import type { CurrencyCode } from '@/queries/graphql/generated/types'
-import type { Product } from '@/types/products'
+import type { Artwork } from '@/types/products'
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
@@ -8,12 +8,12 @@ import { createSelectors } from '@/lib/create-store-selectors'
 
 export type BagItem = {
   id: string
-  handle: string
+  slug: string
   title: string
   artist: string | null | undefined
   price: string
   currencyCode: CurrencyCode
-  imageUrl: string
+  previewImageUrl: string
   imageAlt: string | null
   addedAt: number
 }
@@ -100,14 +100,14 @@ const useBagStoreBase = create<BagStore>()(
 
 export const useBagStore = createSelectors(useBagStoreBase)
 
-export const convertProductToBagItem = (product: Product): BagItem => ({
-  id: product.id,
-  handle: product.handle,
-  title: product.title,
-  artist: product.artist,
-  price: product.price,
-  currencyCode: product.currencyCode,
-  imageUrl: product.images[0]?.url || '',
-  imageAlt: product.images[0]?.altText || null,
+export const convertProductToBagItem = (artwork: Artwork): BagItem => ({
+  id: artwork.id,
+  slug: artwork.slug,
+  title: artwork.title,
+  artist: artwork.artist.name,
+  price: artwork.price,
+  currencyCode: artwork.currencyCode,
+  previewImageUrl: artwork.previewImageUrl,
+  imageAlt: artwork.title,
   addedAt: Date.now(),
 })

@@ -11,14 +11,15 @@ const productQuery = `
   ][0]{
     "id": _id,
     artist->{ name, "slug": slug.current },
-    "style": artMovement,
     dimensionsImperial,
     dimensionsMetric,
     "gid": store.gid,
     medium,
     "previewImageUrl": store.previewImageUrl,
+    "currencyCode": "USD",
     "price": store.priceRange.maxVariantPrice,
     "slug": store.slug.current,
+    "style": artMovement,
     theme,
     "title": store.title
   }
@@ -41,6 +42,7 @@ const productsByArtistQuery = `
     "gid": store.gid,
     medium,
     "previewImageUrl": store.previewImageUrl,
+    "currencyCode": "USD",
     "price": store.priceRange.maxVariantPrice,
     "slug": store.slug.current,
     "style": artMovement,
@@ -60,6 +62,7 @@ const allArtworksQuery = `
       "gid": store.gid,
       medium,
       "previewImageUrl": store.previewImageUrl,
+      "currencyCode": "USD",
       "price": store.priceRange.maxVariantPrice,
       "slug": store.slug.current,
       "style": artMovement,

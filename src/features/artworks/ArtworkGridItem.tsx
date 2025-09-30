@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Link } from '@tanstack/react-router'
 
-import { AddToBagIcon } from '../../components/icons/AddToBagIcon'
 import { Skeleton } from '../../components/ui/skeleton'
+import AddToBagBtn from '../bag/AddToBagBtn'
 
 import { cn } from '@/lib/utils'
 
@@ -96,7 +96,7 @@ export function ArtworkGridItem({
         </Link>
       </div>
 
-      <div className="flex w-full items-center justify-between space-y-0.5 text-neutral-500">
+      <div className="w-full items-center justify-between space-y-0.5 text-neutral-500">
         <div>
           <p className="text-[0.8125rem] font-light tracking-wide md:font-normal">
             {artwork.medium}
@@ -107,7 +107,9 @@ export function ArtworkGridItem({
         </div>
 
         {isArtworksRoute && (
-          <AddToBagIcon className="size-8 cursor-pointer text-black transition-all ease-in-out active:scale-95" />
+          <div className="mt-2">
+            <AddToBagBtn type="minimal" product={artwork} />
+          </div>
         )}
       </div>
     </div>

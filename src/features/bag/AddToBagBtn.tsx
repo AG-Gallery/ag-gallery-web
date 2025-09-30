@@ -1,4 +1,4 @@
-import type { Product } from '@/types/products'
+import type { Artwork } from '@/types/products'
 
 import { useState } from 'react'
 
@@ -9,7 +9,7 @@ import { convertProductToBagItem, useBagStore } from '@/store/bag-store'
 
 type AddToBagBtnProps = {
   type: 'solid' | 'minimal'
-  product: Product
+  product: Artwork
   disabled?: boolean
 }
 
@@ -28,13 +28,13 @@ export default function AddToBagBtn({
 
   const isSolid = type === 'solid'
   const baseClasses = isSolid
-    ? 'w-full rounded-lg px-6 py-2 shadow-2xs transition-all duration-200 active:scale-[99%]'
+    ? 'w-full rounded-full md:w-fit md:px-12 cursor-pointer px-6 py-3 transition-all duration-200 active:scale-[99%]'
     : 'flex w-fit items-center gap-1 duration-100 ease-in outline-none'
   const enabledClasses = isSolid
-    ? 'bg-sky-800 shadow-sky-900 hover:bg-sky-700 cursor-pointer'
-    : 'text-sky-800 hover:text-sky-700 cursor-pointer'
+    ? 'bg-black text-white hover:bg-accent font-medium ease-in-out'
+    : 'text-black hover:text-accent cursor-pointer'
   const disabledClasses = isSolid
-    ? 'bg-gray-400 cursor-default'
+    ? 'bg-gray-300 !cursor-not-allowed'
     : 'text-gray-400 cursor-default'
   const classes = `${baseClasses} ${isDisabled ? disabledClasses : enabledClasses}`
 
@@ -49,7 +49,9 @@ export default function AddToBagBtn({
 
       if (success) {
         toast.success(`"${product.title}" added to bag`, {
-          description: product.artist ? `by ${product.artist}` : undefined,
+          description: product.artist.name
+            ? `by ${product.artist.name}`
+            : undefined,
           duration: 3000,
         })
       } else {

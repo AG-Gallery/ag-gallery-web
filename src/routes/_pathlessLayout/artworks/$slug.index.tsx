@@ -7,6 +7,7 @@ import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 
 import Carousel from '@/components/Carousel'
+import AddToBagBtn from '@/features/bag/AddToBagBtn'
 import {
   formatMoney,
   formatProduct,
@@ -98,9 +99,10 @@ function RouteComponent() {
           </section>
 
           <section className="mt-8">
-            <button className="w-full cursor-pointer rounded-full bg-neutral-900 px-6 py-3 font-medium text-white transition-colors duration-300 ease-in md:w-fit md:px-12">
+            {artwork && <AddToBagBtn type="solid" product={artwork} />}
+            {/* <button className="w-full cursor-pointer rounded-full bg-neutral-900 px-6 py-3 font-medium text-white transition-colors duration-300 ease-in md:w-fit md:px-12">
               Add to bag
-            </button>
+            </button> */}
           </section>
         </div>
       </div>

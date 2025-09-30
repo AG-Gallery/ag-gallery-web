@@ -94,15 +94,15 @@ export default function Bag() {
   const bagFooter = !hasItems ? null : (
     <DrawerFooter className="border-t border-neutral-200">
       <div className="mb-4 flex items-center justify-between text-lg font-semibold">
-        <span>Total</span>
+        <span>Subtotal</span>
         <span className="font-medium">{totalPrice}</span>
       </div>
       <Button
-        className="rounded-md bg-sky-800 font-medium hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-50"
+        className="rounded-md border border-sky-800 bg-sky-700 font-medium text-white hover:border-sky-700 hover:bg-sky-600 disabled:cursor-not-allowed disabled:opacity-50"
         // onClick={proceedToCheckout}
         // disabled={isCheckoutLoading}
       >
-        FIX
+        Checkout
         {/* {isCheckoutLoading ? 'Processing...' : 'Checkout'} */}
       </Button>
       <DrawerClose asChild>
@@ -159,7 +159,7 @@ export default function Bag() {
         >
           <BagIcon classes="size-5" />
           {hasItems && (
-            <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-sky-700 text-xs font-medium text-white">
+            <span className="absolute -top-0.5 -right-1.5 flex size-[18px] items-center justify-center rounded-full bg-black text-xs font-medium text-white">
               {bagBadgeLabel}
             </span>
           )}
@@ -170,36 +170,42 @@ export default function Bag() {
         <div className={innerContainerClassName}>
           <DrawerHeader className="flex flex-row items-center justify-between">
             <div>
-              <DrawerTitle>
+              <DrawerTitle className="inline-flex h-10 w-full items-center">
                 {hasItems ? (
-                  <span className="flex items-center gap-2">
-                    Bag
-                    <span className="size-[3px] rounded-full" />
-                    {itemCount}
+                  <span className="inline-flex gap-2">
+                    Bag <span>{itemCount}</span>
                   </span>
                 ) : (
-                  'Bag'
+                  <span>Bag</span>
                 )}
               </DrawerTitle>
               <DrawerDescription className="sr-only">
                 View the artwork in your bag.
               </DrawerDescription>
             </div>
-            {hasItems && (
-              <Button
-                variant="ghost"
-                size="sm"
+            <DrawerClose asChild>
+              <Button variant="ghost" className="text-neutral-600">
+                Close
+              </Button>
+            </DrawerClose>
+          </DrawerHeader>
+
+          {/*
+            Store is low volume so may be unnecessary
+
+            <div className="flex justify-end px-2">
+              <button
                 onClick={clearBag}
-                className="text-neutral-500 hover:text-neutral-700"
-                // disabled={isCheckoutLoading}
+                className="mr-4 text-sm text-neutral-500 hover:text-neutral-700"
+                // disabled={hasItems === false || isCheckoutLoading}
                 type="button"
               >
                 Clear all
-              </Button>
-            )}
-          </DrawerHeader>
+              </button>
+            </div>
+          */}
 
-          <div className="flex-1 overflow-y-auto p-4">{bagContent}</div>
+          <div className="flex-1 overflow-y-auto p-4 pt-2">{bagContent}</div>
 
           {bagFooter}
         </div>
