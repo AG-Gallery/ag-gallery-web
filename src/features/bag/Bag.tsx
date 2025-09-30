@@ -19,7 +19,10 @@ import BagItem from './BagItem'
 
 export default function Bag() {
   const [drawerDirection, setDrawerDirection] = useState<'right' | 'bottom'>(
-    'right',
+    () =>
+      typeof window !== 'undefined' && window.innerWidth < 768
+        ? 'bottom'
+        : 'right',
   )
   const [isHydrated, setIsHydrated] = useState(false)
 
@@ -34,11 +37,19 @@ export default function Bag() {
   const totalPrice = getTotalPriceFormatted()
 
   useEffect(() => {
-    useBagStore.persist.rehydrate()
+    const rehydrate = useBagStore.persist.rehydrate()
+
+    if (rehydrate instanceof Promise) {
+      rehydrate.finally(() => setIsHydrated(true))
+      return
+    }
+
     setIsHydrated(true)
   }, [])
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const checkScreenSize = () => {
       setDrawerDirection(window.innerWidth < 768 ? 'bottom' : 'right')
     }
@@ -48,22 +59,77 @@ export default function Bag() {
     return () => window.removeEventListener('resize', checkScreenSize)
   }, [])
 
+  const isSideDrawer = drawerDirection === 'right'
+  const drawerContentClassName = isSideDrawer
+    ? 'ml-auto h-full w-full max-w-md'
+    : ''
+  const innerContainerClassName = `mx-auto size-full ${isSideDrawer ? 'max-w-none' : 'max-w-md'}`
+  const hasItems = itemCount > 0
+  const bagBadgeLabel = itemCount > 9 ? '9+' : itemCount
+
+  const bagContent = hasItems ? (
+    <div className="space-y-4">
+      {items.map((item) => (
+        <BagItem key={item.id} item={item} />
+      ))}
+    </div>
+  ) : (
+    <div className="flex h-full flex-col items-center justify-center text-center">
+      <BagIcon classes="size-12 text-neutral-300 mb-4" />
+      <h3 className="mb-2 text-lg font-medium">Your bag is empty</h3>
+      <p className="mb-6 text-neutral-500">
+        Discover unique artwork and add pieces to your collection.
+      </p>
+      <DrawerClose asChild>
+        <button
+          className="h-9 cursor-pointer rounded-md border border-neutral-200 px-4 py-2 text-sm transition-all hover:bg-neutral-100"
+          type="button"
+        >
+          Continue Browsing
+        </button>
+      </DrawerClose>
+    </div>
+  )
+
+  const bagFooter = !hasItems ? null : (
+    <DrawerFooter className="border-t border-neutral-200">
+      <div className="mb-4 flex items-center justify-between text-lg font-semibold">
+        <span>Total</span>
+        <span className="font-medium">{totalPrice}</span>
+      </div>
+      <Button
+        className="rounded-md bg-sky-800 font-medium hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-50"
+        // onClick={proceedToCheckout}
+        // disabled={isCheckoutLoading}
+      >
+        FIX
+        {/* {isCheckoutLoading ? 'Processing...' : 'Checkout'} */}
+      </Button>
+      <DrawerClose asChild>
+        <Button
+          variant="outline"
+          type="button"
+          // disabled={isCheckoutLoading}
+        >
+          Continue Browsing
+        </Button>
+      </DrawerClose>
+    </DrawerFooter>
+  )
+
   if (!isHydrated) {
     return (
       <Drawer direction={drawerDirection}>
         <DrawerTrigger asChild>
-          <button className="relative cursor-pointer p-2 transition-colors duration-150">
+          <button
+            className="relative cursor-pointer p-2 transition-colors duration-150"
+            type="button"
+          >
             <BagIcon classes="size-5" />
           </button>
         </DrawerTrigger>
-        <DrawerContent
-          className={
-            drawerDirection === 'right' ? 'ml-auto h-full w-full max-w-md' : ''
-          }
-        >
-          <div
-            className={`mx-auto size-full ${drawerDirection === 'right' ? 'max-w-none' : 'max-w-md'}`}
-          >
+        <DrawerContent className={drawerContentClassName}>
+          <div className={innerContainerClassName}>
             <DrawerHeader>
               <DrawerTitle>Bag</DrawerTitle>
               <DrawerDescription className="sr-only">
@@ -83,117 +149,59 @@ export default function Bag() {
     )
   }
 
-  const renderEmptyBag = () => (
-    <div className="flex h-full flex-col items-center justify-center text-center">
-      <BagIcon classes="size-12 text-neutral-300 mb-4" />
-      <h3 className="mb-2 text-lg font-medium">Your bag is empty</h3>
-      <p className="mb-6 text-neutral-500">
-        Discover unique artwork and add pieces to your collection.
-      </p>
-      <DrawerClose asChild>
-        <button className="h-9 cursor-pointer rounded-md border border-neutral-200 px-4 py-2 text-sm transition-all hover:bg-neutral-100">
-          Continue Browsing
-        </button>
-      </DrawerClose>
-    </div>
-  )
-
-  const renderBagItems = () => (
-    <div className="space-y-4">
-      {items.map((item) => (
-        <BagItem key={item.id} item={item} />
-      ))}
-    </div>
-  )
-
-  const renderBagFooter = () => {
-    if (itemCount === 0) return null
-
-    return (
-      <DrawerFooter className="border-t border-neutral-200">
-        <div className="mb-4 flex items-center justify-between text-lg font-semibold">
-          <span>Total</span>
-          <span className="font-medium">{totalPrice}</span>
-        </div>
-        <Button
-          className="rounded-md bg-sky-800 font-medium hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-50"
-          // onClick={proceedToCheckout}
-          // disabled={isCheckoutLoading}
-        >
-          Fix
-          {/* {isCheckoutLoading ? 'Processing...' : 'Checkout'} */}
-        </Button>
-        <DrawerClose asChild>
-          <Button
-            variant="outline"
-            // disabled={isCheckoutLoading}
-          >
-            Continue Browsing
-          </Button>
-        </DrawerClose>
-      </DrawerFooter>
-    )
-  }
-
   return (
     <Drawer direction={drawerDirection}>
       <DrawerTrigger asChild>
         <button
           className="relative cursor-pointer p-2 disabled:cursor-not-allowed disabled:opacity-50"
           // disabled={isCheckoutLoading}
+          type="button"
         >
           <BagIcon classes="size-5" />
-          {itemCount > 0 && (
+          {hasItems && (
             <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-sky-700 text-xs font-medium text-white">
-              {itemCount > 9 ? '9+' : itemCount}
+              {bagBadgeLabel}
             </span>
           )}
         </button>
       </DrawerTrigger>
 
-      <DrawerContent
-        className={
-          drawerDirection === 'right' ? 'ml-auto h-full w-full max-w-md' : ''
-        }
-      >
-        <div
-          className={`mx-auto size-full ${drawerDirection === 'right' ? 'max-w-none' : 'max-w-md'}`}
-        >
+      <DrawerContent className={drawerContentClassName}>
+        <div className={innerContainerClassName}>
           <DrawerHeader className="flex flex-row items-center justify-between">
             <div>
               <DrawerTitle>
-                {itemCount === 0 ? (
-                  'Bag'
-                ) : (
+                {hasItems ? (
                   <span className="flex items-center gap-2">
                     Bag
                     <span className="size-[3px] rounded-full" />
                     {itemCount}
                   </span>
+                ) : (
+                  'Bag'
                 )}
               </DrawerTitle>
               <DrawerDescription className="sr-only">
                 View the artwork in your bag.
               </DrawerDescription>
             </div>
-            {itemCount > 0 && (
+            {hasItems && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={clearBag}
                 className="text-neutral-500 hover:text-neutral-700"
                 // disabled={isCheckoutLoading}
+                type="button"
               >
                 Clear all
               </Button>
             )}
           </DrawerHeader>
 
-          <div className="flex-1 overflow-y-auto p-4">
-            {itemCount === 0 ? renderEmptyBag() : renderBagItems()}
-          </div>
+          <div className="flex-1 overflow-y-auto p-4">{bagContent}</div>
 
-          {renderBagFooter()}
+          {bagFooter}
         </div>
       </DrawerContent>
     </Drawer>

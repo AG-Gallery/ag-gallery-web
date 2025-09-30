@@ -20,29 +20,26 @@ export default function AddToBagBtn({
 }: AddToBagBtnProps) {
   const [isLoading, setIsLoading] = useState(false)
 
-  // Need to subscribe to items array to trigger re-renders
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const items = useBagStore.use.items()
   const addItem = useBagStore.use.addItem()
-  const isItemInBag = useBagStore.use.isItemInBag()
 
-  const isAlreadyInBag = isItemInBag(product.id)
+  const isAlreadyInBag = items.some((bagItem) => bagItem.id === product.id)
+  const isDisabled = disabled || isAlreadyInBag || isLoading
 
-  const classes =
-    type === 'solid'
-      ? `w-full rounded-lg px-6 py-2 shadow-2xs transition-all duration-200 active:scale-[99%] ${
-          disabled || isAlreadyInBag
-            ? 'bg-gray-400 cursor-default'
-            : 'bg-sky-800 shadow-sky-900 hover:bg-sky-700 cursor-pointer'
-        }`
-      : `flex w-fit items-center gap-1 duration-100 ease-in outline-none ${
-          disabled || isAlreadyInBag
-            ? 'text-gray-400 cursor-default'
-            : 'text-sky-800 hover:text-sky-700 cursor-pointer'
-        }`
+  const isSolid = type === 'solid'
+  const baseClasses = isSolid
+    ? 'w-full rounded-lg px-6 py-2 shadow-2xs transition-all duration-200 active:scale-[99%]'
+    : 'flex w-fit items-center gap-1 duration-100 ease-in outline-none'
+  const enabledClasses = isSolid
+    ? 'bg-sky-800 shadow-sky-900 hover:bg-sky-700 cursor-pointer'
+    : 'text-sky-800 hover:text-sky-700 cursor-pointer'
+  const disabledClasses = isSolid
+    ? 'bg-gray-400 cursor-default'
+    : 'text-gray-400 cursor-default'
+  const classes = `${baseClasses} ${isDisabled ? disabledClasses : enabledClasses}`
 
-  const handleAddToBag = async () => {
-    if (disabled || isAlreadyInBag || isLoading) return
+  const handleAddToBag = () => {
+    if (isDisabled) return
 
     setIsLoading(true)
 
@@ -66,23 +63,25 @@ export default function AddToBagBtn({
     }
   }
 
-  const getButtonText = () => {
-    if (isLoading) return 'Adding...'
-    if (isAlreadyInBag) return 'In bag'
-    return 'Add to bag'
+  let buttonText = 'Add to bag'
+  if (isLoading) {
+    buttonText = 'Adding...'
+  } else if (isAlreadyInBag) {
+    buttonText = 'In bag'
   }
+
+  const iconClasses = isLoading ? 'size-5 animate-pulse' : 'size-5'
 
   return (
     <button
       className={classes}
       onClick={handleAddToBag}
-      disabled={disabled || isAlreadyInBag || isLoading}
+      disabled={isDisabled}
       aria-label={`Add ${product.title} to shopping bag`}
+      type="button"
     >
-      {type === 'minimal' && (
-        <BagIcon classes={`size-5 ${isLoading ? 'animate-pulse' : ''}`} />
-      )}
-      <span>{getButtonText()}</span>
+      {type === 'minimal' && <BagIcon classes={iconClasses} />}
+      <span>{buttonText}</span>
     </button>
   )
 }
