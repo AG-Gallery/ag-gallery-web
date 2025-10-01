@@ -5,7 +5,7 @@ import type {
 } from '@/types/filters'
 import type { Artwork } from '@/types/products'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
@@ -14,16 +14,16 @@ import ArtworksFiltersSidebar from '@/features/artworks/ArtworksFiltersSidebar'
 import ArtworksGrid from '@/features/artworks/ArtworksGrid'
 import ArtworksGridSkeleton from '@/features/artworks/ArtworksGridSkeleton'
 import { createAllArtworksInfiniteQueryOptions } from '@/queries/artworks'
+import { useUrlStore } from '@/store/url-store'
 
 const PAGE_SIZE = 24
 const DEFAULT_SORT: ArtworksSortOption = 'title-asc'
-
-const createEmptyFilters = (): ArtworksFilterState => ({
-  styles: [],
-  categories: [],
-  themes: [],
-  artists: [],
-})
+const FILTER_KEYS: Array<keyof ArtworksFilterState> = [
+  'styles',
+  'categories',
+  'themes',
+  'artists',
+]
 
 export const Route = createFileRoute('/_pathlessLayout/artworks/')({
   component: RouteComponent,
@@ -39,9 +39,49 @@ function RouteComponent() {
 }
 
 function ArtworksGridContent() {
-  const [sortOption, setSortOption] = useState<ArtworksSortOption>(DEFAULT_SORT)
-  const [filters, setFilters] =
-    useState<ArtworksFilterState>(createEmptyFilters)
+  const query = useUrlStore.use.query()
+  const setQuery = useUrlStore.use.setQuery()
+  const setQueries = useUrlStore.use.setQueries()
+  const syncQueryFromUrl = useUrlStore.use.syncQueryFromUrl()
+  const hasSyncedFromUrlRef = useRef(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const syncFromLocation = () => {
+      const params = new URLSearchParams(window.location.search)
+      syncQueryFromUrl(params)
+    }
+
+    if (!hasSyncedFromUrlRef.current) {
+      hasSyncedFromUrlRef.current = true
+      syncFromLocation()
+    }
+
+    window.addEventListener('popstate', syncFromLocation)
+    return () => window.removeEventListener('popstate', syncFromLocation)
+  }, [syncQueryFromUrl])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const params = new URLSearchParams()
+    Object.entries(query).forEach(([key, values]) => {
+      values.forEach((value) => {
+        if (value) params.append(key, value)
+      })
+    })
+
+    const searchString = params.toString()
+    const nextUrl = searchString
+      ? `${window.location.pathname}?${searchString}`
+      : window.location.pathname
+    const currentUrl = `${window.location.pathname}${window.location.search}`
+
+    if (nextUrl !== currentUrl) {
+      window.history.replaceState(null, '', nextUrl)
+    }
+  }, [query])
 
   const {
     data: artworks,
@@ -55,6 +95,21 @@ function ArtworksGridContent() {
   })
 
   const loadedArtworks = artworks ?? []
+
+  const sortOption = useMemo<ArtworksSortOption>(() => {
+    const [value] = query['sort'] ?? []
+    return isSortOption(value) ? value : DEFAULT_SORT
+  }, [query])
+
+  const filters = useMemo<ArtworksFilterState>(
+    () => ({
+      styles: query['styles'] ?? [],
+      categories: query['categories'] ?? [],
+      themes: query['themes'] ?? [],
+      artists: query['artists'] ?? [],
+    }),
+    [query],
+  )
 
   const availableOptions = useMemo<ArtworksFilterOptions>(
     () => createFilterOptions(loadedArtworks),
@@ -90,11 +145,21 @@ function ArtworksGridContent() {
   }
 
   const handleFiltersChange = (nextFilters: ArtworksFilterState) => {
-    setFilters(nextFilters)
+    const updates: Record<string, string[] | undefined> = {}
+    FILTER_KEYS.forEach((key) => {
+      const values = nextFilters[key]
+      updates[key] = values.length > 0 ? values : undefined
+    })
+
+    setQueries(updates)
   }
 
   const handleClearFilters = () => {
-    setFilters(createEmptyFilters())
+    const cleared: Record<string, undefined> = {}
+    FILTER_KEYS.forEach((key) => {
+      cleared[key] = undefined
+    })
+    setQueries(cleared)
   }
 
   const showLoadMoreButton =
@@ -105,7 +170,9 @@ function ArtworksGridContent() {
       <div className="lg:w-64 lg:flex-shrink-0">
         <ArtworksFiltersSidebar
           sortOption={sortOption}
-          onSortChange={(value) => setSortOption(value)}
+          onSortChange={(value) =>
+            setQuery('sort', value === DEFAULT_SORT ? undefined : value)
+          }
           filters={filters}
           onFiltersChange={handleFiltersChange}
           availableOptions={availableOptions}
@@ -241,4 +308,13 @@ function sortArtworks(
 function getPriceValue(artwork: Artwork): number {
   const value = Number.parseFloat(artwork.price)
   return Number.isFinite(value) ? value : 0
+}
+
+function isSortOption(value: string | undefined): value is ArtworksSortOption {
+  return (
+    value === 'title-asc' ||
+    value === 'title-desc' ||
+    value === 'price-asc' ||
+    value === 'price-desc'
+  )
 }
