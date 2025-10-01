@@ -6,6 +6,7 @@ export type Artwork = {
     slug: string
   }
   currencyCode: CurrencyCode
+  category: string | null
   dimensionsImperial: string
   dimensionsMetric: string
   gid: string

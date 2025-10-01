@@ -1,11 +1,27 @@
+import { useMemo, useState } from 'react'
+
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
+import ArtworksFiltersSidebar, {
+  type ArtworksFilterOptions,
+  type ArtworksFilterState,
+  type ArtworksSortOption,
+} from '@/features/artworks/ArtworksFiltersSidebar'
 import ArtworksGrid from '@/features/artworks/ArtworksGrid'
 import ArtworksGridSkeleton from '@/features/artworks/ArtworksGridSkeleton'
 import { createAllArtworksInfiniteQueryOptions } from '@/queries/artworks'
+import type { Artwork } from '@/types/products'
 
 const PAGE_SIZE = 24
+const DEFAULT_SORT: ArtworksSortOption = 'title-asc'
+
+const createEmptyFilters = (): ArtworksFilterState => ({
+  styles: [],
+  categories: [],
+  themes: [],
+  artists: [],
+})
 
 export const Route = createFileRoute('/_pathlessLayout/artworks/')({
   component: RouteComponent,
@@ -21,6 +37,9 @@ function RouteComponent() {
 }
 
 function ArtworksGridContent() {
+  const [sortOption, setSortOption] = useState<ArtworksSortOption>(DEFAULT_SORT)
+  const [filters, setFilters] = useState<ArtworksFilterState>(createEmptyFilters)
+
   const {
     data: artworks,
     fetchNextPage,
@@ -31,6 +50,29 @@ function ArtworksGridContent() {
     ...createAllArtworksInfiniteQueryOptions(PAGE_SIZE),
     select: (data) => data.pages.flatMap((p) => p.items),
   })
+
+  const loadedArtworks = artworks ?? []
+
+  const availableOptions = useMemo<ArtworksFilterOptions>(
+    () => createFilterOptions(loadedArtworks),
+    [loadedArtworks],
+  )
+
+  const filteredArtworks = useMemo(
+    () => filterArtworks(loadedArtworks, filters),
+    [loadedArtworks, filters],
+  )
+
+  const sortedArtworks = useMemo(
+    () => sortArtworks(filteredArtworks, sortOption),
+    [filteredArtworks, sortOption],
+  )
+
+  const hasActiveFilters =
+    filters.styles.length > 0 ||
+    filters.categories.length > 0 ||
+    filters.themes.length > 0 ||
+    filters.artists.length > 0
 
   if (status === 'pending') {
     return <ArtworksGridSkeleton />
@@ -44,18 +86,151 @@ function ArtworksGridContent() {
     )
   }
 
+  const handleFiltersChange = (nextFilters: ArtworksFilterState) => {
+    setFilters(nextFilters)
+  }
+
+  const handleClearFilters = () => {
+    setFilters(createEmptyFilters())
+  }
+
+  const showLoadMoreButton =
+    hasNextPage && (!hasActiveFilters || filteredArtworks.length >= PAGE_SIZE)
+
   return (
-    <>
-      <ArtworksGrid artworks={artworks} />
-      {hasNextPage && (
-        <button
-          onClick={() => fetchNextPage()}
-          disabled={isFetchingNextPage}
-          className="mx-auto my-6 block cursor-pointer rounded-full border border-black px-6 py-3 font-medium transition-colors duration-200 ease-in hover:bg-black hover:text-white disabled:opacity-50"
-        >
-          {isFetchingNextPage ? 'Loading…' : 'Show more'}
-        </button>
-      )}
-    </>
+    <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start">
+      <div className="lg:w-64 lg:flex-shrink-0">
+        <ArtworksFiltersSidebar
+          sortOption={sortOption}
+          onSortChange={(value) => setSortOption(value)}
+          filters={filters}
+          onFiltersChange={handleFiltersChange}
+          availableOptions={availableOptions}
+          onClearFilters={handleClearFilters}
+        />
+      </div>
+
+      <div className="flex-1 space-y-6">
+        {sortedArtworks.length > 0 ? (
+          <ArtworksGrid artworks={sortedArtworks} />
+        ) : (
+          <div className="flex min-h-[240px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-sm text-neutral-500 text-center">
+            No artworks match your current filters. Try adjusting or clearing them.
+          </div>
+        )}
+
+        {showLoadMoreButton && (
+          <button
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+            className="mx-auto block cursor-pointer rounded-full border border-black px-6 py-3 font-medium transition-colors duration-200 ease-in hover:bg-black hover:text-white disabled:opacity-50"
+          >
+            {isFetchingNextPage ? 'Loading…' : 'Show more'}
+          </button>
+        )}
+      </div>
+    </div>
   )
+}
+
+function createFilterOptions(artworks: Artwork[]): ArtworksFilterOptions {
+  const styles = new Set<string>()
+  const categories = new Set<string>()
+  const themes = new Set<string>()
+  const artists = new Set<string>()
+
+  for (const artwork of artworks) {
+    if (artwork.style) styles.add(artwork.style)
+    if (artwork.category) categories.add(artwork.category)
+    if (artwork.theme) themes.add(artwork.theme)
+    if (artwork.artist?.name) artists.add(artwork.artist.name)
+  }
+
+  const toSortedArray = (values: Set<string>) =>
+    Array.from(values).sort((a, b) => a.localeCompare(b))
+
+  return {
+    styles: toSortedArray(styles),
+    categories: toSortedArray(categories),
+    themes: toSortedArray(themes),
+    artists: toSortedArray(artists),
+  }
+}
+
+function filterArtworks(
+  artworks: Artwork[],
+  filters: ArtworksFilterState,
+): Artwork[] {
+  if (
+    filters.styles.length === 0 &&
+    filters.categories.length === 0 &&
+    filters.themes.length === 0 &&
+    filters.artists.length === 0
+  ) {
+    return artworks
+  }
+
+  return artworks.filter((artwork) => {
+    if (filters.styles.length > 0) {
+      if (!artwork.style || !filters.styles.includes(artwork.style)) {
+        return false
+      }
+    }
+
+    if (filters.categories.length > 0) {
+      if (!artwork.category || !filters.categories.includes(artwork.category)) {
+        return false
+      }
+    }
+
+    if (filters.themes.length > 0) {
+      if (!artwork.theme || !filters.themes.includes(artwork.theme)) {
+        return false
+      }
+    }
+
+    if (filters.artists.length > 0) {
+      if (!artwork.artist?.name || !filters.artists.includes(artwork.artist.name)) {
+        return false
+      }
+    }
+
+    return true
+  })
+}
+
+function sortArtworks(
+  artworks: Artwork[],
+  sortOption: ArtworksSortOption,
+): Artwork[] {
+  const sorted = [...artworks]
+
+  const compareByTitle = (a: Artwork, b: Artwork) =>
+    a.title.localeCompare(b.title)
+
+  const compareByPrice = (a: Artwork, b: Artwork) => getPriceValue(a) - getPriceValue(b)
+
+  switch (sortOption) {
+    case 'title-asc':
+      sorted.sort(compareByTitle)
+      break
+    case 'title-desc':
+      sorted.sort((a, b) => compareByTitle(b, a))
+      break
+    case 'price-asc':
+      sorted.sort(compareByPrice)
+      break
+    case 'price-desc':
+      sorted.sort((a, b) => compareByPrice(b, a))
+      break
+    default:
+      break
+  }
+
+  return sorted
+}
+
+function getPriceValue(artwork: Artwork): number {
+  const value = Number.parseFloat(artwork.price)
+  return Number.isFinite(value) ? value : 0
 }
