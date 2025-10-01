@@ -108,6 +108,22 @@ function ArtworksGridContent() {
 
   const loadedArtworks = artworks ?? []
 
+  const dedupedArtworks = useMemo(() => {
+    if (loadedArtworks.length === 0) return loadedArtworks
+
+    const seenKeys = new Set<string>()
+    const unique: Artwork[] = []
+
+    for (const artwork of loadedArtworks) {
+      const key = artwork.gid ?? artwork.id
+      if (!key || seenKeys.has(key)) continue
+      seenKeys.add(key)
+      unique.push(artwork)
+    }
+
+    return unique
+  }, [loadedArtworks])
+
   const sortOption = useMemo<ArtworksSortOption>(() => {
     const [value] = query['sort'] ?? []
     return isSortOption(value) ? value : DEFAULT_SORT
@@ -124,8 +140,8 @@ function ArtworksGridContent() {
   )
 
   const fallbackOptions = useMemo<ArtworksFilterOptions>(
-    () => createFilterOptions(loadedArtworks),
-    [loadedArtworks],
+    () => createFilterOptions(dedupedArtworks),
+    [dedupedArtworks],
   )
 
   const availableOptions = useMemo<ArtworksFilterOptions>(() => {
@@ -149,8 +165,8 @@ function ArtworksGridContent() {
   }, [remoteFilterOptions, fallbackOptions])
 
   const filteredArtworks = useMemo(
-    () => filterArtworks(loadedArtworks, filters),
-    [loadedArtworks, filters],
+    () => filterArtworks(dedupedArtworks, filters),
+    [dedupedArtworks, filters],
   )
 
   const sortedArtworks = useMemo(
