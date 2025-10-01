@@ -7,13 +7,16 @@ import type { Artwork } from '@/types/products'
 
 import { useEffect, useMemo, useRef } from 'react'
 
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
 import ArtworksFiltersSidebar from '@/features/artworks/ArtworksFiltersSidebar'
 import ArtworksGrid from '@/features/artworks/ArtworksGrid'
 import ArtworksGridSkeleton from '@/features/artworks/ArtworksGridSkeleton'
-import { createAllArtworksInfiniteQueryOptions } from '@/queries/artworks'
+import {
+  createAllArtworksInfiniteQueryOptions,
+  fetchFilterOptions,
+} from '@/queries/artworks'
 import { useUrlStore } from '@/store/url-store'
 
 const PAGE_SIZE = 24
@@ -26,6 +29,7 @@ const FILTER_KEYS: Array<keyof ArtworksFilterState> = [
 ]
 
 export const Route = createFileRoute('/_pathlessLayout/artworks/')({
+  loader: () => fetchFilterOptions(),
   component: RouteComponent,
 })
 
@@ -39,11 +43,19 @@ function RouteComponent() {
 }
 
 function ArtworksGridContent() {
+  const initialFilterOptions = Route.useLoaderData()
   const query = useUrlStore.use.query()
   const setQuery = useUrlStore.use.setQuery()
   const setQueries = useUrlStore.use.setQueries()
   const syncQueryFromUrl = useUrlStore.use.syncQueryFromUrl()
   const hasSyncedFromUrlRef = useRef(false)
+
+  const { data: remoteFilterOptions } = useQuery({
+    queryKey: ['artwork-filter-options'],
+    queryFn: fetchFilterOptions,
+    staleTime: 7 * 60 * 1000,
+    initialData: initialFilterOptions,
+  })
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -111,10 +123,30 @@ function ArtworksGridContent() {
     [query],
   )
 
-  const availableOptions = useMemo<ArtworksFilterOptions>(
+  const fallbackOptions = useMemo<ArtworksFilterOptions>(
     () => createFilterOptions(loadedArtworks),
     [loadedArtworks],
   )
+
+  const availableOptions = useMemo<ArtworksFilterOptions>(() => {
+    if (!remoteFilterOptions) return fallbackOptions
+
+    const merge = (primary: string[], secondary: string[]) => {
+      const set = new Set(primary)
+      secondary.forEach((value) => set.add(value))
+      return Array.from(set).sort((a, b) => a.localeCompare(b))
+    }
+
+    return {
+      styles: merge(remoteFilterOptions.styles, fallbackOptions.styles),
+      categories: merge(
+        remoteFilterOptions.categories,
+        fallbackOptions.categories,
+      ),
+      themes: merge(remoteFilterOptions.themes, fallbackOptions.themes),
+      artists: merge(remoteFilterOptions.artists, fallbackOptions.artists),
+    }
+  }, [remoteFilterOptions, fallbackOptions])
 
   const filteredArtworks = useMemo(
     () => filterArtworks(loadedArtworks, filters),
@@ -126,11 +158,22 @@ function ArtworksGridContent() {
     [filteredArtworks, sortOption],
   )
 
-  const hasActiveFilters =
-    filters.styles.length > 0 ||
-    filters.categories.length > 0 ||
-    filters.themes.length > 0 ||
-    filters.artists.length > 0
+  const hasActiveFilters = FILTER_KEYS.some((key) => filters[key].length > 0)
+
+  useEffect(() => {
+    if (status !== 'success') return
+    if (!hasActiveFilters) return
+    if (sortedArtworks.length > 0) return
+    if (!hasNextPage || isFetchingNextPage) return
+    void fetchNextPage()
+  }, [
+    status,
+    hasActiveFilters,
+    sortedArtworks.length,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  ])
 
   if (status === 'pending') {
     return <ArtworksGridSkeleton />

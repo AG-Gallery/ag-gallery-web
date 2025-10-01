@@ -2,6 +2,7 @@ import type {
   Public_GetAllProductsQuery,
   Public_GetAllProductsQueryVariables,
 } from '@/queries/graphql/generated/react-query'
+import type { ArtworksFilterOptions } from '@/types/filters'
 import type { Artwork } from '@/types/products'
 import type { QueryFunctionContext, QueryKey } from '@tanstack/react-query'
 
@@ -90,6 +91,68 @@ export function createAllArtworksInfiniteQueryOptions(pageSize = 24) {
       fetchArtworksPage(ctx, pageSize),
     getNextPageParam: getNextArtworksPageParam,
     gcTime: 7 * 60 * 1000,
-    maxPages: 5,
+    maxPages: 20,
+  }
+}
+
+const EMPTY_FILTER_OPTIONS: ArtworksFilterOptions = {
+  styles: [],
+  categories: [],
+  themes: [],
+  artists: [],
+}
+
+const FILTER_FETCH_PAGE_SIZE = 50
+const FILTER_FETCH_MAX_PAGES = 20
+
+export async function fetchFilterOptions(): Promise<ArtworksFilterOptions> {
+  try {
+    const optionSets = {
+      styles: new Set<string>(),
+      categories: new Set<string>(),
+      themes: new Set<string>(),
+      artists: new Set<string>(),
+    }
+
+    let after: string | undefined = undefined
+    let hasNextPage = true
+    let iterations = 0
+
+    while (hasNextPage && iterations < FILTER_FETCH_MAX_PAGES) {
+      iterations += 1
+      const page = await fetchShopifyPage(after, FILTER_FETCH_PAGE_SIZE)
+      page.items.forEach((artwork) => {
+        if (artwork.style) optionSets.styles.add(artwork.style)
+        if (artwork.category) optionSets.categories.add(artwork.category)
+        if (artwork.theme) optionSets.themes.add(artwork.theme)
+        const artistName = artwork.artist.name
+        if (artistName) optionSets.artists.add(artistName)
+      })
+      hasNextPage = page.pageInfo.hasNextPage
+      after = page.pageInfo.endCursor ?? undefined
+    }
+
+    const sanityArtworks = extractSanityArtworks(await getAllArtworks())
+    sanityArtworks.forEach((artwork) => {
+      if (artwork.style) optionSets.styles.add(artwork.style)
+      if (artwork.category) optionSets.categories.add(artwork.category)
+      if (artwork.theme) optionSets.themes.add(artwork.theme)
+      const artistName = artwork.artist.name
+      if (artistName) optionSets.artists.add(artistName)
+    })
+
+    return {
+      styles: Array.from(optionSets.styles).sort((a, b) => a.localeCompare(b)),
+      categories: Array.from(optionSets.categories).sort((a, b) =>
+        a.localeCompare(b),
+      ),
+      themes: Array.from(optionSets.themes).sort((a, b) => a.localeCompare(b)),
+      artists: Array.from(optionSets.artists).sort((a, b) =>
+        a.localeCompare(b),
+      ),
+    }
+  } catch (error) {
+    console.error('Failed to fetch filter options', error)
+    return EMPTY_FILTER_OPTIONS
   }
 }
