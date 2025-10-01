@@ -1,17 +1,19 @@
+import type {
+  ArtworksFilterOptions,
+  ArtworksFilterState,
+  ArtworksSortOption,
+} from '@/types/filters'
+import type { Artwork } from '@/types/products'
+
 import { useMemo, useState } from 'react'
 
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
-import ArtworksFiltersSidebar, {
-  type ArtworksFilterOptions,
-  type ArtworksFilterState,
-  type ArtworksSortOption,
-} from '@/features/artworks/ArtworksFiltersSidebar'
+import ArtworksFiltersSidebar from '@/features/artworks/ArtworksFiltersSidebar'
 import ArtworksGrid from '@/features/artworks/ArtworksGrid'
 import ArtworksGridSkeleton from '@/features/artworks/ArtworksGridSkeleton'
 import { createAllArtworksInfiniteQueryOptions } from '@/queries/artworks'
-import type { Artwork } from '@/types/products'
 
 const PAGE_SIZE = 24
 const DEFAULT_SORT: ArtworksSortOption = 'title-asc'
@@ -38,7 +40,8 @@ function RouteComponent() {
 
 function ArtworksGridContent() {
   const [sortOption, setSortOption] = useState<ArtworksSortOption>(DEFAULT_SORT)
-  const [filters, setFilters] = useState<ArtworksFilterState>(createEmptyFilters)
+  const [filters, setFilters] =
+    useState<ArtworksFilterState>(createEmptyFilters)
 
   const {
     data: artworks,
@@ -114,8 +117,9 @@ function ArtworksGridContent() {
         {sortedArtworks.length > 0 ? (
           <ArtworksGrid artworks={sortedArtworks} />
         ) : (
-          <div className="flex min-h-[240px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-sm text-neutral-500 text-center">
-            No artworks match your current filters. Try adjusting or clearing them.
+          <div className="flex min-h-[240px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500">
+            No artworks match your current filters. Try adjusting or clearing
+            them.
           </div>
         )}
 
@@ -143,7 +147,7 @@ function createFilterOptions(artworks: Artwork[]): ArtworksFilterOptions {
     if (artwork.style) styles.add(artwork.style)
     if (artwork.category) categories.add(artwork.category)
     if (artwork.theme) themes.add(artwork.theme)
-    if (artwork.artist?.name) artists.add(artwork.artist.name)
+    if (artwork.artist.name) artists.add(artwork.artist.name)
   }
 
   const toSortedArray = (values: Set<string>) =>
@@ -190,7 +194,10 @@ function filterArtworks(
     }
 
     if (filters.artists.length > 0) {
-      if (!artwork.artist?.name || !filters.artists.includes(artwork.artist.name)) {
+      if (
+        !artwork.artist.name ||
+        !filters.artists.includes(artwork.artist.name)
+      ) {
         return false
       }
     }
@@ -208,7 +215,8 @@ function sortArtworks(
   const compareByTitle = (a: Artwork, b: Artwork) =>
     a.title.localeCompare(b.title)
 
-  const compareByPrice = (a: Artwork, b: Artwork) => getPriceValue(a) - getPriceValue(b)
+  const compareByPrice = (a: Artwork, b: Artwork) =>
+    getPriceValue(a) - getPriceValue(b)
 
   switch (sortOption) {
     case 'title-asc':

@@ -44,6 +44,24 @@ export function slugifyName(s: string | null | undefined) {
   return joined
 }
 
+export function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+}
+
+export function toggleArrayValue(values: string[], value: string) {
+  const set = new Set(values)
+  if (set.has(value)) {
+    set.delete(value)
+  } else {
+    set.add(value)
+  }
+  return Array.from(set)
+}
+
 /**
  * Formats a number with commas as thousands separators.
  *

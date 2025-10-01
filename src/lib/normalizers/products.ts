@@ -1,6 +1,8 @@
 import type { Public_GetAllProductsQuery } from '@/queries/graphql/generated/react-query'
 import type { Artwork, LabeledMetaobject, Product } from '@/types/products'
 
+import { slugify } from '@/lib/utils'
+
 type ProductNode = NonNullable<
   NonNullable<Public_GetAllProductsQuery['products']>['edges'][number]
 >['node']
@@ -97,14 +99,6 @@ export function formatProducts(
     .filter((x): x is { cursor: string; node: ProductNode } => Boolean(x))
 
   return items.map(({ cursor, node }) => formatProduct(node, cursor))
-}
-
-function slugify(input: string): string {
-  return input
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '')
 }
 
 export function productsToArtworks(products: Product[]): Artwork[] {

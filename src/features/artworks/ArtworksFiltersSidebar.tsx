@@ -2,25 +2,12 @@ import type { ChangeEvent } from 'react'
 
 import { ChevronDown } from 'lucide-react'
 
-export type ArtworksSortOption =
-  | 'title-asc'
-  | 'title-desc'
-  | 'price-asc'
-  | 'price-desc'
-
-export type ArtworksFilterState = {
-  styles: string[]
-  categories: string[]
-  themes: string[]
-  artists: string[]
-}
-
-export type ArtworksFilterOptions = {
-  styles: string[]
-  categories: string[]
-  themes: string[]
-  artists: string[]
-}
+import { slugify, toggleArrayValue } from '@/lib/utils'
+import type {
+  ArtworksFilterOptions,
+  ArtworksFilterState,
+  ArtworksSortOption,
+} from '@/types/filters'
 
 type ArtworksFiltersSidebarProps = {
   sortOption: ArtworksSortOption
@@ -86,23 +73,6 @@ function FilterSection({
   )
 }
 
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
-}
-
-function toggleValue(values: string[], value: string) {
-  const set = new Set(values)
-  if (set.has(value)) {
-    set.delete(value)
-  } else {
-    set.add(value)
-  }
-  return Array.from(set)
-}
-
 export default function ArtworksFiltersSidebar({
   sortOption,
   onSortChange,
@@ -118,7 +88,7 @@ export default function ArtworksFiltersSidebar({
   const handleToggle = (name: keyof ArtworksFilterState, value: string) => {
     onFiltersChange({
       ...filters,
-      [name]: toggleValue(filters[name], value),
+      [name]: toggleArrayValue(filters[name], value),
     })
   }
 
