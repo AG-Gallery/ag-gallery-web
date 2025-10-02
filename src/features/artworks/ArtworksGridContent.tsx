@@ -157,7 +157,7 @@ export default function ArtworksGridContent() {
 
   return (
     <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start">
-      <div className="lg:w-64 lg:flex-shrink-0">
+      <div className="lg:sticky lg:top-36 lg:w-64 lg:flex-shrink-0 lg:self-start">
         <ArtworksFiltersSidebar
           sortOption={sortOption}
           onSortChange={handleSortChange}
