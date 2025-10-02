@@ -1,0 +1,138 @@
+import type {
+  ArtworksFilterOptions,
+  ArtworksFilterState,
+  ArtworksSortOption,
+} from '@/types/filters'
+import type { Artwork } from '@/types/products'
+
+// Merge Sanity + Shopify results while keeping the earliest instance of each work (gid with id fallback).
+export function dedupeArtworks(artworks: Artwork[]): Artwork[] {
+  if (artworks.length === 0) return artworks
+
+  const seen = new Set<string>()
+  const unique: Artwork[] = []
+
+  artworks.forEach((artwork) => {
+    const key = artwork.gid
+    if (!key || seen.has(key)) return
+    seen.add(key)
+    unique.push(artwork)
+  })
+
+  return unique
+}
+
+export function createFilterOptions(
+  artworks: Artwork[],
+): ArtworksFilterOptions {
+  const styles = new Set<string>()
+  const categories = new Set<string>()
+  const themes = new Set<string>()
+  const artists = new Set<string>()
+
+  for (const artwork of artworks) {
+    if (artwork.style) styles.add(artwork.style)
+    if (artwork.category) categories.add(artwork.category)
+    if (artwork.theme) themes.add(artwork.theme)
+    if (artwork.artist.name) artists.add(artwork.artist.name)
+  }
+
+  const toSortedArray = (values: Set<string>) =>
+    Array.from(values).sort((a, b) => a.localeCompare(b))
+
+  return {
+    styles: toSortedArray(styles),
+    categories: toSortedArray(categories),
+    themes: toSortedArray(themes),
+    artists: toSortedArray(artists),
+  }
+}
+
+export function mergeFilterOptions(
+  primary: ArtworksFilterOptions,
+  fallback: ArtworksFilterOptions,
+): ArtworksFilterOptions {
+  const mergeValues = (primaryValues: string[], fallbackValues: string[]) => {
+    const set = new Set(primaryValues)
+    fallbackValues.forEach((value) => set.add(value))
+    return Array.from(set).sort((a, b) => a.localeCompare(b))
+  }
+
+  return {
+    styles: mergeValues(primary.styles, fallback.styles),
+    categories: mergeValues(primary.categories, fallback.categories),
+    themes: mergeValues(primary.themes, fallback.themes),
+    artists: mergeValues(primary.artists, fallback.artists),
+  }
+}
+
+export function filterArtworks(
+  artworks: Artwork[],
+  filters: ArtworksFilterState,
+): Artwork[] {
+  if (
+    filters.styles.length === 0 &&
+    filters.categories.length === 0 &&
+    filters.themes.length === 0 &&
+    filters.artists.length === 0
+  ) {
+    return artworks
+  }
+
+  return artworks.filter((artwork) => {
+    const checks: Array<[string[], string | null | undefined]> = [
+      [filters.styles, artwork.style],
+      [filters.categories, artwork.category],
+      [filters.themes, artwork.theme],
+      [filters.artists, artwork.artist.name],
+    ]
+
+    for (const [selectedValues, attributeValue] of checks) {
+      if (
+        selectedValues.length > 0 &&
+        (!attributeValue || !selectedValues.includes(attributeValue))
+      ) {
+        return false
+      }
+    }
+
+    return true
+  })
+}
+
+export function sortArtworks(
+  artworks: Artwork[],
+  sortOption: ArtworksSortOption,
+): Artwork[] {
+  const sorted = [...artworks]
+
+  const compareByTitle = (a: Artwork, b: Artwork) =>
+    a.title.localeCompare(b.title)
+
+  const compareByPrice = (a: Artwork, b: Artwork) =>
+    getPriceValue(a) - getPriceValue(b)
+
+  switch (sortOption) {
+    case 'title-asc':
+      sorted.sort(compareByTitle)
+      break
+    case 'title-desc':
+      sorted.sort((a, b) => compareByTitle(b, a))
+      break
+    case 'price-asc':
+      sorted.sort(compareByPrice)
+      break
+    case 'price-desc':
+      sorted.sort((a, b) => compareByPrice(b, a))
+      break
+    default:
+      break
+  }
+
+  return sorted
+}
+
+function getPriceValue(artwork: Artwork): number {
+  const value = Number.parseFloat(artwork.price)
+  return Number.isFinite(value) ? value : 0
+}

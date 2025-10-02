@@ -132,6 +132,7 @@ export async function fetchFilterOptions(): Promise<ArtworksFilterOptions> {
       after = page.pageInfo.endCursor ?? undefined
     }
 
+    // Sanity-only artwork metadata can expose options the Shopify feed has not surfaced yet.
     const sanityArtworks = extractSanityArtworks(await getAllArtworks())
     sanityArtworks.forEach((artwork) => {
       if (artwork.style) optionSets.styles.add(artwork.style)
