@@ -78,7 +78,7 @@ export default function Bag() {
       <BagIcon classes="size-12 text-neutral-300 mb-4" />
       <h3 className="mb-2 text-lg font-medium">Your bag is empty</h3>
       <p className="mb-6 text-neutral-500">
-        Discover unique artwork and add pieces to your collection.
+        Discover unique artworks and add pieces to your collection.
       </p>
       <DrawerClose asChild>
         <button

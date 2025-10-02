@@ -129,8 +129,10 @@ function RouteComponent() {
                 Selected Works
               </h2>
               <Link
-                to="/artists/$slug/artworks"
-                params={{ slug: artist.slug }}
+                to="/artworks"
+                search={{
+                  artists: artist.name,
+                }}
                 className="hover:text-foreground text-sm text-neutral-500 transition-colors duration-200"
               >
                 View all
