@@ -104,6 +104,10 @@ export function sortArtworks(
   artworks: Artwork[],
   sortOption: ArtworksSortOption,
 ): Artwork[] {
+  if (sortOption === 'title-asc') {
+    return artworks
+  }
+
   const sorted = [...artworks]
 
   const compareByTitle = (a: Artwork, b: Artwork) =>
@@ -113,9 +117,6 @@ export function sortArtworks(
     getPriceValue(a) - getPriceValue(b)
 
   switch (sortOption) {
-    case 'title-asc':
-      sorted.sort(compareByTitle)
-      break
     case 'title-desc':
       sorted.sort((a, b) => compareByTitle(b, a))
       break
