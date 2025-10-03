@@ -31,10 +31,20 @@ export function createFilterOptions(
   const artists = new Set<string>()
 
   for (const artwork of artworks) {
-    if (artwork.style) styles.add(artwork.style)
-    if (artwork.category) categories.add(artwork.category)
-    if (artwork.theme) themes.add(artwork.theme)
-    if (artwork.artist.name) artists.add(artwork.artist.name)
+    const styleRaw = artwork.style
+    const style = typeof styleRaw === 'string' ? styleRaw.trim() : ''
+    if (style) styles.add(style)
+
+    const categoryRaw = artwork.category
+    const category = typeof categoryRaw === 'string' ? categoryRaw.trim() : ''
+    if (category) categories.add(category)
+
+    const themeRaw = artwork.theme
+    const theme = typeof themeRaw === 'string' ? themeRaw.trim() : ''
+    if (theme) themes.add(theme)
+
+    const artistName = artwork.artist.name.trim()
+    if (artistName) artists.add(artistName)
   }
 
   const toSortedArray = (values: Set<string>) =>

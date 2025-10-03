@@ -37,11 +37,14 @@ export function formatDateRange(start: string, end: string): string {
 export function slugifyName(s: string | null | undefined) {
   if (!s) return ''
 
-  const lowerCased = s.toLowerCase()
-  const split = lowerCased.split(' ')
-  const joined = split.join('-')
+  const normalized = s
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((segment) => segment.length > 0)
+    .join('-')
 
-  return joined
+  return normalized
 }
 
 export function slugify(input: string): string {

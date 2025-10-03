@@ -28,6 +28,15 @@ interface UseArtworksListingArgs {
 export function useArtworksListing({ sortOption, filters }: UseArtworksListingArgs) {
   const requestTokenRef = useRef(0)
 
+  const infiniteQueryOptions = useMemo(
+    () =>
+      createAllArtworksInfiniteQueryOptions({
+        pageSize: PAGE_SIZE,
+        filters,
+      }),
+    [filters],
+  )
+
   const {
     data: artworks,
     fetchNextPage,
@@ -35,7 +44,7 @@ export function useArtworksListing({ sortOption, filters }: UseArtworksListingAr
     isFetchingNextPage,
     status,
   } = useInfiniteQuery({
-    ...createAllArtworksInfiniteQueryOptions(PAGE_SIZE),
+    ...infiniteQueryOptions,
     select: (data) => data.pages.flatMap((page) => page.items),
   })
 

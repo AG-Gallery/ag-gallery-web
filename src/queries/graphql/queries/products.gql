@@ -89,10 +89,6 @@ query Public_GetCollectionProducts(
   $productsFirst: Int = 12
   $productsAfter: String
   $imagesFirst: Int = 1
-  $metafieldNamespace: String = "custom"
-  $artistKey: String = "artist"
-  $categoryKey: String = "category"
-  $dimensionsKey: String = "dimensions"
 ) {
   collectionByHandle(handle: $collectionHandle) {
     products(first: $productsFirst, after: $productsAfter) {
