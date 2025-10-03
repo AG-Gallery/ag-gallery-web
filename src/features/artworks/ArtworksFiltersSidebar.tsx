@@ -112,7 +112,7 @@ export default function ArtworksFiltersSidebar({
     filters.themes.length > 0
 
   return (
-    <aside className="mb-40 space-y-6 rounded-lg border border-neutral-200 p-4">
+    <aside className="space-y-6 rounded-lg border border-neutral-200 p-4">
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-base font-semibold text-neutral-900">Refine</h2>

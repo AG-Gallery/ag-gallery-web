@@ -4,9 +4,11 @@ import type {
   ArtworksSortOption,
 } from '@/types/filters'
 
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useQuery } from '@tanstack/react-query'
+
+import { ChevronDown } from 'lucide-react'
 
 import {
   loadFilterOptions,
@@ -142,18 +144,111 @@ export default function ArtworksGridContent() {
   function handleLoadMoreRequest() {
     void fetchNextPage()
   }
+  const sidebarWrapperRef = useRef<HTMLDivElement | null>(null)
+  const sidebarRef = useRef<HTMLDivElement | null>(null)
+  const [showScrollHint, setShowScrollHint] = useState(false)
+  const [sidebarMaxHeight, setSidebarMaxHeight] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const wrapper = sidebarWrapperRef.current
+    const content = sidebarRef.current
+    if (!wrapper || !content) return
+
+    const updateMeasurements = () => {
+      const rect = wrapper.getBoundingClientRect()
+      const available = Math.max(window.innerHeight - rect.top - 16, 160)
+      setSidebarMaxHeight(available)
+
+      const hasOverflow = content.scrollHeight > content.clientHeight + 2
+      const atBottom =
+        content.scrollTop + content.clientHeight >=
+        content.scrollHeight - 2
+      setShowScrollHint(hasOverflow && !atBottom)
+    }
+
+    const handleContentScroll = () => {
+      const hasOverflow = content.scrollHeight > content.clientHeight + 2
+      const atBottom =
+        content.scrollTop + content.clientHeight >=
+        content.scrollHeight - 2
+      setShowScrollHint(hasOverflow && !atBottom)
+    }
+
+    const handleWindowChange = () => {
+      window.requestAnimationFrame(updateMeasurements)
+    }
+
+    updateMeasurements()
+
+    const resizeObserver = new ResizeObserver(() => {
+      window.requestAnimationFrame(updateMeasurements)
+    })
+    resizeObserver.observe(content)
+    resizeObserver.observe(wrapper)
+
+    content.addEventListener('scroll', handleContentScroll)
+    window.addEventListener('resize', handleWindowChange)
+    window.addEventListener('scroll', handleWindowChange, { passive: true })
+
+    return () => {
+      resizeObserver.disconnect()
+      content.removeEventListener('scroll', handleContentScroll)
+      window.removeEventListener('resize', handleWindowChange)
+      window.removeEventListener('scroll', handleWindowChange)
+    }
+  }, [availableOptions])
+
+  function handleScrollHintClick() {
+    const el = sidebarRef.current
+    if (!el) return
+    el.scrollBy({ top: el.clientHeight * 0.6 || 160, behavior: 'smooth' })
+  }
+
+  const sidebarStyle =
+    typeof window !== 'undefined' && window.innerWidth >= 1024 && sidebarMaxHeight
+      ? { maxHeight: `${sidebarMaxHeight}px` }
+      : undefined
 
   return (
     <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start">
-      <div className="lg:sticky lg:top-36 lg:w-64 lg:flex-shrink-0 lg:self-start lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto lg:pr-2">
-        <ArtworksFiltersSidebar
-          sortOption={sortOption}
-          onSortChange={handleSortChange}
-          filters={filters}
-          onFiltersChange={handleFiltersChange}
-          availableOptions={availableOptions}
-          onClearFilters={handleClearFilters}
-        />
+      <div
+        ref={sidebarWrapperRef}
+        className="lg:sticky lg:top-36 lg:w-64 lg:flex-shrink-0 lg:self-start"
+      >
+        <div className="relative">
+          <div
+            ref={sidebarRef}
+            className="lg:overflow-y-auto lg:pr-2 lg:pb-6 lg:[-ms-overflow-style:none] lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden"
+            style={sidebarStyle}
+          >
+            <ArtworksFiltersSidebar
+              sortOption={sortOption}
+              onSortChange={handleSortChange}
+              filters={filters}
+              onFiltersChange={handleFiltersChange}
+              availableOptions={availableOptions}
+              onClearFilters={handleClearFilters}
+            />
+          </div>
+
+          {showScrollHint && (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-10 items-end justify-center bg-gradient-to-t from-white via-white/90 to-transparent lg:flex"
+            >
+              <button
+                type="button"
+                onClick={handleScrollHintClick}
+                className="pointer-events-auto flex items-center gap-1 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs text-neutral-600 shadow-xs transition hover:border-neutral-400 hover:text-neutral-800"
+              >
+                <ChevronDown className="h-3 w-3" />
+                More filters
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="flex-1 space-y-6">
