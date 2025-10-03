@@ -4,7 +4,10 @@ import type {
   Public_GetCollectionProductsQuery,
   Public_GetCollectionProductsQueryVariables,
 } from '@/queries/graphql/generated/react-query'
-import type { ArtworksFilterOptions, ArtworksFilterState } from '@/types/filters'
+import type {
+  ArtworksFilterOptions,
+  ArtworksFilterState,
+} from '@/types/filters'
 import type { Artwork } from '@/types/products'
 import type { QueryFunctionContext, QueryKey } from '@tanstack/react-query'
 
@@ -30,13 +33,39 @@ export type ArtworksPage = {
   artistHandle?: string
 }
 
-function isRecord(v: unknown): v is Record<string | number | symbol, unknown> {
-  return typeof v === 'object' && v !== null
+function extractFilterValue(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : ''
+}
+
+function addFilterOptionsFromArtwork(
+  artwork: Artwork,
+  optionSets: {
+    styles: Set<string>
+    categories: Set<string>
+    themes: Set<string>
+    artists: Set<string>
+  },
+) {
+  const style = extractFilterValue(artwork.style)
+  if (style) optionSets.styles.add(style)
+
+  const category = extractFilterValue(artwork.category)
+  if (category) optionSets.categories.add(category)
+
+  const theme = extractFilterValue(artwork.theme)
+  if (theme) optionSets.themes.add(theme)
+
+  const artistName = artwork.artist.name.trim()
+  if (artistName) optionSets.artists.add(artistName)
 }
 
 function extractSanityArtworks(input: unknown): Artwork[] {
   if (Array.isArray(input)) return input as Artwork[]
-  if (isRecord(input) && Array.isArray((input as any).selectedArtworks)) {
+  if (
+    typeof input === 'object' &&
+    input !== null &&
+    Array.isArray((input as any).selectedArtworks)
+  ) {
     return (input as any).selectedArtworks as Artwork[]
   }
   return []
@@ -97,7 +126,9 @@ async function fetchCollectionProductsPage(
 
   const normalized =
     formatProducts(
-      connection as unknown as NonNullable<Public_GetAllProductsQuery['products']>,
+      connection as unknown as NonNullable<
+        Public_GetAllProductsQuery['products']
+      >,
     ) ?? []
   const items = productsToArtworks(normalized)
   const pageInfo = connection.pageInfo
@@ -105,7 +136,10 @@ async function fetchCollectionProductsPage(
   return {
     source: 'shopify',
     items,
-    pageInfo: { hasNextPage: pageInfo.hasNextPage, endCursor: pageInfo.endCursor },
+    pageInfo: {
+      hasNextPage: pageInfo.hasNextPage,
+      endCursor: pageInfo.endCursor,
+    },
     artistHandle: handle,
   }
 }
@@ -225,7 +259,10 @@ export async function fetchArtworksPage(
       }
     }
   } else if (artistFilters.length > 1) {
-    const artistArtworks = await fetchArtworksForArtists(artistFilters, pageSize)
+    const artistArtworks = await fetchArtworksForArtists(
+      artistFilters,
+      pageSize,
+    )
     if (artistArtworks.length > 0) {
       return {
         source: 'shopify',
@@ -324,20 +361,7 @@ export async function fetchFilterOptions(): Promise<ArtworksFilterOptions> {
       iterations += 1
       const page = await fetchShopifyPage(after, FILTER_FETCH_PAGE_SIZE)
       page.items.forEach((artwork) => {
-        const styleRaw = artwork.style
-        const style = typeof styleRaw === 'string' ? styleRaw.trim() : ''
-        if (style) optionSets.styles.add(style)
-
-        const categoryRaw = artwork.category
-        const category = typeof categoryRaw === 'string' ? categoryRaw.trim() : ''
-        if (category) optionSets.categories.add(category)
-
-        const themeRaw = artwork.theme
-        const theme = typeof themeRaw === 'string' ? themeRaw.trim() : ''
-        if (theme) optionSets.themes.add(theme)
-
-        const artistName = artwork.artist.name.trim()
-        if (artistName) optionSets.artists.add(artistName)
+        addFilterOptionsFromArtwork(artwork, optionSets)
       })
       hasNextPage = page.pageInfo.hasNextPage
       after = page.pageInfo.endCursor ?? undefined
@@ -346,20 +370,7 @@ export async function fetchFilterOptions(): Promise<ArtworksFilterOptions> {
     // Sanity-only artwork metadata can expose options the Shopify feed has not surfaced yet.
     const sanityArtworks = extractSanityArtworks(await getAllArtworks())
     sanityArtworks.forEach((artwork) => {
-      const styleRaw = artwork.style
-      const style = typeof styleRaw === 'string' ? styleRaw.trim() : ''
-      if (style) optionSets.styles.add(style)
-
-      const categoryRaw = artwork.category
-      const category = typeof categoryRaw === 'string' ? categoryRaw.trim() : ''
-      if (category) optionSets.categories.add(category)
-
-      const themeRaw = artwork.theme
-      const theme = typeof themeRaw === 'string' ? themeRaw.trim() : ''
-      if (theme) optionSets.themes.add(theme)
-
-      const artistName = artwork.artist.name.trim()
-      if (artistName) optionSets.artists.add(artistName)
+      addFilterOptionsFromArtwork(artwork, optionSets)
     })
 
     return {

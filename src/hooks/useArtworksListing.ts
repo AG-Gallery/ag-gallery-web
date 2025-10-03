@@ -1,22 +1,19 @@
-import { useEffect, useMemo, useRef } from 'react'
+import type { ArtworksFilterState, ArtworksSortOption } from '@/types/filters'
+
+import { useMemo } from 'react'
 
 import { useInfiniteQuery } from '@tanstack/react-query'
 
-import type {
-  ArtworksFilterState,
-  ArtworksSortOption,
-} from '@/types/filters'
-
-import {
-  createAllArtworksInfiniteQueryOptions,
-  fetchFilterOptions,
-} from '@/queries/artworks'
 import {
   createFilterOptions,
   dedupeArtworks,
   filterArtworks,
   sortArtworks,
 } from '@/features/artworks/utils'
+import {
+  createAllArtworksInfiniteQueryOptions,
+  fetchFilterOptions,
+} from '@/queries/artworks'
 
 const PAGE_SIZE = 24
 
@@ -25,9 +22,10 @@ interface UseArtworksListingArgs {
   filters: ArtworksFilterState
 }
 
-export function useArtworksListing({ sortOption, filters }: UseArtworksListingArgs) {
-  const requestTokenRef = useRef(0)
-
+export function useArtworksListing({
+  sortOption,
+  filters,
+}: UseArtworksListingArgs) {
   const infiniteQueryOptions = useMemo(
     () =>
       createAllArtworksInfiniteQueryOptions({
@@ -69,34 +67,9 @@ export function useArtworksListing({ sortOption, filters }: UseArtworksListingAr
     [filteredArtworks, sortOption],
   )
 
-  const hasActiveFilters = Object.values(filters).some((values) => values.length > 0)
-
-  useEffect(() => {
-    if (status !== 'success') return
-    if (!hasActiveFilters) return
-    if (sortedArtworks.length > 0) return
-    if (!hasNextPage || isFetchingNextPage) return
-
-    const requestToken = requestTokenRef.current + 1
-    requestTokenRef.current = requestToken
-
-    void fetchNextPage().catch((error) => {
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn('Failed to auto-fetch additional artworks', error)
-      }
-    })
-
-    return () => {
-      requestTokenRef.current = requestToken
-    }
-  }, [
-    status,
-    hasActiveFilters,
-    sortedArtworks.length,
-    hasNextPage,
-    isFetchingNextPage,
-    fetchNextPage,
-  ])
+  const hasActiveFilters = Object.values(filters).some(
+    (values) => values.length > 0,
+  )
 
   const showLoadMoreButton =
     hasNextPage && (!hasActiveFilters || filteredArtworks.length >= PAGE_SIZE)
