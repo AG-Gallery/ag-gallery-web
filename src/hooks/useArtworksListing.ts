@@ -1,10 +1,14 @@
-import type { ArtworksFilterState, ArtworksSortOption } from '@/types/filters'
+import type {
+  ArtworksFilterOptions,
+  ArtworksFilterState,
+  ArtworksSortOption,
+} from '@/types/filters'
 
 import { useMemo } from 'react'
 
 import { useInfiniteQuery } from '@tanstack/react-query'
 
-import { dedupeArtworks, filterArtworks, sortArtworks } from '@/features/artworks/utils'
+import { dedupeArtworks } from '@/lib/artworks/utils'
 import {
   createAllArtworksInfiniteQueryOptions,
   fetchFilterOptions,
@@ -26,8 +30,9 @@ export function useArtworksListing({
       createAllArtworksInfiniteQueryOptions({
         pageSize: PAGE_SIZE,
         filters,
+        sortOption,
       }),
-    [filters],
+    [filters, sortOption],
   )
 
   const {
@@ -47,19 +52,9 @@ export function useArtworksListing({
     [loadedArtworks],
   )
 
-  const fallbackOptions = useMemo(
+  const fallbackOptions = useMemo<ArtworksFilterOptions>(
     () => ({ styles: [], categories: [], themes: [], artists: [] }),
     [],
-  )
-
-  const filteredArtworks = useMemo(
-    () => filterArtworks(dedupedArtworks, filters),
-    [dedupedArtworks, filters],
-  )
-
-  const sortedArtworks = useMemo(
-    () => sortArtworks(filteredArtworks, sortOption),
-    [filteredArtworks, sortOption],
   )
 
   const hasActiveFilters = Object.values(filters).some(
@@ -67,11 +62,11 @@ export function useArtworksListing({
   )
 
   const showLoadMoreButton =
-    hasNextPage && (!hasActiveFilters || filteredArtworks.length >= PAGE_SIZE)
+    hasNextPage && (!hasActiveFilters || dedupedArtworks.length >= PAGE_SIZE)
 
   return {
     fallbackOptions,
-    sortedArtworks,
+    artworks: dedupedArtworks,
     status,
     showLoadMoreButton,
     fetchNextPage,

@@ -17,10 +17,11 @@ import {
 import { Route } from '@/routes/_pathlessLayout/artworks'
 import { useUrlStore } from '@/store/url-store'
 
+import { mergeFilterOptions } from '@/lib/artworks/utils'
+
 import ArtworksFiltersSidebar from './ArtworksFiltersSidebar'
 import ArtworksGrid from './ArtworksGrid'
 import ArtworksGridSkeleton from './ArtworksGridSkeleton'
-import { mergeFilterOptions } from './utils'
 
 const DEFAULT_SORT: ArtworksSortOption = 'title-asc'
 const FILTER_KEYS: Array<keyof ArtworksFilterState> = [
@@ -108,7 +109,7 @@ export default function ArtworksGridContent() {
 
   const {
     fallbackOptions,
-    sortedArtworks,
+    artworks: sortedArtworks,
     status,
     showLoadMoreButton,
     fetchNextPage,

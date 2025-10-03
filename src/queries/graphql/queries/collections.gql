@@ -1,0 +1,17 @@
+query Public_GetCollections(
+  $first: Int = 50
+  $after: String
+) {
+  collections(first: $first, after: $after) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        handle
+        title
+      }
+    }
+  }
+}

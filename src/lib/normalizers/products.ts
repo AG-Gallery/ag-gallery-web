@@ -112,7 +112,7 @@ function normalizeMetaobjectLabel(meta: LabeledMetaobject | null | undefined) {
   return handle
     .split('-')
     .filter(Boolean)
-    .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
     .join(' ')
 }
 
