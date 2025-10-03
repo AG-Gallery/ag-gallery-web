@@ -75,41 +75,14 @@ export const Route = createFileRoute('/api/shopify/graphql')({
 
         const text = await upstream.text()
 
-        // Decide cache policy.
-        // Prefers headers from the fetcher, but falls back to parsing body
-        const header = (name: string) => request.headers.get(name) ?? ''
-        const hintedClass = header('X-Cache-Class').toLowerCase()
-
-        // Fallbacks if headers are missing
-        let cacheClass: 'public' | 'private' =
-          hintedClass === 'public' ? 'public' : 'private'
-        if (!hintedClass) {
-          const q = gqlBody.query.toString()
-          const m = /^\s*(query|mutation|subscription)\s+([A-Za-z0-9_]+)/i.exec(
-            q,
-          )
-          const opType = m?.[1]?.toLowerCase()
-          const opName = (gqlBody.operationName || m?.[2] || '').toLowerCase()
-          cacheClass =
-            opType === 'mutation'
-              ? 'private'
-              : opName.startsWith('public_')
-                ? 'public'
-                : 'private'
-        }
-
-        const cacheHeader =
-          cacheClass === 'public'
-            ? 'public, max-age=60, stale-while-revalidate=300'
-            : 'no-store'
-
+        // No HTTP caching - all queries have variables which can't be part of HTTP cache key
+        // Client-side caching is handled by React Query
         return new Response(text, {
           status: upstream.status,
           headers: {
             'Content-Type':
               upstream.headers.get('content-type') ?? 'application/json',
-            'Cache-Control': cacheHeader,
-            Vary: 'Accept-Encoding',
+            'Cache-Control': 'no-store',
           },
         })
       },

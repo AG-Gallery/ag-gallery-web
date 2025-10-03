@@ -35,8 +35,8 @@ export async function fetchArtworksPage(
     return fetchSanityPage(pageSize)
   }
 
-  const collectionHandles =
-    pageParam.collectionHandles ?? buildFilterCollectionHandles(filters)
+  // Always rebuild collection handles from current filters to prevent stale data
+  const collectionHandles = buildFilterCollectionHandles(filters)
 
   if (collectionHandles.length > 0) {
     return fetchArtworksForCollectionHandles(

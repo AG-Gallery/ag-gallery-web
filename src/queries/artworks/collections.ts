@@ -90,23 +90,17 @@ function normalizeHandleFromValue(
   type: keyof typeof FILTER_COLLECTION_PREFIXES,
   value: string,
 ): string | undefined {
-  const registered = getRegisteredHandle(type, value)
-  if (registered) return registered
-
+  // Don't use cached lookup - always build handle fresh from the value
+  // This prevents stale data in production server-side rendering
   const slug = slugify(value)
   if (!slug) return undefined
   return `${FILTER_COLLECTION_PREFIXES[type]}${slug}`
 }
 
 function resolveHandlesForArtist(value: string): string[] {
-  const handles = new Set<string>()
-  const registered = getRegisteredHandle('artists', value)
-  if (registered) handles.add(registered)
-
-  resolveCollectionHandlesForArtist(value).forEach((handle) => {
-    handles.add(handle)
-  })
-  return Array.from(handles)
+  // Don't use cached lookup - always build handles fresh from the artist name
+  // This prevents stale data in production server-side rendering
+  return resolveCollectionHandlesForArtist(value)
 }
 
 function resolveHandlesForFilter(
