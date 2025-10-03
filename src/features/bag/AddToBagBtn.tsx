@@ -23,7 +23,7 @@ export default function AddToBagBtn({
   const items = useBagStore.use.items()
   const addItem = useBagStore.use.addItem()
 
-  const isAlreadyInBag = items.some((bagItem) => bagItem.id === product.id)
+  const isAlreadyInBag = items.some((bagItem) => bagItem.id === product.gid)
   const isDisabled = disabled || isAlreadyInBag || isLoading
 
   const isSolid = type === 'solid'

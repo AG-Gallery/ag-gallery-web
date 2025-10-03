@@ -101,7 +101,7 @@ const useBagStoreBase = create<BagStore>()(
 export const useBagStore = createSelectors(useBagStoreBase)
 
 export const convertProductToBagItem = (artwork: Artwork): BagItem => ({
-  id: artwork.id,
+  id: artwork.gid,
   slug: artwork.slug,
   title: artwork.title,
   artist: artwork.artist.name,
