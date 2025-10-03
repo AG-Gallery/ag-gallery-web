@@ -40,7 +40,9 @@ const exhibitionQuery = `
 const allExhibitionsQuery = `
   *[
   _type == "exhibition"
-  ]{
+  ]
+  | order(startDate desc)
+  {
     "type": _type,
     "id": _id,
     title,
@@ -81,7 +83,9 @@ const exhibitionsWithArtistQuery = `
       // group exhibition case
       (groupToggle && $slug in artists[]->slug.current)
     )
-  ]{
+  ]
+  | order(startDate desc)
+  {
     "type": _type,
     "id": _id,
     title,
@@ -149,7 +153,9 @@ const fairQuery = `
 const allFairsQuery = `
   *[
   _type == "fair"
-  ]{
+  ]
+  | order(startDate desc)
+  {
     "type": _type,
     "id": _id,
     title,
@@ -174,7 +180,9 @@ const fairsWithArtistQuery = `
     _type == "fair" &&
     !(_id in path("drafts.**")) &&
     $slug in artists[]->slug.current
-  ]{
+  ]
+  | order(startDate desc)
+  {
     "type": _type,
     "id": _id,
     title,

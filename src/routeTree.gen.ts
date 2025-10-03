@@ -22,7 +22,6 @@ import { Route as PathlessLayoutArtworksSlugIndexRouteImport } from './routes/_p
 import { Route as PathlessLayoutArtistsSlugIndexRouteImport } from './routes/_pathlessLayout/artists/$slug/index'
 import { Route as PathlessLayoutEventsFairsSlugIndexRouteImport } from './routes/_pathlessLayout/events/fairs/$slug.index'
 import { Route as PathlessLayoutEventsExhibitionsSlugIndexRouteImport } from './routes/_pathlessLayout/events/exhibitions/$slug.index'
-import { Route as PathlessLayoutArtistsSlugArtworksIndexRouteImport } from './routes/_pathlessLayout/artists/$slug/artworks.index'
 
 const PathlessLayoutRouteRoute = PathlessLayoutRouteRouteImport.update({
   id: '/_pathlessLayout',
@@ -98,12 +97,6 @@ const PathlessLayoutEventsExhibitionsSlugIndexRoute =
     path: '/events/exhibitions/$slug/',
     getParentRoute: () => PathlessLayoutRouteRoute,
   } as any)
-const PathlessLayoutArtistsSlugArtworksIndexRoute =
-  PathlessLayoutArtistsSlugArtworksIndexRouteImport.update({
-    id: '/artists/$slug/artworks/',
-    path: '/artists/$slug/artworks/',
-    getParentRoute: () => PathlessLayoutRouteRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -116,7 +109,6 @@ export interface FileRoutesByFullPath {
   '/magazine': typeof PathlessLayoutMagazineIndexRoute
   '/artists/$slug': typeof PathlessLayoutArtistsSlugIndexRoute
   '/artworks/$slug': typeof PathlessLayoutArtworksSlugIndexRoute
-  '/artists/$slug/artworks': typeof PathlessLayoutArtistsSlugArtworksIndexRoute
   '/events/exhibitions/$slug': typeof PathlessLayoutEventsExhibitionsSlugIndexRoute
   '/events/fairs/$slug': typeof PathlessLayoutEventsFairsSlugIndexRoute
 }
@@ -130,7 +122,6 @@ export interface FileRoutesByTo {
   '/magazine': typeof PathlessLayoutMagazineIndexRoute
   '/artists/$slug': typeof PathlessLayoutArtistsSlugIndexRoute
   '/artworks/$slug': typeof PathlessLayoutArtworksSlugIndexRoute
-  '/artists/$slug/artworks': typeof PathlessLayoutArtistsSlugArtworksIndexRoute
   '/events/exhibitions/$slug': typeof PathlessLayoutEventsExhibitionsSlugIndexRoute
   '/events/fairs/$slug': typeof PathlessLayoutEventsFairsSlugIndexRoute
 }
@@ -147,7 +138,6 @@ export interface FileRoutesById {
   '/_pathlessLayout/magazine/': typeof PathlessLayoutMagazineIndexRoute
   '/_pathlessLayout/artists/$slug/': typeof PathlessLayoutArtistsSlugIndexRoute
   '/_pathlessLayout/artworks/$slug/': typeof PathlessLayoutArtworksSlugIndexRoute
-  '/_pathlessLayout/artists/$slug/artworks/': typeof PathlessLayoutArtistsSlugArtworksIndexRoute
   '/_pathlessLayout/events/exhibitions/$slug/': typeof PathlessLayoutEventsExhibitionsSlugIndexRoute
   '/_pathlessLayout/events/fairs/$slug/': typeof PathlessLayoutEventsFairsSlugIndexRoute
 }
@@ -164,7 +154,6 @@ export interface FileRouteTypes {
     | '/magazine'
     | '/artists/$slug'
     | '/artworks/$slug'
-    | '/artists/$slug/artworks'
     | '/events/exhibitions/$slug'
     | '/events/fairs/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -178,7 +167,6 @@ export interface FileRouteTypes {
     | '/magazine'
     | '/artists/$slug'
     | '/artworks/$slug'
-    | '/artists/$slug/artworks'
     | '/events/exhibitions/$slug'
     | '/events/fairs/$slug'
   id:
@@ -194,7 +182,6 @@ export interface FileRouteTypes {
     | '/_pathlessLayout/magazine/'
     | '/_pathlessLayout/artists/$slug/'
     | '/_pathlessLayout/artworks/$slug/'
-    | '/_pathlessLayout/artists/$slug/artworks/'
     | '/_pathlessLayout/events/exhibitions/$slug/'
     | '/_pathlessLayout/events/fairs/$slug/'
   fileRoutesById: FileRoutesById
@@ -298,13 +285,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PathlessLayoutEventsExhibitionsSlugIndexRouteImport
       parentRoute: typeof PathlessLayoutRouteRoute
     }
-    '/_pathlessLayout/artists/$slug/artworks/': {
-      id: '/_pathlessLayout/artists/$slug/artworks/'
-      path: '/artists/$slug/artworks'
-      fullPath: '/artists/$slug/artworks'
-      preLoaderRoute: typeof PathlessLayoutArtistsSlugArtworksIndexRouteImport
-      parentRoute: typeof PathlessLayoutRouteRoute
-    }
   }
 }
 
@@ -330,7 +310,6 @@ interface PathlessLayoutRouteRouteChildren {
   PathlessLayoutMagazineIndexRoute: typeof PathlessLayoutMagazineIndexRoute
   PathlessLayoutArtistsSlugIndexRoute: typeof PathlessLayoutArtistsSlugIndexRoute
   PathlessLayoutArtworksSlugIndexRoute: typeof PathlessLayoutArtworksSlugIndexRoute
-  PathlessLayoutArtistsSlugArtworksIndexRoute: typeof PathlessLayoutArtistsSlugArtworksIndexRoute
   PathlessLayoutEventsExhibitionsSlugIndexRoute: typeof PathlessLayoutEventsExhibitionsSlugIndexRoute
   PathlessLayoutEventsFairsSlugIndexRoute: typeof PathlessLayoutEventsFairsSlugIndexRoute
 }
@@ -343,8 +322,6 @@ const PathlessLayoutRouteRouteChildren: PathlessLayoutRouteRouteChildren = {
   PathlessLayoutMagazineIndexRoute: PathlessLayoutMagazineIndexRoute,
   PathlessLayoutArtistsSlugIndexRoute: PathlessLayoutArtistsSlugIndexRoute,
   PathlessLayoutArtworksSlugIndexRoute: PathlessLayoutArtworksSlugIndexRoute,
-  PathlessLayoutArtistsSlugArtworksIndexRoute:
-    PathlessLayoutArtistsSlugArtworksIndexRoute,
   PathlessLayoutEventsExhibitionsSlugIndexRoute:
     PathlessLayoutEventsExhibitionsSlugIndexRoute,
   PathlessLayoutEventsFairsSlugIndexRoute:

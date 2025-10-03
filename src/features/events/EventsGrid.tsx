@@ -1,5 +1,4 @@
-import type { Exhibition } from '@/types/exhibitions'
-import type { Fair } from '@/types/fairs'
+import type { Event } from '@/lib/events/utils'
 
 import { Link } from '@tanstack/react-router'
 
@@ -8,7 +7,7 @@ import { formatDateRange } from '@/lib/utils'
 import EventSlideshow from './EventSlideshow'
 
 type EventsGridProps = {
-  events: Exhibition[] | Fair[]
+  events: Event[]
 }
 
 export default function EventsGrid({ events }: EventsGridProps) {

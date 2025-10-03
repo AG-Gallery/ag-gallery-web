@@ -1,6 +1,9 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useLocation } from '@tanstack/react-router'
 
 export default function Footer() {
+  const location = useLocation()
+  const isMagazineRoute = location.pathname === '/magazine'
+
   const navLinks = [
     { title: 'Home', path: '/' },
     { title: 'Artists', path: '/artists' },
@@ -15,8 +18,10 @@ export default function Footer() {
     { title: 'Facebook', link: 'https://facebook.com' },
   ]
 
+  const footerBgClass = isMagazineRoute ? 'bg-black text-white' : 'bg-neutral-100/60'
+
   return (
-    <footer className="-mx-4 mt-10 bg-neutral-100/60 p-4 md:-mx-10 md:p-6">
+    <footer className={`-mx-4 mt-10 p-4 md:-mx-10 md:p-6 transition-colors duration-200 ${footerBgClass}`}>
       <div className="mt-5 flex flex-col items-start justify-between gap-6 md:flex-row md:gap-0 lg:mx-32 xl:mx-56">
         <div>
           <h4 className="font-playfair text-2xl font-medium">AG Gallery</h4>
