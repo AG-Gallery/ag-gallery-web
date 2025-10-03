@@ -1,9 +1,20 @@
 import type {
+  ArtworksPage,
+  CollectionSummary,
+  Public_GetCollectionsQuery,
+  Public_GetCollectionsQueryVariables,
+} from './types'
+import type {
   Public_GetAllProductsQuery,
   Public_GetAllProductsQueryVariables,
   Public_GetCollectionProductsQuery,
   Public_GetCollectionProductsQueryVariables,
 } from '@/queries/graphql/generated/react-query'
+import type {
+  ProductCollectionSortKeys,
+  ProductSortKeys,
+} from '@/queries/graphql/generated/types'
+import type { ArtworksSortOption } from '@/types/filters'
 import type { Artwork } from '@/types/products'
 
 import { formatProducts, productsToArtworks } from '@/lib/normalizers/products'
@@ -15,21 +26,56 @@ import {
 } from '@/queries/graphql/generated/react-query'
 import { getAllArtworks } from '@/queries/sanity/products'
 
-import type {
-  ArtworksPage,
-  CollectionSummary,
-  Public_GetCollectionsQuery,
-  Public_GetCollectionsQueryVariables,
-} from './types'
 import { detectFilterKey, formatCollectionTitleFromHandle } from './utils'
+
+function getShopifySortParams(sortOption: ArtworksSortOption): {
+  sortKey: ProductSortKeys
+  reverse: boolean
+} {
+  switch (sortOption) {
+    case 'default':
+      return { sortKey: 'TITLE' as ProductSortKeys, reverse: false }
+    case 'title-asc':
+      return { sortKey: 'TITLE' as ProductSortKeys, reverse: false }
+    case 'title-desc':
+      return { sortKey: 'TITLE' as ProductSortKeys, reverse: true }
+    case 'price-asc':
+      return { sortKey: 'PRICE' as ProductSortKeys, reverse: false }
+    case 'price-desc':
+      return { sortKey: 'PRICE' as ProductSortKeys, reverse: true }
+  }
+}
+
+function getShopifyCollectionSortParams(sortOption: ArtworksSortOption): {
+  sortKey: ProductCollectionSortKeys
+  reverse: boolean
+} {
+  switch (sortOption) {
+    case 'default':
+      return { sortKey: 'TITLE' as ProductCollectionSortKeys, reverse: false }
+    case 'title-asc':
+      return { sortKey: 'TITLE' as ProductCollectionSortKeys, reverse: false }
+    case 'title-desc':
+      return { sortKey: 'TITLE' as ProductCollectionSortKeys, reverse: true }
+    case 'price-asc':
+      return { sortKey: 'PRICE' as ProductCollectionSortKeys, reverse: false }
+    case 'price-desc':
+      return { sortKey: 'PRICE' as ProductCollectionSortKeys, reverse: true }
+  }
+}
 
 export async function fetchShopifyPage(
   after: string | undefined,
   pageSize: number,
+  sortOption: ArtworksSortOption,
 ): Promise<ArtworksPage> {
+  const { sortKey, reverse } = getShopifySortParams(sortOption)
+
   const variables: Public_GetAllProductsQueryVariables = {
     first: pageSize,
     after,
+    sortKey,
+    reverse,
     imagesFirst: 1,
   }
 
@@ -49,11 +95,16 @@ export async function fetchCollectionProductsPage(
   handle: string,
   after: string | undefined,
   pageSize: number,
+  sortOption: ArtworksSortOption,
 ): Promise<ArtworksPage> {
+  const { sortKey, reverse } = getShopifyCollectionSortParams(sortOption)
+
   const variables: Public_GetCollectionProductsQueryVariables = {
     collectionHandle: handle,
     productsFirst: pageSize,
     productsAfter: after,
+    productsSortKey: sortKey,
+    productsReverse: reverse,
     imagesFirst: 1,
   }
 

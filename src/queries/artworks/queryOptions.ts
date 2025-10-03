@@ -47,7 +47,7 @@ export async function fetchArtworksPage(
     )
   }
 
-  return fetchShopifyPage(pageParam.after, pageSize)
+  return fetchShopifyPage(pageParam.after, pageSize, sortOption)
 }
 
 export function getNextArtworksPageParam(
@@ -98,9 +98,12 @@ export function createAllArtworksInfiniteQueryOptions({
   const normalizedSort = sortOption
   const initialHandles = buildFilterCollectionHandles(normalizedFilters)
   const hasFilters = initialHandles.length > 0
-  const initialSource: ArtworksPageParam['source'] = hasFilters
-    ? 'shopify'
-    : 'sanity'
+
+  // Use Sanity only when sort is 'default' and there are no filters
+  const useSanity = normalizedSort === 'default' && !hasFilters
+  const initialSource: ArtworksPageParam['source'] = useSanity
+    ? 'sanity'
+    : 'shopify'
 
   return {
     queryKey: ['all-artworks', normalizedFilters, normalizedSort],

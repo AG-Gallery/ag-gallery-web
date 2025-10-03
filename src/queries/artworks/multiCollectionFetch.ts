@@ -64,6 +64,7 @@ export async function fetchArtworksForCollectionHandles(
       handle,
       cursor ?? undefined,
       perHandleFetchSize,
+      sortOption,
     )
 
     if (handle.startsWith(FILTER_COLLECTION_PREFIXES.categories)) {
@@ -93,37 +94,10 @@ export async function fetchArtworksForCollectionHandles(
   const activeHandles = new Set(uniqueHandles)
 
   const compareArtworks = (a: Artwork, b: Artwork): number => {
-    const compareTitle = () => a.title.localeCompare(b.title)
-    const parsePrice = (value: string) => {
-      const num = Number.parseFloat(value)
-      return Number.isFinite(num) ? num : null
-    }
-
-    switch (sortOption) {
-      case 'title-desc':
-        return b.title.localeCompare(a.title)
-      case 'price-asc': {
-        const aPrice = parsePrice(a.price)
-        const bPrice = parsePrice(b.price)
-        if (aPrice === null && bPrice === null) return compareTitle()
-        if (aPrice === null) return 1
-        if (bPrice === null) return -1
-        const diff = aPrice - bPrice
-        return diff !== 0 ? diff : compareTitle()
-      }
-      case 'price-desc': {
-        const aPrice = parsePrice(a.price)
-        const bPrice = parsePrice(b.price)
-        if (aPrice === null && bPrice === null) return compareTitle()
-        if (aPrice === null) return 1
-        if (bPrice === null) return -1
-        const diff = bPrice - aPrice
-        return diff !== 0 ? diff : compareTitle()
-      }
-      case 'title-asc':
-      default:
-        return compareTitle()
-    }
+    // Shopify API already sorted results by sortOption
+    // When merging multiple collections, just pick in round-robin fashion
+    // to maintain relative order from each collection
+    return 0
   }
 
   while (delivered.length < pageSize && activeHandles.size > 0) {

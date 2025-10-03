@@ -19,6 +19,7 @@ type ArtworksFiltersSidebarProps = {
 }
 
 const sortOptions: { label: string; value: ArtworksSortOption }[] = [
+  { label: 'Default', value: 'default' },
   { label: 'Title (A → Z)', value: 'title-asc' },
   { label: 'Title (Z → A)', value: 'title-desc' },
   { label: 'Price (low → high)', value: 'price-asc' },

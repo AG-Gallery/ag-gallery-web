@@ -23,7 +23,7 @@ import ArtworksFiltersSidebar from './ArtworksFiltersSidebar'
 import ArtworksGrid from './ArtworksGrid'
 import ArtworksGridSkeleton from './ArtworksGridSkeleton'
 
-const DEFAULT_SORT: ArtworksSortOption = 'title-asc'
+const DEFAULT_SORT: ArtworksSortOption = 'default'
 const FILTER_KEYS: Array<keyof ArtworksFilterState> = [
   'styles',
   'categories',
@@ -33,6 +33,7 @@ const FILTER_KEYS: Array<keyof ArtworksFilterState> = [
 
 function isSortOption(value: string | undefined): value is ArtworksSortOption {
   return (
+    value === 'default' ||
     value === 'title-asc' ||
     value === 'title-desc' ||
     value === 'price-asc' ||

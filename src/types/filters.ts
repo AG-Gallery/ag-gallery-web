@@ -1,4 +1,5 @@
 export type ArtworksSortOption =
+  | 'default'
   | 'title-asc'
   | 'title-desc'
   | 'price-asc'

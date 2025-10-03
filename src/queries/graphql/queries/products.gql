@@ -88,10 +88,12 @@ query Public_GetCollectionProducts(
   $collectionHandle: String!
   $productsFirst: Int = 12
   $productsAfter: String
+  $productsSortKey: ProductCollectionSortKeys = COLLECTION_DEFAULT
+  $productsReverse: Boolean = false
   $imagesFirst: Int = 1
 ) {
   collectionByHandle(handle: $collectionHandle) {
-    products(first: $productsFirst, after: $productsAfter) {
+    products(first: $productsFirst, after: $productsAfter, sortKey: $productsSortKey, reverse: $productsReverse) {
       pageInfo {
         hasNextPage
         endCursor
