@@ -2,11 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Link, useLocation } from '@tanstack/react-router'
 
-import { Search } from 'lucide-react'
-
 import Bag from '@/features/bag/Bag'
 import { cn } from '@/lib/utils'
 
+import SearchDialog from './SearchDialog'
 import { Button } from './ui/button'
 import {
   Drawer,
@@ -118,9 +117,7 @@ export default function Header({ isFloating = false }: HeaderProps) {
           </nav>
 
           <div className="mr-4 ml-10 flex gap-4 md:mr-0 md:gap-4">
-            <button className="cursor-pointer p-2 transition-colors duration-200">
-              <Search className="w-5" />
-            </button>
+            <SearchDialog isMagazineRoute={isMagazineRoute} />
 
             <Bag />
           </div>

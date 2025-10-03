@@ -1,0 +1,30 @@
+query SearchProducts($query: String!, $first: Int = 10) {
+  products(first: $first, query: $query) {
+    edges {
+      node {
+        id
+        title
+        handle
+        priceRange {
+          maxVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+        images(first: 1) {
+          edges {
+            node {
+              id
+              url
+              altText
+            }
+          }
+        }
+        artist: metafield(namespace: "custom", key: "artist") {
+          value
+          type
+        }
+      }
+    }
+  }
+}
