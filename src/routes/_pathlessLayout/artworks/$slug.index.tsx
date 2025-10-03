@@ -82,9 +82,33 @@ function RouteComponent() {
           </article>
 
           <section className="mt-8 space-y-1 tracking-wide">
-            <p className="font-medium">
-              Style: <span className="font-normal">{artwork?.style}</span>
-            </p>
+            {artwork?.style && (
+              <p className="font-medium">
+                Style:
+                <Link
+                  to="/artworks"
+                  search={{ styles: artwork.style }}
+                  className="hover:text-accent font-normal transition-colors duration-200"
+                >
+                  {' '}
+                  {artwork.style}
+                </Link>
+              </p>
+            )}
+
+            {artwork?.medium && (
+              <p className="font-medium">
+                Theme:
+                <Link
+                  to="/artworks"
+                  search={{ themes: artwork.theme }}
+                  className="hover:text-accent font-normal transition-colors duration-200"
+                >
+                  {' '}
+                  {artwork.theme}
+                </Link>
+              </p>
+            )}
 
             <p className="font-medium">
               Medium: <span className="font-normal">{artwork?.medium}</span>
