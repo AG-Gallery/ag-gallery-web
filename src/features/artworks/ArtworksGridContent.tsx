@@ -117,18 +117,6 @@ export default function ArtworksGridContent() {
     return mergeFilterOptions(remoteFilterOptions, fallbackOptions)
   }, [remoteFilterOptions, fallbackOptions])
 
-  if (status === 'pending') {
-    return <ArtworksGridSkeleton />
-  }
-
-  if (status === 'error') {
-    return (
-      <p className="mt-4 text-center text-sm text-red-600">
-        Unable to load artworks. Please try again.
-      </p>
-    )
-  }
-
   function handleFiltersChange(nextFilters: ArtworksFilterState) {
     const updates: Record<string, string[] | undefined> = {}
     FILTER_KEYS.forEach(function mapFilters(key) {
@@ -169,7 +157,13 @@ export default function ArtworksGridContent() {
       </div>
 
       <div className="flex-1 space-y-6">
-        {sortedArtworks.length > 0 ? (
+        {status === 'pending' ? (
+          <ArtworksGridSkeleton />
+        ) : status === 'error' ? (
+          <div className="flex min-h-[240px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-center text-sm text-red-600">
+            Unable to load artworks. Please try again.
+          </div>
+        ) : sortedArtworks.length > 0 ? (
           <ArtworksGrid artworks={sortedArtworks} />
         ) : (
           <div className="flex min-h-[240px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500">
