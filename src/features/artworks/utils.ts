@@ -1,5 +1,4 @@
 import type {
-  ArtworksFilterOptions,
   ArtworksFilterState,
   ArtworksSortOption,
 } from '@/types/filters'
@@ -22,46 +21,20 @@ export function dedupeArtworks(artworks: Artwork[]): Artwork[] {
   return unique
 }
 
-export function createFilterOptions(
-  artworks: Artwork[],
-): ArtworksFilterOptions {
-  const styles = new Set<string>()
-  const categories = new Set<string>()
-  const themes = new Set<string>()
-  const artists = new Set<string>()
-
-  for (const artwork of artworks) {
-    const styleRaw = artwork.style
-    const style = typeof styleRaw === 'string' ? styleRaw.trim() : ''
-    if (style) styles.add(style)
-
-    const categoryRaw = artwork.category
-    const category = typeof categoryRaw === 'string' ? categoryRaw.trim() : ''
-    if (category) categories.add(category)
-
-    const themeRaw = artwork.theme
-    const theme = typeof themeRaw === 'string' ? themeRaw.trim() : ''
-    if (theme) themes.add(theme)
-
-    const artistName = artwork.artist.name.trim()
-    if (artistName) artists.add(artistName)
-  }
-
-  const toSortedArray = (values: Set<string>) =>
-    Array.from(values).sort((a, b) => a.localeCompare(b))
-
-  return {
-    styles: toSortedArray(styles),
-    categories: toSortedArray(categories),
-    themes: toSortedArray(themes),
-    artists: toSortedArray(artists),
-  }
-}
-
 export function mergeFilterOptions(
-  primary: ArtworksFilterOptions,
-  fallback: ArtworksFilterOptions,
-): ArtworksFilterOptions {
+  primary: {
+    styles: string[]
+    categories: string[]
+    themes: string[]
+    artists: string[]
+  },
+  fallback: {
+    styles: string[]
+    categories: string[]
+    themes: string[]
+    artists: string[]
+  },
+) {
   const mergeValues = (primaryValues: string[], fallbackValues: string[]) => {
     const set = new Set(primaryValues)
     fallbackValues.forEach((value) => set.add(value))
@@ -74,6 +47,50 @@ export function mergeFilterOptions(
     themes: mergeValues(primary.themes, fallback.themes),
     artists: mergeValues(primary.artists, fallback.artists),
   }
+}
+
+const normalizeFilterValue = (value: string | null | undefined) => {
+  if (typeof value !== 'string') return ''
+  return value.trim()
+}
+
+type AttributeExtractor = (artwork: Artwork) => string[]
+
+const attributeExtractors: Record<keyof ArtworksFilterState, AttributeExtractor> = {
+  styles: (artwork) => {
+    const values: string[] = []
+    const primary = normalizeFilterValue(artwork.style)
+    if (primary) values.push(primary)
+    const tags = (artwork as Artwork & { styleTags?: string[] }).styleTags
+    if (Array.isArray(tags)) {
+      tags.forEach((tag) => {
+        const normalized = normalizeFilterValue(tag)
+        if (normalized) values.push(normalized)
+      })
+    }
+    return Array.from(new Set(values))
+  },
+  categories: (artwork) => {
+    const value = normalizeFilterValue(artwork.category)
+    return value ? [value] : []
+  },
+  themes: (artwork) => {
+    const values: string[] = []
+    const primary = normalizeFilterValue(artwork.theme)
+    if (primary) values.push(primary)
+    const tags = (artwork as Artwork & { themeTags?: string[] }).themeTags
+    if (Array.isArray(tags)) {
+      tags.forEach((tag) => {
+        const normalized = normalizeFilterValue(tag)
+        if (normalized) values.push(normalized)
+      })
+    }
+    return Array.from(new Set(values))
+  },
+  artists: (artwork) => {
+    const value = normalizeFilterValue(artwork.artist.name)
+    return value ? [value] : []
+  },
 }
 
 export function filterArtworks(
@@ -90,23 +107,19 @@ export function filterArtworks(
   }
 
   return artworks.filter((artwork) => {
-    const checks: Array<[string[], string | null | undefined]> = [
-      [filters.styles, artwork.style],
-      [filters.categories, artwork.category],
-      [filters.themes, artwork.theme],
-      [filters.artists, artwork.artist.name],
-    ]
+    return (Object.keys(filters) as Array<keyof ArtworksFilterState>).every(
+      (key) => {
+        const selectedValues = filters[key]
+        if (selectedValues.length === 0) return true
 
-    for (const [selectedValues, attributeValue] of checks) {
-      if (
-        selectedValues.length > 0 &&
-        (!attributeValue || !selectedValues.includes(attributeValue))
-      ) {
-        return false
-      }
-    }
+        const availableValues = attributeExtractors[key](artwork)
+        if (availableValues.length === 0) return false
 
-    return true
+        return selectedValues.some((selected) =>
+          availableValues.includes(normalizeFilterValue(selected)),
+        )
+      },
+    )
   })
 }
 

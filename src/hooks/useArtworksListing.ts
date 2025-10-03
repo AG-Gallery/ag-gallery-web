@@ -4,12 +4,7 @@ import { useMemo } from 'react'
 
 import { useInfiniteQuery } from '@tanstack/react-query'
 
-import {
-  createFilterOptions,
-  dedupeArtworks,
-  filterArtworks,
-  sortArtworks,
-} from '@/features/artworks/utils'
+import { dedupeArtworks, filterArtworks, sortArtworks } from '@/features/artworks/utils'
 import {
   createAllArtworksInfiniteQueryOptions,
   fetchFilterOptions,
@@ -53,8 +48,8 @@ export function useArtworksListing({
   )
 
   const fallbackOptions = useMemo(
-    () => createFilterOptions(dedupedArtworks),
-    [dedupedArtworks],
+    () => ({ styles: [], categories: [], themes: [], artists: [] }),
+    [],
   )
 
   const filteredArtworks = useMemo(

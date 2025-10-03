@@ -16,8 +16,10 @@ export type Artwork = {
   price: string
   slug: string
   style: string
+  styleTags?: string[]
   title: string
   theme: string
+  themeTags?: string[]
 }
 
 export type LabeledMetaobject = {

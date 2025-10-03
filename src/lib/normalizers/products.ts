@@ -101,12 +101,41 @@ export function formatProducts(
   return items.map(({ cursor, node }) => formatProduct(node, cursor))
 }
 
-export function productsToArtworks(products: Product[]): Artwork[] {
-  const firstLabel = (list: LabeledMetaobject[]) =>
-    list[0]?.label ?? list[0]?.handle
+function normalizeMetaobjectLabel(meta: LabeledMetaobject | null | undefined) {
+  if (!meta) return ''
+  const label = typeof meta.label === 'string' ? meta.label.trim() : ''
+  if (label) return label
 
+  const handle = typeof meta.handle === 'string' ? meta.handle.trim() : ''
+  if (!handle) return ''
+
+  return handle
+    .split('-')
+    .filter(Boolean)
+    .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
+    .join(' ')
+}
+
+function formatMetaLabelList(
+  list: LabeledMetaobject[] | null | undefined,
+): string[] {
+  if (!Array.isArray(list)) return []
+  const normalized = list
+    .map((meta) => normalizeMetaobjectLabel(meta))
+    .filter((value): value is string => Boolean(value))
+  return Array.from(new Set(normalized))
+}
+
+function formatMetaLabel(list: LabeledMetaobject[] | null | undefined): string {
+  const labels = formatMetaLabelList(list)
+  return labels[0] ?? ''
+}
+
+export function productsToArtworks(products: Product[]): Artwork[] {
   return products.map((p) => {
     const artistName = p.artist ?? 'Unknown'
+    const styleTags = formatMetaLabelList(p.style)
+    const themeTags = formatMetaLabelList(p.theme)
     return {
       id: p.id,
       gid: p.id,
@@ -117,9 +146,11 @@ export function productsToArtworks(products: Product[]): Artwork[] {
       price: p.price,
       currencyCode: p.currencyCode,
       category: p.category ?? null,
-      style: firstLabel(p.style),
+      style: styleTags[0] ?? '',
+      styleTags,
       medium: p.medium ?? '',
-      theme: firstLabel(p.theme),
+      theme: themeTags[0] ?? '',
+      themeTags,
       dimensionsImperial: p.dimensionsImperial ?? '',
       dimensionsMetric: p.dimensionsMetric ?? '',
     }
@@ -127,9 +158,9 @@ export function productsToArtworks(products: Product[]): Artwork[] {
 }
 
 export function productToArtwork(p: Product): Artwork {
-  const firstLabel = (list: LabeledMetaobject[]) =>
-    list[0]?.label ?? list[0]?.handle
   const artistName = p.artist ?? 'Unknown'
+  const styleTags = formatMetaLabelList(p.style)
+  const themeTags = formatMetaLabelList(p.theme)
   return {
     id: p.id,
     gid: p.id,
@@ -140,9 +171,11 @@ export function productToArtwork(p: Product): Artwork {
     currencyCode: p.currencyCode,
     category: p.category ?? null,
     artist: { name: artistName, slug: slugify(artistName) },
-    style: firstLabel(p.style),
+    style: styleTags[0] ?? '',
+    styleTags,
     medium: p.medium ?? '',
-    theme: firstLabel(p.theme),
+    theme: themeTags[0] ?? '',
+    themeTags,
     dimensionsImperial: p.dimensionsImperial ?? '',
     dimensionsMetric: p.dimensionsMetric ?? '',
   }

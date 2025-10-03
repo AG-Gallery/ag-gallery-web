@@ -20,43 +20,56 @@ import {
 } from '@/queries/graphql/generated/react-query'
 import { getAllArtworks } from '@/queries/sanity/products'
 
+type Public_GetCollectionsQuery = {
+  collections?: {
+    pageInfo: {
+      hasNextPage: boolean
+      endCursor?: string | null
+    }
+    edges: Array<{
+      node?: {
+        handle?: string | null
+        title?: string | null
+      } | null
+    }>
+  } | null
+}
+
+type Public_GetCollectionsQueryVariables = {
+  first: number
+  after?: string | null
+}
+
+const PUBLIC_GET_COLLECTIONS_DOCUMENT = /* GraphQL */ `
+  query Public_GetCollections($first: Int = 50, $after: String) {
+    collections(first: $first, after: $after) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          handle
+          title
+        }
+      }
+    }
+  }
+`
+
 export type ArtworksPageParam = {
   source: 'sanity' | 'shopify'
   after?: string
-  artistHandle?: string
+  collectionHandles?: string[]
+  collectionIndex?: number
 }
 
 export type ArtworksPage = {
   source: 'sanity' | 'shopify'
   items: Artwork[]
   pageInfo: { hasNextPage: boolean; endCursor?: string | null }
-  artistHandle?: string
-}
-
-function extractFilterValue(value: unknown): string {
-  return typeof value === 'string' ? value.trim() : ''
-}
-
-function addFilterOptionsFromArtwork(
-  artwork: Artwork,
-  optionSets: {
-    styles: Set<string>
-    categories: Set<string>
-    themes: Set<string>
-    artists: Set<string>
-  },
-) {
-  const style = extractFilterValue(artwork.style)
-  if (style) optionSets.styles.add(style)
-
-  const category = extractFilterValue(artwork.category)
-  if (category) optionSets.categories.add(category)
-
-  const theme = extractFilterValue(artwork.theme)
-  if (theme) optionSets.themes.add(theme)
-
-  const artistName = artwork.artist.name.trim()
-  if (artistName) optionSets.artists.add(artistName)
+  collectionHandles?: string[]
+  collectionIndex?: number
 }
 
 function extractSanityArtworks(input: unknown): Artwork[] {
@@ -140,7 +153,60 @@ async function fetchCollectionProductsPage(
       hasNextPage: pageInfo.hasNextPage,
       endCursor: pageInfo.endCursor,
     },
-    artistHandle: handle,
+  }
+}
+
+type CollectionSummary = {
+  handle: string
+  title: string
+}
+
+async function fetchCollectionsPage(
+  after: string | undefined,
+  pageSize: number,
+): Promise<{
+  items: CollectionSummary[]
+  pageInfo: { hasNextPage: boolean; endCursor?: string }
+}> {
+  const variables: Public_GetCollectionsQueryVariables = {
+    first: pageSize,
+    after: after ?? null,
+  }
+
+  const res = await fetcher<
+    Public_GetCollectionsQuery,
+    Public_GetCollectionsQueryVariables
+  >(PUBLIC_GET_COLLECTIONS_DOCUMENT, variables)()
+
+  const connection = res.collections
+  if (!connection) {
+    return {
+      items: [],
+      pageInfo: { hasNextPage: false, endCursor: undefined },
+    }
+  }
+
+  const items = connection.edges
+    .map((edge) => edge.node)
+    .filter((node): node is NonNullable<typeof node> => Boolean(node))
+    .map((node) => ({
+      handle: node.handle ?? '',
+      title: node.title ?? '',
+    }))
+    .filter((node): node is CollectionSummary => node.handle !== '' && node.title !== '')
+    .map((node) => ({
+      handle: node.handle.trim(),
+      title: node.title.trim(),
+    }))
+
+  const { hasNextPage, endCursor } = connection.pageInfo
+
+  return {
+    items,
+    pageInfo: {
+      hasNextPage,
+      endCursor: endCursor ?? undefined,
+    },
   }
 }
 
@@ -158,48 +224,100 @@ export function resolveCollectionHandlesForArtist(name: string) {
   return Array.from(handles)
 }
 
-async function fetchArtworksForArtists(
-  artists: string[],
+async function fetchArtworksForCollectionHandles(
+  handles: string[],
+  pageParam: ArtworksPageParam,
   pageSize: number,
-): Promise<Artwork[]> {
-  if (artists.length === 0) return []
-
-  const collected: Artwork[] = []
-  const seen = new Set<string>()
-
-  for (const name of artists) {
-    const handleCandidates = resolveCollectionHandlesForArtist(name)
-    if (handleCandidates.length === 0) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn('No collection handles found for artist', name)
-      }
-    }
-
-    for (const handle of handleCandidates) {
-      let after: string | undefined = undefined
-      let hasNextPage = true
-      const beforeCount = collected.length
-
-      while (hasNextPage) {
-        const page = await fetchCollectionProductsPage(handle, after, pageSize)
-        page.items.forEach((artwork) => {
-          const key = artwork.gid || artwork.id
-          if (key && !seen.has(key)) {
-            seen.add(key)
-            collected.push(artwork)
-          }
-        })
-        hasNextPage = page.pageInfo.hasNextPage
-        after = page.pageInfo.endCursor ?? undefined
-      }
-
-      if (collected.length > beforeCount) {
-        break
-      }
+): Promise<ArtworksPage> {
+  if (handles.length === 0) {
+    return {
+      source: 'shopify',
+      items: [],
+      pageInfo: { hasNextPage: false, endCursor: undefined },
+      collectionHandles: [],
+      collectionIndex: 0,
     }
   }
 
-  return collected
+  const uniqueHandles = Array.from(new Set(handles.filter(Boolean)))
+  if (uniqueHandles.length === 0) {
+    return {
+      source: 'shopify',
+      items: [],
+      pageInfo: { hasNextPage: false, endCursor: undefined },
+      collectionHandles: [],
+      collectionIndex: 0,
+    }
+  }
+
+  const persistedHandles = pageParam.collectionHandles
+  const handleList = Array.isArray(persistedHandles)
+    ? persistedHandles
+    : uniqueHandles
+  if (handleList.length === 0) {
+    return {
+      source: 'shopify',
+      items: [],
+      pageInfo: { hasNextPage: false, endCursor: undefined },
+      collectionHandles: [],
+      collectionIndex: 0,
+    }
+  }
+  const cappedIndex = Math.max(
+    0,
+    Math.min(pageParam.collectionIndex ?? 0, handleList.length - 1),
+  )
+
+  let index = cappedIndex
+  let after = pageParam.after
+
+  while (index < handleList.length) {
+    const handle = handleList[index]
+    try {
+      const page = await fetchCollectionProductsPage(handle, after, pageSize)
+      if (handle.startsWith(FILTER_COLLECTION_PREFIXES.categories)) {
+        console.log('[category-collection:page]', {
+          handle,
+          after,
+          received: page.items.length,
+          hasNextPage: page.pageInfo.hasNextPage,
+          titles: page.items.map((item) => item.title),
+        })
+      }
+      const adjustedItems = applyCollectionMetadataToArtworks(handle, page.items)
+      const hasMoreInCollection = page.pageInfo.hasNextPage
+      const hasMoreHandles = index < handleList.length - 1
+      if (adjustedItems.length > 0 || after) {
+        return {
+          source: 'shopify',
+          items: adjustedItems,
+          pageInfo: {
+            hasNextPage: hasMoreInCollection || hasMoreHandles,
+            endCursor: hasMoreInCollection
+              ? page.pageInfo.endCursor ?? undefined
+              : undefined,
+          },
+          collectionHandles: handleList,
+          collectionIndex: index,
+        }
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('Failed to load collection products for handle', handle, error)
+      }
+    }
+
+    index += 1
+    after = undefined
+  }
+
+  return {
+    source: 'shopify',
+    items: [],
+    pageInfo: { hasNextPage: false, endCursor: undefined },
+    collectionHandles: handleList,
+    collectionIndex: handleList.length,
+  }
 }
 
 export async function fetchArtworksPage(
@@ -223,53 +341,15 @@ export async function fetchArtworksPage(
     }
   }
 
-  const artistFilters = filters.artists
-  if (artistFilters.length === 1) {
-    const artistName = artistFilters[0]
-    const candidateHandles = pageParam.artistHandle
-      ? [pageParam.artistHandle]
-      : resolveCollectionHandlesForArtist(artistName)
+  const collectionHandles =
+    pageParam.collectionHandles ?? buildFilterCollectionHandles(filters)
 
-    for (const handle of candidateHandles) {
-      try {
-        const page = await fetchCollectionProductsPage(
-          handle,
-          pageParam.after,
-          pageSize,
-        )
-
-        if (process.env.NODE_ENV !== 'production') {
-          console.debug('[artist-collection]', {
-            artist: artistName,
-            handle,
-            after: pageParam.after,
-            received: page.items.length,
-            hasNextPage: page.pageInfo.hasNextPage,
-          })
-        }
-
-        if (page.items.length > 0 || pageParam.after) {
-          return { ...page, artistHandle: handle }
-        }
-      } catch (error) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.warn('Falling back to default feed for artist', artistName)
-        }
-        break
-      }
-    }
-  } else if (artistFilters.length > 1) {
-    const artistArtworks = await fetchArtworksForArtists(
-      artistFilters,
+  if (collectionHandles.length > 0) {
+    return fetchArtworksForCollectionHandles(
+      collectionHandles,
+      pageParam,
       pageSize,
     )
-    if (artistArtworks.length > 0) {
-      return {
-        source: 'shopify',
-        items: artistArtworks,
-        pageInfo: { hasNextPage: false, endCursor: undefined },
-      }
-    }
   }
 
   return fetchShopifyPage(pageParam.after, pageSize)
@@ -282,13 +362,40 @@ export function getNextArtworksPageParam(
     // After the initial Sanity page, we move to Shopify paging
     return { source: 'shopify', after: undefined }
   }
-  return lastPage.pageInfo.hasNextPage
-    ? {
+  const handles = lastPage.collectionHandles
+  if (handles && handles.length > 0) {
+    const index = lastPage.collectionIndex ?? 0
+    const endCursor = lastPage.pageInfo.endCursor ?? undefined
+
+    if (endCursor) {
+      return {
         source: 'shopify',
-        after: lastPage.pageInfo.endCursor ?? undefined,
-        artistHandle: lastPage.artistHandle,
+        after: endCursor,
+        collectionHandles: handles,
+        collectionIndex: index,
       }
-    : undefined
+    }
+
+    if (index + 1 < handles.length) {
+      return {
+        source: 'shopify',
+        after: undefined,
+        collectionHandles: handles,
+        collectionIndex: index + 1,
+      }
+    }
+
+    return undefined
+  }
+
+  if (lastPage.pageInfo.hasNextPage) {
+    return {
+      source: 'shopify',
+      after: lastPage.pageInfo.endCursor ?? undefined,
+    }
+  }
+
+  return undefined
 }
 
 function normalizeFilterValues(values: string[]): string[] {
@@ -312,19 +419,19 @@ export function createAllArtworksInfiniteQueryOptions({
   filters: ArtworksFilterState
 }) {
   const normalizedFilters = normalizeFilters(filters)
-  const initialSource: ArtworksPageParam['source'] =
-    normalizedFilters.artists.length > 0 ? 'shopify' : 'sanity'
-  const initialArtistHandle =
-    normalizedFilters.artists.length === 1
-      ? resolveCollectionHandlesForArtist(normalizedFilters.artists[0])[0]
-      : undefined
+  const initialHandles = buildFilterCollectionHandles(normalizedFilters)
+  const hasFilters = initialHandles.length > 0
+  const initialSource: ArtworksPageParam['source'] = hasFilters
+    ? 'shopify'
+    : 'sanity'
 
   return {
     queryKey: ['all-artworks', normalizedFilters],
     initialPageParam: {
       source: initialSource,
       after: undefined,
-      artistHandle: initialArtistHandle,
+      collectionHandles: hasFilters ? initialHandles : undefined,
+      collectionIndex: 0,
     },
     queryFn: (ctx: QueryFunctionContext<QueryKey, ArtworksPageParam>) =>
       fetchArtworksPage(ctx, { pageSize, filters: normalizedFilters }),
@@ -341,50 +448,258 @@ const EMPTY_FILTER_OPTIONS: ArtworksFilterOptions = {
   artists: [],
 }
 
-const FILTER_FETCH_PAGE_SIZE = 50
-const FILTER_FETCH_MAX_PAGES = 20
+const COLLECTIONS_FETCH_PAGE_SIZE = 100
+const COLLECTIONS_FETCH_MAX_PAGES = 20
+
+type FilterKey = keyof ArtworksFilterOptions
+
+const FILTER_COLLECTION_PREFIXES: Record<FilterKey, string> = {
+  styles: 'style-',
+  categories: 'category-',
+  themes: 'theme-',
+  artists: 'artist-',
+}
+
+const FILTER_COLLECTION_PREFIX_ENTRIES = Object.entries(
+  FILTER_COLLECTION_PREFIXES,
+) as Array<[FilterKey, string]>
+
+const collectionHandleLookup: Record<FilterKey, Map<string, string>> = {
+  styles: new Map(),
+  categories: new Map(),
+  themes: new Map(),
+  artists: new Map(),
+}
+
+const collectionTitleLookup: Record<FilterKey, Map<string, string>> = {
+  styles: new Map(),
+  categories: new Map(),
+  themes: new Map(),
+  artists: new Map(),
+}
+
+const collectionHandleToTitle: Record<FilterKey, Map<string, string>> = {
+  styles: new Map(),
+  categories: new Map(),
+  themes: new Map(),
+  artists: new Map(),
+}
+
+function normalizeCollectionTitle(title: string): string {
+  return title.trim().replace(/\s+/g, ' ').toLocaleLowerCase('en-US')
+}
+
+function addCollectionToOptions(
+  collection: CollectionSummary,
+  optionSets: {
+    styles: Set<string>
+    categories: Set<string>
+    themes: Set<string>
+    artists: Set<string>
+  },
+) {
+  const { handle, title } = collection
+  if (!handle || !title) return
+
+  const entry = FILTER_COLLECTION_PREFIX_ENTRIES.find(([_, prefix]) =>
+    handle.startsWith(prefix),
+  )
+  if (!entry) return
+
+  const [type] = entry
+  const normalizedTitle = title.trim()
+  if (!normalizedTitle) return
+
+  const canonical = normalizeCollectionTitle(normalizedTitle)
+  const seenTitles = collectionTitleLookup[type]
+  if (seenTitles.has(canonical)) {
+    if (!collectionHandleToTitle[type].has(handle)) {
+      collectionHandleToTitle[type].set(handle, normalizedTitle)
+    }
+    return
+  }
+
+  seenTitles.set(canonical, normalizedTitle)
+  optionSets[type].add(normalizedTitle)
+  if (!collectionHandleLookup[type].has(normalizedTitle)) {
+    collectionHandleLookup[type].set(normalizedTitle, handle)
+  }
+  if (!collectionHandleToTitle[type].has(handle)) {
+    collectionHandleToTitle[type].set(handle, normalizedTitle)
+  }
+}
+
+function getRegisteredHandle(
+  type: keyof typeof FILTER_COLLECTION_PREFIXES,
+  value: string,
+): string | undefined {
+  return collectionHandleLookup[type].get(value)
+}
+
+function normalizeHandleFromValue(
+  type: keyof typeof FILTER_COLLECTION_PREFIXES,
+  value: string,
+): string | undefined {
+  const registered = getRegisteredHandle(type, value)
+  if (registered) return registered
+
+  const slug = slugify(value)
+  if (!slug) return undefined
+  return `${FILTER_COLLECTION_PREFIXES[type]}${slug}`
+}
+
+function resolveHandlesForArtist(value: string): string[] {
+  const handles = new Set<string>()
+  const registered = getRegisteredHandle('artists', value)
+  if (registered) handles.add(registered)
+
+  resolveCollectionHandlesForArtist(value).forEach((handle) => {
+    handles.add(handle)
+  })
+  return Array.from(handles)
+}
+
+function resolveHandlesForFilter(
+  type: keyof ArtworksFilterState,
+  value: string,
+): string[] {
+  if (!value) return []
+  if (type === 'artists') {
+    return resolveHandlesForArtist(value)
+  }
+
+  const handle = normalizeHandleFromValue(type, value)
+  return handle ? [handle] : []
+}
+
+function buildFilterCollectionHandles(
+  filters: ArtworksFilterState,
+): string[] {
+  const allHandles = new Set<string>()
+
+  ;(Object.keys(filters) as Array<keyof ArtworksFilterState>).forEach((key) => {
+    const values = filters[key]
+    values.forEach((value) => {
+      resolveHandlesForFilter(key, value).forEach((handle) => {
+        if (handle) allHandles.add(handle)
+      })
+    })
+  })
+
+  return Array.from(allHandles)
+}
+
+function getCollectionMetaForHandle(
+  handle: string,
+): { type: FilterKey; title: string } | undefined {
+  for (const [type, prefix] of FILTER_COLLECTION_PREFIX_ENTRIES) {
+    if (!handle.startsWith(prefix)) continue
+    const title = collectionHandleToTitle[type].get(handle)
+    if (title) {
+      return { type, title }
+    }
+  }
+  return undefined
+}
+
+function applyCollectionMetadataToArtworks(
+  handle: string,
+  items: Artwork[],
+): Artwork[] {
+  const meta = getCollectionMetaForHandle(handle)
+  if (!meta) return items
+
+  switch (meta.type) {
+    case 'categories':
+      return items.map((artwork) => {
+        if (artwork.category === meta.title) return artwork
+        return { ...artwork, category: meta.title }
+      })
+    case 'styles':
+      return items.map((artwork) => {
+        if (artwork.style === meta.title) return artwork
+        return { ...artwork, style: meta.title }
+      })
+    case 'themes':
+      return items.map((artwork) => {
+        if (artwork.theme === meta.title) return artwork
+        return { ...artwork, theme: meta.title }
+      })
+    case 'artists':
+      return items.map((artwork) => {
+        if (artwork.artist.name === meta.title) return artwork
+        return {
+          ...artwork,
+          artist: {
+            ...artwork.artist,
+            name: meta.title,
+            slug: slugify(meta.title),
+          },
+        }
+      })
+    default:
+      return items
+  }
+}
 
 export async function fetchFilterOptions(): Promise<ArtworksFilterOptions> {
-  try {
-    const optionSets = {
-      styles: new Set<string>(),
-      categories: new Set<string>(),
-      themes: new Set<string>(),
-      artists: new Set<string>(),
+  collectionHandleLookup.styles.clear()
+  collectionHandleLookup.categories.clear()
+  collectionHandleLookup.themes.clear()
+  collectionHandleLookup.artists.clear()
+  collectionTitleLookup.styles.clear()
+  collectionTitleLookup.categories.clear()
+  collectionTitleLookup.themes.clear()
+  collectionTitleLookup.artists.clear()
+  collectionHandleToTitle.styles.clear()
+  collectionHandleToTitle.categories.clear()
+  collectionHandleToTitle.themes.clear()
+  collectionHandleToTitle.artists.clear()
+
+  const optionSets = {
+    styles: new Set<string>(),
+    categories: new Set<string>(),
+    themes: new Set<string>(),
+    artists: new Set<string>(),
+  }
+
+  let after: string | undefined = undefined
+  let hasNextPage = true
+  let iterations = 0
+
+  while (hasNextPage && iterations < COLLECTIONS_FETCH_MAX_PAGES) {
+    iterations += 1
+
+    let page: Awaited<ReturnType<typeof fetchCollectionsPage>>
+    try {
+      page = await fetchCollectionsPage(after, COLLECTIONS_FETCH_PAGE_SIZE)
+    } catch (error) {
+      console.error('Failed to fetch filter collections page', error)
+      break
     }
 
-    let after: string | undefined = undefined
-    let hasNextPage = true
-    let iterations = 0
-
-    while (hasNextPage && iterations < FILTER_FETCH_MAX_PAGES) {
-      iterations += 1
-      const page = await fetchShopifyPage(after, FILTER_FETCH_PAGE_SIZE)
-      page.items.forEach((artwork) => {
-        addFilterOptionsFromArtwork(artwork, optionSets)
-      })
-      hasNextPage = page.pageInfo.hasNextPage
-      after = page.pageInfo.endCursor ?? undefined
-    }
-
-    // Sanity-only artwork metadata can expose options the Shopify feed has not surfaced yet.
-    const sanityArtworks = extractSanityArtworks(await getAllArtworks())
-    sanityArtworks.forEach((artwork) => {
-      addFilterOptionsFromArtwork(artwork, optionSets)
+    page.items.forEach((collection) => {
+      addCollectionToOptions(collection, optionSets)
     })
 
-    return {
-      styles: Array.from(optionSets.styles).sort((a, b) => a.localeCompare(b)),
-      categories: Array.from(optionSets.categories).sort((a, b) =>
-        a.localeCompare(b),
-      ),
-      themes: Array.from(optionSets.themes).sort((a, b) => a.localeCompare(b)),
-      artists: Array.from(optionSets.artists).sort((a, b) =>
-        a.localeCompare(b),
-      ),
-    }
-  } catch (error) {
-    console.error('Failed to fetch filter options', error)
+    hasNextPage = page.pageInfo.hasNextPage
+    after = page.pageInfo.endCursor
+  }
+
+  const hasAnyOptions = Object.values(optionSets).some((set) => set.size > 0)
+
+  if (!hasAnyOptions) {
     return EMPTY_FILTER_OPTIONS
+  }
+
+  return {
+    styles: Array.from(optionSets.styles).sort((a, b) => a.localeCompare(b)),
+    categories: Array.from(optionSets.categories).sort((a, b) =>
+      a.localeCompare(b),
+    ),
+    themes: Array.from(optionSets.themes).sort((a, b) => a.localeCompare(b)),
+    artists: Array.from(optionSets.artists).sort((a, b) =>
+      a.localeCompare(b),
+    ),
   }
 }
