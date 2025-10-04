@@ -2,7 +2,7 @@ import { Link, useLocation } from '@tanstack/react-router'
 
 export default function Footer() {
   const location = useLocation()
-  const isMagazineRoute = location.pathname === '/magazine'
+  const isMagazineRoute = location.pathname.startsWith('/magazine')
 
   const navLinks = [
     { title: 'Home', path: '/' },
