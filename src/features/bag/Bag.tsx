@@ -12,7 +12,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
-// import { useCheckout } from "@/hooks/useCheckout";
+import { useCheckout } from '@/hooks/useCheckout'
 import { useBagStore } from '@/store/bag-store'
 
 import BagItem from './BagItem'
@@ -31,7 +31,7 @@ export default function Bag() {
   const getTotalPriceFormatted = useBagStore.use.getTotalPriceFormatted()
   const clearBag = useBagStore.use.clearBag()
 
-  // const { proceedToCheckout, isLoading: isCheckoutLoading } = useCheckout()
+  const { proceedToCheckout, isLoading: isCheckoutLoading, error: checkoutError, clearError } = useCheckout()
 
   const itemCount = getItemCount()
   const totalPrice = getTotalPriceFormatted()
@@ -93,23 +93,42 @@ export default function Bag() {
 
   const bagFooter = !hasItems ? null : (
     <DrawerFooter className="border-t border-neutral-200">
+      {checkoutError && (
+        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3">
+          <p className="text-sm text-red-800">
+            {checkoutError.message}
+          </p>
+          {checkoutError.unavailableItems && checkoutError.unavailableItems.length > 0 && (
+            <ul className="mt-2 text-xs text-red-700">
+              {checkoutError.unavailableItems.map((item) => (
+                <li key={item}>• {item}</li>
+              ))}
+            </ul>
+          )}
+          <button
+            onClick={clearError}
+            className="mt-2 text-xs text-red-600 underline hover:text-red-800"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
       <div className="mb-4 flex items-center justify-between text-lg font-semibold">
         <span>Subtotal</span>
         <span className="font-medium">{totalPrice}</span>
       </div>
       <Button
         className="rounded-md border border-sky-800 bg-sky-700 font-medium text-white hover:border-sky-700 hover:bg-sky-600 disabled:cursor-not-allowed disabled:opacity-50"
-        // onClick={proceedToCheckout}
-        // disabled={isCheckoutLoading}
+        onClick={proceedToCheckout}
+        disabled={isCheckoutLoading}
       >
-        Checkout
-        {/* {isCheckoutLoading ? 'Processing...' : 'Checkout'} */}
+        {isCheckoutLoading ? 'Processing...' : 'Checkout'}
       </Button>
       <DrawerClose asChild>
         <Button
           variant="outline"
           type="button"
-          // disabled={isCheckoutLoading}
+          disabled={isCheckoutLoading}
         >
           Continue Browsing
         </Button>
@@ -154,7 +173,7 @@ export default function Bag() {
       <DrawerTrigger asChild>
         <button
           className="relative cursor-pointer p-2 disabled:cursor-not-allowed disabled:opacity-50"
-          // disabled={isCheckoutLoading}
+          disabled={isCheckoutLoading}
           type="button"
         >
           <BagIcon classes="size-5" />
@@ -197,7 +216,7 @@ export default function Bag() {
               <button
                 onClick={clearBag}
                 className="mr-4 text-sm text-neutral-500 hover:text-neutral-700"
-                // disabled={hasItems === false || isCheckoutLoading}
+                disabled={hasItems === false || isCheckoutLoading}
                 type="button"
               >
                 Clear all
