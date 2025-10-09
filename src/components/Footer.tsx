@@ -18,16 +18,26 @@ export default function Footer() {
     { title: 'Facebook', link: 'https://facebook.com' },
   ]
 
-  const footerBgClass = isMagazineRoute ? 'bg-black text-white' : 'bg-neutral-100/60'
+  const footerBgClass = isMagazineRoute
+    ? 'bg-black text-white'
+    : 'bg-neutral-100/60'
 
   return (
-    <footer className={`-mx-4 mt-10 p-4 md:-mx-10 md:p-6 transition-colors duration-200 ${footerBgClass}`}>
+    <footer
+      className={`-mx-4 mt-10 p-4 transition-colors duration-200 md:-mx-10 md:p-6 ${footerBgClass}`}
+    >
       <div className="mt-5 flex flex-col items-start justify-between gap-6 md:flex-row md:gap-0 lg:mx-32 xl:mx-56">
         <div>
           <h4 className="font-playfair text-2xl font-medium">AG Gallery</h4>
-          <p className="mt-1 text-sm">
+          <p className="mt-2 text-sm">
             418 E Colorado Blvd, Glendale, CA 91205
           </p>
+          <a
+            href="mailto:info@ag-gallery.com"
+            className="hover:text-accent mt-1 text-sm transition-colors"
+          >
+            info@ag-gallery.com
+          </a>
         </div>
 
         <section className="flex flex-col gap-3">
@@ -38,7 +48,7 @@ export default function Footer() {
                 <li key={navLink.path} className="text-sm tracking-wide">
                   <Link
                     to={navLink.path}
-                    className="hover:text-accent transition-colors duration-150 ease-in-out"
+                    className="hover:text-accent transition-colors"
                   >
                     {navLink.title}
                   </Link>
@@ -58,7 +68,7 @@ export default function Footer() {
                 <a
                   href={socialMedia.link}
                   target="_blank"
-                  className="hover:text-accent transition-colors duration-150 ease-in-out"
+                  className="hover:text-accent transition-colors"
                 >
                   {socialMedia.title}
                 </a>
@@ -71,18 +81,12 @@ export default function Footer() {
           <h5 className="font-lora font-semibold tracking-wide">Legal</h5>
           <ul className="space-y-2">
             <li className="text-sm tracking-wide">
-              <a
-                href="/"
-                className="hover:text-accent transition-colors duration-150 ease-in-out"
-              >
+              <a href="/" className="hover:text-accent transition-colors">
                 Privacy Policy
               </a>
             </li>
             <li className="text-sm tracking-wide">
-              <a
-                href="/"
-                className="hover:text-accent transition-colors duration-150 ease-in-out"
-              >
+              <a href="/" className="hover:text-accent transition-colors">
                 {'Terms & Conditions'}
               </a>
             </li>
