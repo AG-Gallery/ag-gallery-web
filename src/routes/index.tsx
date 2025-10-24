@@ -21,12 +21,12 @@ export const Route = createFileRoute('/')({
 })
 
 function IndexPage() {
-  const { data, isLoading, error } = useSuspenseQuery(homeDataQuery)
+  const { data } = useSuspenseQuery(homeDataQuery)
 
   const curatorsPicks = data.curatorsPicks
   const featuredArtists = data.featuredArtists
   const featuredExhibitions = data.featuredExhibitions
-  const featuredFairs = data.featuredFairs
+  // const featuredFairs = data.featuredFairs
 
   return (
     <>

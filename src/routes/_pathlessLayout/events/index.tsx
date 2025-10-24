@@ -1,9 +1,12 @@
-import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import type { EventTimeFilter } from '@/lib/events/utils'
+
 import { useMemo, useState } from 'react'
 
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
+import { createFileRoute } from '@tanstack/react-router'
+
 import EventsGrid from '@/features/events/EventsGrid'
-import type { EventTimeFilter } from '@/lib/events/utils'
+import { ITEMS_PER_PAGE } from '@/hooks/useArtworksListing'
 import { filterEventsByTime, sortEventsByTime } from '@/lib/events/utils'
 import { getAllExhibitions, getAllFairs } from '@/queries/sanity/events'
 
@@ -31,12 +34,11 @@ export const Route = createFileRoute('/_pathlessLayout/events/')({
 })
 
 function RouteComponent() {
-  const [exhibitionsFilter, setExhibitionsFilter] = useState<EventTimeFilter>('all')
+  const [exhibitionsFilter, setExhibitionsFilter] =
+    useState<EventTimeFilter>('all')
   const [fairsFilter, setFairsFilter] = useState<EventTimeFilter>('all')
   const [exhibitionsPage, setExhibitionsPage] = useState(1)
   const [fairsPage, setFairsPage] = useState(1)
-
-  const ITEMS_PER_PAGE = 24
 
   const {
     data: exhibitions,
@@ -74,7 +76,8 @@ function RouteComponent() {
     [filteredFairs, fairsPage],
   )
 
-  const hasMoreExhibitions = filteredExhibitions.length > exhibitionsPage * ITEMS_PER_PAGE
+  const hasMoreExhibitions =
+    filteredExhibitions.length > exhibitionsPage * ITEMS_PER_PAGE
   const hasMoreFairs = filteredFairs.length > fairsPage * ITEMS_PER_PAGE
 
   const handleExhibitionsFilterChange = (filter: EventTimeFilter) => {

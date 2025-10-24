@@ -64,7 +64,7 @@ fragment ProductFields on Product {
 }
 
 query Public_GetAllProducts(
-  $first: Int = 24
+  $first: Int = 32
   $after: String
   $sortKey: ProductSortKeys = TITLE
   $reverse: Boolean = false
@@ -93,7 +93,12 @@ query Public_GetCollectionProducts(
   $imagesFirst: Int = 1
 ) {
   collectionByHandle(handle: $collectionHandle) {
-    products(first: $productsFirst, after: $productsAfter, sortKey: $productsSortKey, reverse: $productsReverse) {
+    products(
+      first: $productsFirst
+      after: $productsAfter
+      sortKey: $productsSortKey
+      reverse: $productsReverse
+    ) {
       pageInfo {
         hasNextPage
         endCursor

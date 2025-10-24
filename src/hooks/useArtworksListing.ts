@@ -14,7 +14,7 @@ import {
   fetchFilterOptions,
 } from '@/queries/artworks'
 
-const PAGE_SIZE = 24
+export const ITEMS_PER_PAGE = 32
 
 interface UseArtworksListingArgs {
   sortOption: ArtworksSortOption
@@ -28,7 +28,7 @@ export function useArtworksListing({
   const infiniteQueryOptions = useMemo(
     () =>
       createAllArtworksInfiniteQueryOptions({
-        pageSize: PAGE_SIZE,
+        pageSize: ITEMS_PER_PAGE,
         filters,
         sortOption,
       }),
@@ -62,7 +62,8 @@ export function useArtworksListing({
   )
 
   const showLoadMoreButton =
-    hasNextPage && (!hasActiveFilters || dedupedArtworks.length >= PAGE_SIZE)
+    hasNextPage &&
+    (!hasActiveFilters || dedupedArtworks.length >= ITEMS_PER_PAGE)
 
   return {
     fallbackOptions,

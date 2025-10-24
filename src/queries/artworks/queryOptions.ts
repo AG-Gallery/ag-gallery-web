@@ -2,6 +2,8 @@ import type { ArtworksPage, ArtworksPageParam } from './types'
 import type { ArtworksFilterState, ArtworksSortOption } from '@/types/filters'
 import type { QueryFunctionContext, QueryKey } from '@tanstack/react-query'
 
+import { ITEMS_PER_PAGE } from '@/hooks/useArtworksListing'
+
 import { buildFilterCollectionHandles } from './collections'
 import { fetchSanityPage, fetchShopifyPage } from './fetchers'
 import { fetchArtworksForCollectionHandles } from './multiCollectionFetch'
@@ -22,7 +24,7 @@ function normalizeFilters(filters: ArtworksFilterState): ArtworksFilterState {
 export async function fetchArtworksPage(
   { pageParam }: QueryFunctionContext<QueryKey, ArtworksPageParam>,
   {
-    pageSize = 24,
+    pageSize = ITEMS_PER_PAGE,
     filters,
     sortOption,
   }: {
@@ -86,7 +88,7 @@ export function getNextArtworksPageParam(
 }
 
 export function createAllArtworksInfiniteQueryOptions({
-  pageSize = 24,
+  pageSize = ITEMS_PER_PAGE,
   filters,
   sortOption,
 }: {
