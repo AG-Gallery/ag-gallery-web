@@ -128,7 +128,7 @@ export default function Header({ isFloating = false }: HeaderProps) {
             </DrawerTrigger>
             <DrawerContent
               className={cn(
-                'w-full sm:w-auto md:hidden',
+                'w-full md:hidden',
                 isMagazineRoute ? 'bg-black text-white' : 'bg-white text-black',
               )}
             >

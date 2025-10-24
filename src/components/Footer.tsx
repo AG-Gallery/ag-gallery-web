@@ -24,7 +24,7 @@ export default function Footer() {
 
   return (
     <footer
-      className={`-mx-4 mt-10 p-4 transition-colors duration-200 md:-mx-10 md:p-6 ${footerBgClass}`}
+      className={`-mx-4 mt-10 min-w-screen p-4 transition-colors duration-200 md:-mx-10 md:p-6 ${footerBgClass}`}
     >
       <div className="mt-5 flex flex-col items-start justify-between gap-6 md:flex-row md:gap-0 lg:mx-32 xl:mx-56">
         <div>
