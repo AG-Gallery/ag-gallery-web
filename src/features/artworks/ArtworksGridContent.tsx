@@ -8,16 +8,22 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useQuery } from '@tanstack/react-query'
 
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, ListFilter } from 'lucide-react'
 
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import {
   loadFilterOptions,
   useArtworksListing,
 } from '@/hooks/useArtworksListing'
+import { mergeFilterOptions } from '@/lib/artworks/utils'
 import { Route } from '@/routes/_pathlessLayout/artworks'
 import { useUrlStore } from '@/store/url-store'
-
-import { mergeFilterOptions } from '@/lib/artworks/utils'
 
 import ArtworksFiltersSidebar from './ArtworksFiltersSidebar'
 import ArtworksGrid from './ArtworksGrid'
@@ -165,16 +171,14 @@ export default function ArtworksGridContent() {
 
       const hasOverflow = content.scrollHeight > content.clientHeight + 2
       const atBottom =
-        content.scrollTop + content.clientHeight >=
-        content.scrollHeight - 2
+        content.scrollTop + content.clientHeight >= content.scrollHeight - 2
       setShowScrollHint(hasOverflow && !atBottom)
     }
 
     const handleContentScroll = () => {
       const hasOverflow = content.scrollHeight > content.clientHeight + 2
       const atBottom =
-        content.scrollTop + content.clientHeight >=
-        content.scrollHeight - 2
+        content.scrollTop + content.clientHeight >= content.scrollHeight - 2
       setShowScrollHint(hasOverflow && !atBottom)
     }
 
@@ -209,76 +213,107 @@ export default function ArtworksGridContent() {
   }
 
   const sidebarStyle =
-    typeof window !== 'undefined' && window.innerWidth >= 1024 && sidebarMaxHeight
+    typeof window !== 'undefined' &&
+    window.innerWidth >= 1024 &&
+    sidebarMaxHeight
       ? { maxHeight: `${sidebarMaxHeight}px` }
       : undefined
 
   return (
-    <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start">
-      <div
-        ref={sidebarWrapperRef}
-        className="lg:sticky lg:top-36 lg:w-64 lg:flex-shrink-0 lg:self-start"
-      >
-        <div className="relative">
-          <div
-            ref={sidebarRef}
-            className="lg:overflow-y-auto lg:pr-2 lg:pb-6 lg:[-ms-overflow-style:none] lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden"
-            style={sidebarStyle}
-          >
-            <ArtworksFiltersSidebar
-              sortOption={sortOption}
-              onSortChange={handleSortChange}
-              filters={filters}
-              onFiltersChange={handleFiltersChange}
-              availableOptions={availableOptions}
-              onClearFilters={handleClearFilters}
-            />
-          </div>
-
-          {showScrollHint && (
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-10 items-end justify-center bg-gradient-to-t from-white via-white/90 to-transparent lg:flex"
-            >
-              <button
-                type="button"
-                onClick={handleScrollHintClick}
-                className="pointer-events-auto flex items-center gap-1 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs text-neutral-600 shadow-xs transition hover:border-neutral-400 hover:text-neutral-800"
-              >
-                <ChevronDown className="h-3 w-3" />
-                More filters
-              </button>
+    <>
+      {/* Mobile Filter & Sort */}
+      <div className="mb-6 flex justify-end lg:hidden">
+        <Sheet>
+          <SheetTrigger asChild>
+            <button className="flex w-fit items-center justify-center gap-2 rounded-lg border border-neutral-200 bg-white px-6 py-2 font-medium shadow-sm shadow-neutral-200/60 outline-none">
+              <ListFilter size={16} />
+              Filter
+            </button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-full">
+            <SheetHeader>
+              <SheetTitle>Filter & Sort</SheetTitle>
+            </SheetHeader>
+            <div className="overflow-y-auto px-2 pb-2">
+              <ArtworksFiltersSidebar
+                sortOption={sortOption}
+                onSortChange={handleSortChange}
+                filters={filters}
+                onFiltersChange={handleFiltersChange}
+                availableOptions={availableOptions}
+                onClearFilters={handleClearFilters}
+              />
             </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+
+      <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start">
+        <div
+          ref={sidebarWrapperRef}
+          className="hidden lg:sticky lg:top-36 lg:block lg:w-64 lg:flex-shrink-0 lg:self-start"
+        >
+          <div className="relative">
+            <div
+              ref={sidebarRef}
+              className="lg:overflow-y-auto lg:pr-2 lg:pb-6 lg:[-ms-overflow-style:none] lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden"
+              style={sidebarStyle}
+            >
+              <ArtworksFiltersSidebar
+                sortOption={sortOption}
+                onSortChange={handleSortChange}
+                filters={filters}
+                onFiltersChange={handleFiltersChange}
+                availableOptions={availableOptions}
+                onClearFilters={handleClearFilters}
+              />
+            </div>
+
+            {showScrollHint && (
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-10 items-end justify-center bg-gradient-to-t from-white via-white/90 to-transparent lg:flex"
+              >
+                <button
+                  type="button"
+                  onClick={handleScrollHintClick}
+                  className="pointer-events-auto flex items-center gap-1 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs text-neutral-600 shadow-xs transition hover:border-neutral-400 hover:text-neutral-800"
+                >
+                  <ChevronDown className="h-3 w-3" />
+                  More filters
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex-1 space-y-6">
+          {status === 'pending' ? (
+            <ArtworksGridSkeleton />
+          ) : status === 'error' ? (
+            <div className="flex min-h-[240px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-center text-sm text-red-600">
+              Unable to load artworks. Please try again.
+            </div>
+          ) : sortedArtworks.length > 0 ? (
+            <ArtworksGrid artworks={sortedArtworks} />
+          ) : (
+            <div className="flex min-h-[240px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500">
+              No artworks match your current filters. Try adjusting or clearing
+              them.
+            </div>
+          )}
+
+          {showLoadMoreButton && (
+            <button
+              onClick={handleLoadMoreRequest}
+              disabled={isFetchingNextPage}
+              className="mx-auto block cursor-pointer rounded-full border border-black px-6 py-3 font-medium transition-colors duration-200 ease-in hover:bg-black hover:text-white disabled:opacity-50"
+            >
+              {isFetchingNextPage ? 'Loading…' : 'Show more'}
+            </button>
           )}
         </div>
       </div>
-
-      <div className="flex-1 space-y-6">
-        {status === 'pending' ? (
-          <ArtworksGridSkeleton />
-        ) : status === 'error' ? (
-          <div className="flex min-h-[240px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-center text-sm text-red-600">
-            Unable to load artworks. Please try again.
-          </div>
-        ) : sortedArtworks.length > 0 ? (
-          <ArtworksGrid artworks={sortedArtworks} />
-        ) : (
-          <div className="flex min-h-[240px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500">
-            No artworks match your current filters. Try adjusting or clearing
-            them.
-          </div>
-        )}
-
-        {showLoadMoreButton && (
-          <button
-            onClick={handleLoadMoreRequest}
-            disabled={isFetchingNextPage}
-            className="mx-auto block cursor-pointer rounded-full border border-black px-6 py-3 font-medium transition-colors duration-200 ease-in hover:bg-black hover:text-white disabled:opacity-50"
-          >
-            {isFetchingNextPage ? 'Loading…' : 'Show more'}
-          </button>
-        )}
-      </div>
-    </div>
+    </>
   )
 }

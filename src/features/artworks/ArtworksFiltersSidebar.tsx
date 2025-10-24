@@ -3,10 +3,14 @@ import type {
   ArtworksFilterState,
   ArtworksSortOption,
 } from '@/types/filters'
-import type { ChangeEvent } from 'react'
 
-import { ChevronDown } from 'lucide-react'
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { slugify, toggleArrayValue } from '@/lib/utils'
 
 type ArtworksFiltersSidebarProps = {
@@ -82,8 +86,8 @@ export default function ArtworksFiltersSidebar({
   availableOptions,
   onClearFilters,
 }: ArtworksFiltersSidebarProps) {
-  const handleSortChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    onSortChange(event.target.value as ArtworksSortOption)
+  const handleSortChange = (value: string) => {
+    onSortChange(value as ArtworksSortOption)
   }
 
   const handleToggle = (name: keyof ArtworksFilterState, value: string) => {
@@ -129,30 +133,21 @@ export default function ArtworksFiltersSidebar({
         </div>
 
         <div className="space-y-2">
-          <label
-            htmlFor="artworks-sort"
-            className="text-sm font-medium text-neutral-700"
-          >
+          <label className="text-sm font-medium text-neutral-700">
             Sort by
           </label>
-          <div className="relative">
-            <select
-              id="artworks-sort"
-              value={sortOption}
-              onChange={handleSortChange}
-              className="w-full cursor-pointer appearance-none rounded-md border border-neutral-300 bg-white px-3 py-2 pr-10 text-sm text-neutral-800 shadow-xs focus:border-black focus:ring-1 focus:ring-black focus:outline-none"
-            >
+          <Select value={sortOption} onValueChange={handleSortChange}>
+            <SelectTrigger className="mt-1 w-full">
+              <SelectValue placeholder="Select a sort option" />
+            </SelectTrigger>
+            <SelectContent>
               {sortOptions.map((option) => (
-                <option key={option.value} value={option.value}>
+                <SelectItem key={option.value} value={option.value}>
                   {option.label}
-                </option>
+                </SelectItem>
               ))}
-            </select>
-            <ChevronDown
-              aria-hidden
-              className="pointer-events-none absolute top-1/2 right-2 size-4 -translate-y-[45%] text-neutral-500"
-            />
-          </div>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
