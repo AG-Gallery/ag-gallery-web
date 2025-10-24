@@ -14,7 +14,7 @@ export default function ArtistsGrid({ artists }: ArtistsGridProps) {
         <div className="grid grid-cols-2 gap-2">
           {artists.map((artist) => {
             return (
-              <div key={artist.id}>
+              <div key={artist.id} className="mb-2">
                 <Link
                   to="/artists/$slug"
                   params={{ slug: artist.slug }}
@@ -39,7 +39,7 @@ export default function ArtistsGrid({ artists }: ArtistsGridProps) {
                     />
                   </div>
 
-                  <div className="relative z-30 mt-5 flex w-fit flex-col items-center justify-center transition-colors duration-200 group-hover:text-white md:absolute md:top-8 md:right-0 md:left-0 md:mx-auto">
+                  <div className="relative z-30 mt-1 flex w-fit flex-col justify-center transition-colors duration-200 group-hover:text-white md:absolute md:top-8 md:right-0 md:left-0 md:mx-auto md:mt-5 md:items-center">
                     <h3 className="font-playfair w-fit text-lg font-medium md:text-xl lg:text-2xl xl:text-4xl">
                       {artist.name}
                     </h3>

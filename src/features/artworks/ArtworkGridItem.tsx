@@ -42,7 +42,7 @@ export function ArtworkGridItem({
   const priceDisplay = formatMoney(artwork.currencyCode, artwork.price)
 
   return (
-    <div className="group animate-fade-in flex flex-col items-start justify-start">
+    <div className="group animate-fade-in mb-2 flex flex-col items-start justify-start">
       <Link
         to="/artworks/$slug"
         params={{ slug: artwork.slug }}
@@ -76,7 +76,7 @@ export function ArtworkGridItem({
         </div>
       </Link>
 
-      <div className="mt-4">
+      <div className="mt-2 md:mt-4">
         <h3 className="hover:text-accent mb-1 line-clamp-2 transition-colors duration-100 2xl:text-lg">
           <Link
             to={`/artworks/$slug`}

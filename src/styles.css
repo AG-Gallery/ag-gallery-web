@@ -172,7 +172,7 @@ body {
   }
 
   .featured-grid {
-    @apply grid grid-cols-2 gap-5 md:grid-cols-4;
+    @apply grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-5;
   }
 
   .featured-headline {
@@ -184,6 +184,6 @@ body {
   }
 
   .page-headline {
-    @apply font-playfair mb-8 text-xl font-medium md:text-[1.625rem] lg:text-3xl;
+    @apply font-playfair mb-4 text-xl font-medium md:mb-8 md:text-[1.625rem] lg:text-3xl;
   }
 }

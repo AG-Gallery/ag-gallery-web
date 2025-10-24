@@ -208,7 +208,7 @@ export default function ArtworksGridContent() {
   return (
     <>
       {/* Mobile Filter & Sort */}
-      <div className="mb-6 flex justify-end lg:hidden">
+      <div className="flex justify-end lg:hidden">
         <Sheet>
           <SheetTrigger asChild>
             <button className="flex w-fit items-center justify-center gap-2 rounded-lg border border-neutral-200 bg-white px-6 py-2 font-medium shadow-sm shadow-neutral-200/60 outline-none">
