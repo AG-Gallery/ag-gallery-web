@@ -34,7 +34,7 @@ export default function AddToBagBtn({
     ? 'bg-black text-white hover:bg-accent font-medium ease-in-out'
     : 'text-black hover:text-accent cursor-pointer'
   const disabledClasses = isSolid
-    ? 'bg-gray-300 !cursor-not-allowed'
+    ? 'ring ring-gray-300 text-gray-600 !cursor-not-allowed'
     : 'text-gray-400 cursor-default'
   const classes = `${baseClasses} ${isDisabled ? disabledClasses : enabledClasses}`
 

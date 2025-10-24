@@ -1,3 +1,4 @@
+import type { Artwork } from './products'
 import type { PortableTextBlock } from '@portabletext/types'
 
 export type Artist = {
@@ -8,4 +9,5 @@ export type Artist = {
   backgroundImage: string
   tagline: string
   bio: PortableTextBlock[]
+  selectedWorks?: Artwork[]
 }

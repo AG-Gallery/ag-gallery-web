@@ -28,6 +28,23 @@ const artistQuery = `
     "backgroundImage": backgroundImage.asset->url,
     tagline,
     bio,
+    selectedWorks[]->{
+      "id": _id,
+      artist->{ name, "slug": slug.current },
+      "description": store.descriptionHtml,
+      dimensionsImperial,
+      dimensionsMetric,
+      "gid": store.gid,
+      medium,
+      "previewImageUrl": store.previewImageUrl,
+      "currencyCode": "USD",
+      "category": null,
+      "price": store.priceRange.maxVariantPrice,
+      "slug": store.slug.current,
+      "style": artMovement,
+      theme,
+      "title": store.title
+    },
   }
 `
 

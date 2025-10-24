@@ -5,8 +5,10 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 
 import { Skeleton } from '../../components/ui/skeleton'
-import AddToBagBtn from '../bag/AddToBagBtn'
 
+// import AddToBagBtn from '../bag/AddToBagBtn'
+
+import { formatMoney } from '@/lib/normalizers/products'
 import { cn } from '@/lib/utils'
 
 type ArtworkGridItemProps = {
@@ -37,8 +39,10 @@ export function ArtworkGridItem({
     setIsImageLoaded(true)
   }
 
+  const priceDisplay = formatMoney(artwork.currencyCode, artwork.price)
+
   return (
-    <div className="group animate-fade-in flex flex-col items-start justify-between">
+    <div className="group animate-fade-in flex flex-col items-start justify-start">
       <Link
         to="/artworks/$slug"
         params={{ slug: artwork.slug }}
@@ -73,7 +77,7 @@ export function ArtworkGridItem({
       </Link>
 
       <div className="mt-4">
-        <h3 className="hover:text-accent w-fit font-medium transition-colors duration-100 md:text-lg">
+        <h3 className="hover:text-accent w-fit font-medium transition-colors duration-100 2xl:text-lg">
           <Link
             to={`/artworks/$slug`}
             params={{ slug: artwork.slug }}
@@ -87,7 +91,7 @@ export function ArtworkGridItem({
           to={href}
           params={{ slug: artwork.artist.slug }}
           className={cn(
-            'w-fit text-sm tracking-wide transition-colors duration-100 md:text-base',
+            'w-fit text-sm tracking-wide transition-colors duration-100 md:text-[0.9375rem]',
             !isArtistLinkActive && 'hover:text-accent',
           )}
           disabled={isArtistLinkActive}
@@ -107,10 +111,14 @@ export function ArtworkGridItem({
         </div>
 
         {isArtworksRoute && (
+          <p className="mt-2 text-sm text-neutral-500/80">{priceDisplay}</p>
+        )}
+
+        {/*
           <div className="mt-2">
             <AddToBagBtn type="minimal" product={artwork} />
           </div>
-        )}
+        */}
       </div>
     </div>
   )

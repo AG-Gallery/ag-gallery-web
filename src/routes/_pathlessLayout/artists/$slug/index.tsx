@@ -63,7 +63,6 @@ function RouteComponent() {
   const [fairsPage, setFairsPage] = useState(1)
 
   const artistQuery = createArtistQuery(slug)
-  const productQuery = createProductsQuery(slug)
   const exhibitionsQuery = createExhibitionsQuery(slug)
   const fairsQuery = createFairsQuery(slug)
 
@@ -72,11 +71,6 @@ function RouteComponent() {
     isLoading: artistIsLoading,
     error: artistError,
   } = useSuspenseQuery(artistQuery)
-  const {
-    data: artworks,
-    isLoading: productIsLoading,
-    error: productError,
-  } = useSuspenseQuery(productQuery)
   const {
     data: exhibitions,
     isLoading: exhibitionIsLoading,
@@ -87,6 +81,8 @@ function RouteComponent() {
     isLoading: fairIsLoading,
     error: fairError,
   } = useSuspenseQuery(fairsQuery)
+
+  const artworks = artist.selectedWorks
 
   const sortedExhibitions = useMemo(
     () => sortEventsByTime(exhibitions),
@@ -190,6 +186,16 @@ function RouteComponent() {
             </div>
 
             <ArtworksGrid artworks={artworks} />
+
+            <Link
+              to="/artworks"
+              search={{
+                artists: artist.name,
+              }}
+              className="mx-auto block w-fit cursor-pointer rounded-full border border-black px-6 py-3 font-medium transition-colors duration-200 ease-in hover:bg-black hover:text-white disabled:opacity-50"
+            >
+              View all
+            </Link>
           </section>
         </>
       )}
