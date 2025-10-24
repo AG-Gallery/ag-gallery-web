@@ -122,11 +122,13 @@ export default function Header({ isFloating = false }: HeaderProps) {
             <Bag />
           </div>
 
-          <Drawer direction="top">
-            <DrawerTrigger className="md:hidden">Menu</DrawerTrigger>
+          <Drawer direction="right">
+            <DrawerTrigger className="z-40 py-3 pl-2 text-base font-medium md:hidden">
+              Menu
+            </DrawerTrigger>
             <DrawerContent
               className={cn(
-                'md:hidden',
+                'w-full sm:w-auto md:hidden',
                 isMagazineRoute ? 'bg-black text-white' : 'bg-white text-black',
               )}
             >
@@ -146,9 +148,14 @@ export default function Header({ isFloating = false }: HeaderProps) {
                   <ul>
                     {navLinks.map((navLink) => (
                       <li key={navLink.path} className="mb-5">
-                        <Link to={navLink.path} className="text-lg font-medium">
-                          {navLink.title}
-                        </Link>
+                        <DrawerClose asChild>
+                          <Link
+                            to={navLink.path}
+                            className="text-lg font-medium"
+                          >
+                            {navLink.title}
+                          </Link>
+                        </DrawerClose>
                       </li>
                     ))}
                   </ul>
