@@ -63,8 +63,6 @@ export default function ArtworksGridContent() {
   })
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
-
     function syncFromLocation() {
       const params = new URLSearchParams(window.location.search)
       syncQueryFromUrl(params)
@@ -82,11 +80,9 @@ export default function ArtworksGridContent() {
   }, [syncQueryFromUrl])
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
-
     const params = new URLSearchParams()
-    Object.entries(query).forEach(function appendValues([key, values]) {
-      values.forEach(function appendValue(value) {
+    Object.entries(query).forEach(([key, values]) => {
+      values.forEach((value) => {
         if (value) params.append(key, value)
       })
     })
@@ -149,9 +145,6 @@ export default function ArtworksGridContent() {
     setQuery('sort', value === DEFAULT_SORT ? undefined : value)
   }
 
-  function handleLoadMoreRequest() {
-    void fetchNextPage()
-  }
   const sidebarWrapperRef = useRef<HTMLDivElement | null>(null)
   const sidebarRef = useRef<HTMLDivElement | null>(null)
   const [showScrollHint, setShowScrollHint] = useState(false)
@@ -212,13 +205,6 @@ export default function ArtworksGridContent() {
     el.scrollBy({ top: el.clientHeight * 0.6 || 160, behavior: 'smooth' })
   }
 
-  const sidebarStyle =
-    typeof window !== 'undefined' &&
-    window.innerWidth >= 1024 &&
-    sidebarMaxHeight
-      ? { maxHeight: `${sidebarMaxHeight}px` }
-      : undefined
-
   return (
     <>
       {/* Mobile Filter & Sort */}
@@ -257,7 +243,13 @@ export default function ArtworksGridContent() {
             <div
               ref={sidebarRef}
               className="lg:overflow-y-auto lg:pr-2 lg:pb-6 lg:[-ms-overflow-style:none] lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden"
-              style={sidebarStyle}
+              style={
+                typeof window !== 'undefined' &&
+                window.innerWidth >= 1024 &&
+                sidebarMaxHeight
+                  ? { maxHeight: `${sidebarMaxHeight}px` }
+                  : undefined
+              }
             >
               <ArtworksFiltersSidebar
                 sortOption={sortOption}
@@ -305,7 +297,7 @@ export default function ArtworksGridContent() {
 
           {showLoadMoreButton && (
             <button
-              onClick={handleLoadMoreRequest}
+              onClick={() => void fetchNextPage()}
               disabled={isFetchingNextPage}
               className="mx-auto block cursor-pointer rounded-full border border-black px-6 py-3 font-medium transition-colors duration-200 ease-in hover:bg-black hover:text-white disabled:opacity-50"
             >

@@ -72,13 +72,13 @@ function IndexPage() {
         <hr className="mb-4 w-full bg-neutral-400 md:mb-8" />
 
         {/*
-        <section>
-          <h2 className="featured-headline">Fairs</h2>
-          <EventsGrid events={featuredFairs} />
-        </section>
-        */}
+          <section>
+            <h2 className="featured-headline">Fairs</h2>
+            <EventsGrid events={featuredFairs} />
+          </section>
 
-        <hr className="mb-4 w-full bg-neutral-400 md:mb-8" />
+          <hr className="mb-4 w-full bg-neutral-400 md:mb-8" />
+        */}
 
         <section>
           <h2 className="featured-headline">Highlighted Artists</h2>
