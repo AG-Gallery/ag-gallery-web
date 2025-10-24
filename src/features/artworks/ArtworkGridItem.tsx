@@ -48,7 +48,7 @@ export function ArtworkGridItem({
         params={{ slug: artwork.slug }}
         className="block w-full"
       >
-        <div className="relative flex aspect-[5/4] w-full items-center justify-center overflow-hidden rounded border border-neutral-200/80 bg-neutral-50 p-2 transition-colors duration-100 ease-in select-none hover:bg-neutral-200/50 lg:p-5">
+        <div className="relative flex aspect-[5/4] w-full items-center justify-center overflow-hidden rounded border border-neutral-200/80 bg-neutral-50 transition-colors duration-100 ease-in select-none hover:bg-neutral-200/50">
           <Skeleton
             aria-hidden
             className={cn(
@@ -69,7 +69,7 @@ export function ArtworkGridItem({
             onLoad={handleImageReady}
             onError={handleImageReady}
             className={cn(
-              'max-h-full max-w-full object-contain transition-opacity duration-200',
+              'aspect-[5/4] max-h-full max-w-full object-contain p-2 transition-opacity duration-200 lg:p-4',
               isImageLoaded ? 'opacity-100' : 'opacity-0',
             )}
           />
@@ -77,7 +77,7 @@ export function ArtworkGridItem({
       </Link>
 
       <div className="mt-4">
-        <h3 className="hover:text-accent w-fit font-medium transition-colors duration-100 2xl:text-lg">
+        <h3 className="hover:text-accent mb-1 line-clamp-2 transition-colors duration-100 2xl:text-lg">
           <Link
             to={`/artworks/$slug`}
             params={{ slug: artwork.slug }}
@@ -91,7 +91,7 @@ export function ArtworkGridItem({
           to={href}
           params={{ slug: artwork.artist.slug }}
           className={cn(
-            'w-fit text-sm tracking-wide transition-colors duration-100 md:text-[0.9375rem]',
+            'w-fit text-sm font-light tracking-wide transition-colors duration-100 md:text-[0.9375rem]',
             !isArtistLinkActive && 'hover:text-accent',
           )}
           disabled={isArtistLinkActive}
