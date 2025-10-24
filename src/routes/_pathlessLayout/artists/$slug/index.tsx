@@ -44,13 +44,36 @@ function createFairsQuery(slug: string) {
 }
 
 export const Route = createFileRoute('/_pathlessLayout/artists/$slug/')({
-  loader: ({ context, params }) =>
-    Promise.all([
-      context.queryClient.ensureQueryData(createArtistQuery(params.slug)),
+  loader: async ({ context, params }) => {
+    const artistPromise = context.queryClient.ensureQueryData(
+      createArtistQuery(params.slug),
+    )
+
+    const [artist] = await Promise.all([
+      artistPromise,
       context.queryClient.ensureQueryData(createProductsQuery(params.slug)),
       context.queryClient.ensureQueryData(createExhibitionsQuery(params.slug)),
       context.queryClient.ensureQueryData(createFairsQuery(params.slug)),
-    ]).then(() => undefined),
+    ])
+
+    return { artist }
+  },
+  head: ({ loaderData, params }) => {
+    const artist = loaderData?.artist
+    const title = artist?.name ?? params.slug
+    const description = `Explore exhibitions, fairs, and selected works by ${title} at AG Gallery in Glendale, California.`
+
+    return {
+      meta: [
+        {
+          title,
+          description,
+          image: artist?.artistImage ?? null,
+          type: 'profile',
+        },
+      ],
+    }
+  },
   component: RouteComponent,
 })
 

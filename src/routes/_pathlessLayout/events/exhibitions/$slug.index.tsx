@@ -1,3 +1,5 @@
+import type { Exhibition } from '@/types/exhibitions'
+
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -19,13 +21,40 @@ function createExhibitionQuery(slug: string) {
   return exhibitionQuery
 }
 
+function generateSeoDescription(exhibition: Exhibition) {
+  const dates = formatDateRange(exhibition.startDate, exhibition.endDate)
+
+  const primaryArtist = exhibition.isGroup
+    ? 'a group of artists'
+    : exhibition.artist.name
+
+  const descriptionParts = [`On view ${dates}`, `Featuring ${primaryArtist}`]
+
+  const description = `${descriptionParts.join(' • ')} at AG Gallery.`
+
+  return description
+}
+
 export const Route = createFileRoute(
   '/_pathlessLayout/events/exhibitions/$slug/',
 )({
-  loader: ({ context, params }) => {
-    const queryOpts = createExhibitionQuery(params.slug)
-    const queryResult = context.queryClient.ensureQueryData(queryOpts)
-    return queryResult
+  loader: ({ context, params }) =>
+    context.queryClient.ensureQueryData(createExhibitionQuery(params.slug)),
+  head: ({ loaderData, params }) => {
+    const description = loaderData
+      ? generateSeoDescription(loaderData)
+      : 'Discover current and upcoming exhibitions at AG Gallery in Glendale, California.'
+
+    return {
+      meta: [
+        {
+          title: loaderData?.title ?? params.slug,
+          description,
+          image: loaderData?.images[0] ?? null,
+          type: 'event',
+        },
+      ],
+    }
   },
   component: RouteComponent,
 })

@@ -2,6 +2,7 @@ import type {
   Public_GetProductByHandleQuery,
   Public_GetProductByHandleQueryVariables,
 } from '@/queries/graphql/generated/react-query'
+import type { Artwork } from '@/types/products'
 
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
@@ -28,9 +29,40 @@ function createProductQuery(handle: string) {
   })
 }
 
+function generateSeoDescription(artwork: Artwork) {
+  const artistName = artwork.artist.name
+  const descriptionSegments = [
+    `Artwork by ${artistName}`,
+    `Medium: ${artwork.medium}`,
+    `Dimensions: ${artwork.dimensionsImperial}`,
+  ]
+
+  return `${descriptionSegments.join(' • ')}. Available through AG Gallery.`
+}
+
 export const Route = createFileRoute('/_pathlessLayout/artworks/$slug/')({
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(createProductQuery(params.slug)),
+  head: ({ loaderData, params }) => {
+    const product = loaderData?.productByHandle
+    const normalized = product ? formatProduct(product) : undefined
+    const artwork = normalized ? productToArtwork(normalized) : undefined
+
+    const description = artwork
+      ? generateSeoDescription(artwork)
+      : 'Discover original artworks available through AG Gallery in Glendale, California.'
+
+    return {
+      meta: [
+        {
+          title: artwork?.title ?? params.slug,
+          description,
+          image: normalized?.images[0]?.url ?? null,
+          type: 'product',
+        },
+      ],
+    }
+  },
   component: RouteComponent,
 })
 

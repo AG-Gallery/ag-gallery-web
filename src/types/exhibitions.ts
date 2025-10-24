@@ -1,5 +1,4 @@
 import type { Artist } from './artists'
-import type { PortableTextBlock } from '@portabletext/types'
 
 type BaseExhibition = {
   type: 'exhibition'
@@ -8,7 +7,8 @@ type BaseExhibition = {
   slug: string
   coverImageUrl: string
   images: string[]
-  body: PortableTextBlock[]
+  // Issue with PortableTextBlock[] type in route loader
+  body: any[]
   startDate: string // ISO string
   endDate: string // ISO string
 }
@@ -21,7 +21,7 @@ type SoloExhibition = BaseExhibition & {
 }
 
 // Group exhibition
-type GroupExhibition = BaseExhibition & {
+export type GroupExhibition = BaseExhibition & {
   isGroup: true
   artist?: undefined
   artists: Omit<Artist, 'bio'>[]

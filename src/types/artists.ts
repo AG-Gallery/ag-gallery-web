@@ -1,5 +1,4 @@
 import type { Artwork } from './products'
-import type { PortableTextBlock } from '@portabletext/types'
 
 export type Artist = {
   id: string
@@ -8,6 +7,7 @@ export type Artist = {
   artistImage: string
   backgroundImage: string
   tagline: string
-  bio: PortableTextBlock[]
+  // Issue with PortableTextBlock[] type in route loader
+  bio: any[]
   selectedWorks?: Artwork[]
 }

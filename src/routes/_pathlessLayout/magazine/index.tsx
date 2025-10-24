@@ -10,7 +10,19 @@ const allArticlesQueryOptions = queryOptions({
 
 export const Route = createFileRoute('/_pathlessLayout/magazine/')({
   loader: ({ context }) =>
-    context.queryClient.ensureQueryData(allArticlesQueryOptions).then(() => undefined),
+    context.queryClient
+      .ensureQueryData(allArticlesQueryOptions)
+      .then(() => undefined),
+  head: () => ({
+    meta: [
+      {
+        title: 'Magazine',
+        description:
+          'Read essays, interviews, and stories from AG Gallery highlighting artists, exhibitions, and the contemporary art scene.',
+        type: 'article',
+      },
+    ],
+  }),
   component: RouteComponent,
 })
 

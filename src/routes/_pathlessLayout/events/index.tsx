@@ -30,6 +30,16 @@ export const Route = createFileRoute('/_pathlessLayout/events/')({
       context.queryClient.ensureQueryData(exhibitionsQuery),
       context.queryClient.ensureQueryData(fairsQuery),
     ]).then(() => undefined),
+  head: () => ({
+    meta: [
+      {
+        title: 'Exhibitions & Art Fairs',
+        description:
+          'Stay current on AG Gallery exhibitions and art fairs, filter by upcoming or past events, and plan your next visit.',
+        type: 'event',
+      },
+    ],
+  }),
   component: RouteComponent,
 })
 

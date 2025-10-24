@@ -1,3 +1,5 @@
+import type { Fair } from '@/types/fairs'
+
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -19,11 +21,41 @@ function createFairQuery(slug: string) {
   return fairQuery
 }
 
+function generateSeoDescription(fair: Fair) {
+  const dates = formatDateRange(fair.startDate, fair.endDate)
+  const artistCount = fair.artists.length
+  const artistSummary = `${artistCount} participating artist${artistCount === 1 ? '' : 's'}`
+
+  const descriptionParts = [
+    `Located in ${fair.location}`,
+    `Running ${dates}`,
+    artistSummary,
+  ]
+
+  return `${descriptionParts.join(' • ')}. Experience this fair with AG Gallery.`
+}
+
 export const Route = createFileRoute('/_pathlessLayout/events/fairs/$slug/')({
   loader: ({ context, params }) => {
     const queryOpts = createFairQuery(params.slug)
     const queryResult = context.queryClient.ensureQueryData(queryOpts)
     return queryResult
+  },
+  head: ({ loaderData, params }) => {
+    const description = loaderData
+      ? generateSeoDescription(loaderData)
+      : 'Explore the latest art fairs featuring AG Gallery artists and works.'
+
+    return {
+      meta: [
+        {
+          title: loaderData?.title ?? params.slug,
+          description,
+          image: loaderData ? loaderData.images[0] : null,
+          type: 'event',
+        },
+      ],
+    }
   },
   component: RouteComponent,
 })

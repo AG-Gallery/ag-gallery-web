@@ -1,5 +1,3 @@
-import type { PortableTextBlock } from '@portabletext/types'
-
 export type Fair = {
   type: 'fair'
   id: string
@@ -18,5 +16,6 @@ export type Fair = {
   location: string
   startDate: string // ISO string
   endDate: string // ISO string
-  body: PortableTextBlock[]
+  // Issue with PortableTextBlock[] type in route loader
+  body: any[]
 }

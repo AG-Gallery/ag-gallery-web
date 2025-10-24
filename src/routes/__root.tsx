@@ -14,6 +14,7 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import appCss from '../styles.css?url'
 
 import Footer from '@/components/Footer'
+import { seo } from '@/lib/seo'
 import { cn } from '@/lib/utils'
 
 interface MyRouterContext {
@@ -30,9 +31,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         name: 'viewport',
         content: 'width=device-width, initial-scale=1',
       },
-      {
-        title: 'AG Gallery',
-      },
+      ...seo({
+        title: 'AG Gallery | Discover Contemporary Art',
+        description:
+          'AG Gallery is a contemporary art gallery in Glendale, California showcasing curated exhibitions, artists, and collectible works.',
+      }),
     ],
     links: [
       {

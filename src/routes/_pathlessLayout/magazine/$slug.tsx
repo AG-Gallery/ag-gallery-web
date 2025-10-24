@@ -1,3 +1,5 @@
+import type { Article } from '@/types/magazine'
+
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -12,11 +14,36 @@ function createArticleQuery(slug: string) {
   })
 }
 
+function generateSeoDescription(article: Article) {
+  const publishedOn = new Date(article.date).toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+
+  return `${article.title} — published ${publishedOn} by AG Gallery Magazine.`
+}
+
 export const Route = createFileRoute('/_pathlessLayout/magazine/$slug')({
-  loader: ({ context, params }) =>
-    context.queryClient
-      .ensureQueryData(createArticleQuery(params.slug))
-      .then(() => undefined),
+  loader: async ({ context, params }) =>
+    context.queryClient.ensureQueryData(createArticleQuery(params.slug)),
+  head: ({ loaderData, params }) => {
+    const title = loaderData?.title ?? params.slug
+    const description = loaderData
+      ? generateSeoDescription(loaderData)
+      : `Explore ${title} from AG Gallery Magazine.`
+
+    return {
+      meta: [
+        {
+          title,
+          description,
+          image: loaderData?.coverImage ?? null,
+          type: 'article',
+        },
+      ],
+    }
+  },
   component: RouteComponent,
 })
 

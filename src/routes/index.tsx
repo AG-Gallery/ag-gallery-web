@@ -17,6 +17,15 @@ const homeDataQuery = queryOptions({
 
 export const Route = createFileRoute('/')({
   loader: ({ context }) => context.queryClient.ensureQueryData(homeDataQuery),
+  head: () => ({
+    meta: [
+      {
+        title: 'AG Gallery | Discover Contemporary Art',
+        description:
+          "Explore curator's picks, highlighted artists, and current exhibitions from AG Gallery in Glendale, California.",
+      },
+    ],
+  }),
   component: IndexPage,
 })
 

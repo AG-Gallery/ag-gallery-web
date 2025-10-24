@@ -1,11 +1,11 @@
-import type { PortableTextBlock } from '@portabletext/types'
-
 export type Article = {
   id: string
   title: string
-  subtitle: PortableTextBlock[]
+  // Issue with PortableTextBlock[] type in route loader
+  subtitle: any[]
   date: string
   slug: string
   coverImage: string
-  body: PortableTextBlock[]
+  // Issue with PortableTextBlock[] type in route loader
+  body: any[]
 }
