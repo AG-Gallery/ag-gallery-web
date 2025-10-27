@@ -19,7 +19,7 @@ export const Route = createFileRoute('/_pathlessLayout/artworks/')({
 
 function RouteComponent() {
   return (
-    <main className="page-main">
+    <main className="page-main min-w-full">
       <h2 className="page-headline">Artworks</h2>
       <ArtworksGridContent />
     </main>

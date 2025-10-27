@@ -73,8 +73,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           isMagazineRoute ? 'bg-black text-white' : 'bg-white text-black',
         )}
       >
-        <div className="mx-auto flex w-full flex-1 flex-col items-center">
-          <main className="flex-1 pt-[var(--header-height)]">{children}</main>
+        <div className="mx-auto flex w-full flex-1 flex-col items-center pt-[var(--header-height)]">
+          {children}
           <Footer />
         </div>
 

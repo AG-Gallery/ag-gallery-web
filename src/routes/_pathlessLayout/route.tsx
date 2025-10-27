@@ -8,7 +8,7 @@ export const Route = createFileRoute('/_pathlessLayout')({
 
 function RouteComponent() {
   return (
-    <div>
+    <div className="w-full">
       <Header />
       <Outlet />
     </div>
