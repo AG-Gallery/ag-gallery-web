@@ -81,13 +81,19 @@ export default function Footer() {
           <h5 className="font-lora font-semibold tracking-wide">Legal</h5>
           <ul className="space-y-2">
             <li className="text-sm tracking-wide">
-              <a href="/" className="hover:text-accent transition-colors">
+              <a
+                href="/legal/privacy-policy"
+                className="hover:text-accent transition-colors"
+              >
                 Privacy Policy
               </a>
             </li>
             <li className="text-sm tracking-wide">
-              <a href="/" className="hover:text-accent transition-colors">
-                {'Terms & Conditions'}
+              <a
+                href="/legal/terms-of-service"
+                className="hover:text-accent transition-colors"
+              >
+                Terms of Service
               </a>
             </li>
           </ul>
