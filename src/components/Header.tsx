@@ -78,7 +78,7 @@ export default function Header({ isFloating = false }: HeaderProps) {
             : 'bg-transparent text-white',
       )}
     >
-      <nav className="flex items-center justify-between">
+      <nav className="mx-auto flex max-w-[1400px] items-center justify-between">
         <Link
           to="/"
           aria-label="Home"
