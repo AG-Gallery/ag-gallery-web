@@ -62,7 +62,7 @@ function Page() {
           </h3>
 
           <article className="flex justify-center tracking-wide text-pretty">
-            <div className="w-1/3">
+            <div className="w-full md:w-1/3">
               <PortableText value={data.body} components={components} />
             </div>
           </article>
