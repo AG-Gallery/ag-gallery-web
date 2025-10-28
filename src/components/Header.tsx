@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from '@tanstack/react-router'
 
 import Bag from '@/features/bag/Bag'
+import SearchDialog from '@/features/search/SearchDialog'
 import { cn } from '@/lib/utils'
 
-import SearchDialog from './SearchDialog'
 import { Button } from './ui/button'
 import {
   Drawer,

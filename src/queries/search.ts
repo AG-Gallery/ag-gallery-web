@@ -1,8 +1,10 @@
+import type { SearchProductsQuery } from './graphql/generated/react-query'
 import type { Artist } from '@/types/artists'
 import type { Exhibition } from '@/types/exhibitions'
 import type { Fair } from '@/types/fairs'
 
 import { sanityClient } from '@/lib/sanity-client'
+
 import { useSearchProductsQuery } from './graphql/generated/react-query'
 
 // Sanity search queries
@@ -59,7 +61,9 @@ export async function searchArtists(searchTerm: string): Promise<Artist[]> {
   return sanityClient.fetch(searchArtistsQuery, { searchTerm: term })
 }
 
-export async function searchExhibitions(searchTerm: string): Promise<Exhibition[]> {
+export async function searchExhibitions(
+  searchTerm: string,
+): Promise<Exhibition[]> {
   const term = `*${searchTerm}*`
   return sanityClient.fetch(searchExhibitionsQuery, { searchTerm: term })
 }
@@ -76,10 +80,12 @@ export type SearchResult = {
   artists: Artist[]
   exhibitions: Exhibition[]
   fairs: Fair[]
-  products: any[] // Will be typed from Shopify response
+  products: SearchProductsQuery[] // Will be typed from Shopify response
 }
 
-export async function performSearch(searchTerm: string): Promise<Omit<SearchResult, 'products'>> {
+export async function performSearch(
+  searchTerm: string,
+): Promise<Omit<SearchResult, 'products'>> {
   const [artists, exhibitions, fairs] = await Promise.all([
     searchArtists(searchTerm),
     searchExhibitions(searchTerm),
