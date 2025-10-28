@@ -1,6 +1,6 @@
 import type { CarouselApi } from '@/components/ui/carousel'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import useEmblaCarousel from 'embla-carousel-react'
 
@@ -9,14 +9,33 @@ import {
   CarouselItem,
   Carousel as CarouselRoot,
 } from '@/components/ui/carousel'
+import { cn } from '@/lib/utils'
 
 import CarouselThumbnail from './CarouselThumbnail'
 
 type CarouselProps = {
   images: string[]
+  enableZoom?: boolean
+  onImageClick?: (index: number) => void
+  initialSlide?: number
+  wrapperClassName?: string
+  carouselClassName?: string
+  imageClassName?: string
+  thumbnailsClassName?: string
+  imageWrapperClassName?: string
 }
 
-export default function Carousel({ images }: CarouselProps) {
+export default function Carousel({
+  images,
+  enableZoom = false,
+  onImageClick,
+  initialSlide,
+  wrapperClassName,
+  carouselClassName,
+  imageClassName,
+  thumbnailsClassName,
+  imageWrapperClassName,
+}: CarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [carouselApi, setCarouselApi] = useState<CarouselApi>()
   const [thumbsRef, thumbsApi] = useEmblaCarousel({
@@ -24,70 +43,113 @@ export default function Carousel({ images }: CarouselProps) {
     dragFree: true,
   })
 
+  const clampedInitialSlide = useMemo(() => {
+    if (typeof initialSlide !== 'number') return undefined
+    if (images.length === 0) return 0
+
+    const maxIndex = images.length - 1
+    if (initialSlide < 0) return 0
+    if (initialSlide > maxIndex) return maxIndex
+    return initialSlide
+  }, [initialSlide, images.length])
+
   useEffect(() => {
     if (!carouselApi) return
 
     const update = () => {
       const idx = carouselApi.selectedScrollSnap()
       setCurrentSlide(idx)
-      // Keep the selected thumbnail in view, scrolling the thumbs by 1 when needed
       thumbsApi?.scrollTo(idx)
     }
+
     update()
 
     carouselApi.on('select', update).on('reInit', update)
   }, [carouselApi, thumbsApi])
 
+  // Ensures selected thumbnail is zoomed
+  useEffect(() => {
+    if (!carouselApi) return
+    if (typeof clampedInitialSlide !== 'number') return
+
+    carouselApi.scrollTo(clampedInitialSlide, true)
+    thumbsApi?.scrollTo(clampedInitialSlide)
+    setCurrentSlide(clampedInitialSlide)
+  }, [carouselApi, thumbsApi, clampedInitialSlide])
+
+  const isInteractive = enableZoom && typeof onImageClick === 'function'
+
+  const handleImageClick = (index: number) => {
+    if (isInteractive) {
+      onImageClick(index)
+    }
+  }
+
   return (
-    <div className="flex flex-col items-center place-self-start self-start">
+    <div className={wrapperClassName}>
       <CarouselRoot
         setApi={setCarouselApi}
-        opts={{ loop: true }}
-        className="aspect-[5/4] max-w-[700px]"
+        opts={{ startIndex: 0, skipSnaps: false, loop: true }}
+        className={cn('aspect-[5/4] max-w-[700px]', carouselClassName)}
       >
         <CarouselContent>
-          {images.map((image, index) => {
-            return (
-              <CarouselItem key={image}>
-                <div className="bg-neutral-100">
-                  <img
-                    src={image}
-                    alt=""
-                    width="1920"
-                    height="1080"
-                    className="animate-fade-in mx-auto aspect-[5/4] rounded-md object-contain"
-                    fetchPriority={index === 0 ? 'high' : 'low'}
-                  />
-                </div>
-              </CarouselItem>
-            )
-          })}
+          {images.map((image, index) => (
+            <CarouselItem key={image}>
+              <div
+                className={cn(
+                  'bg-neutral-100',
+                  isInteractive && 'cursor-zoom-in focus:outline-hidden',
+                  imageWrapperClassName,
+                )}
+                aria-label={
+                  isInteractive
+                    ? `View image ${index + 1} of ${images.length} in fullscreen`
+                    : undefined
+                }
+                onClick={() => handleImageClick(index)}
+              >
+                <img
+                  src={image}
+                  alt=""
+                  width="1920"
+                  height="1080"
+                  className={cn(
+                    'animate-fade-in mx-auto aspect-[5/4] rounded-md object-contain',
+                    imageClassName,
+                  )}
+                  fetchPriority={index === 0 ? 'high' : 'low'}
+                />
+              </div>
+            </CarouselItem>
+          ))}
         </CarouselContent>
       </CarouselRoot>
 
-      <div className="mt-3 w-full max-w-[700px]">
-        <div ref={thumbsRef} className="overflow-hidden">
-          <div className="-ml-2 flex">
-            {images.map((_, index) => (
-              <div
-                key={index}
-                className="min-w-0 shrink-0 basis-[calc(100%/5.5)] pl-2"
-              >
-                <CarouselThumbnail
-                  images={images}
-                  selected={index === currentSlide}
-                  index={index}
-                  onClick={() => {
-                    setCurrentSlide(index)
-                    carouselApi?.scrollTo(index)
-                    thumbsApi?.scrollTo(index)
-                  }}
-                />
-              </div>
-            ))}
+      {images.length > 1 && (
+        <div className={cn('mt-3 w-full max-w-[700px]', thumbnailsClassName)}>
+          <div ref={thumbsRef} className="overflow-hidden">
+            <div className="-ml-2 flex">
+              {images.map((image, index) => (
+                <div
+                  key={image}
+                  className="min-w-0 shrink-0 basis-[calc(100%/5.5)] pl-2"
+                >
+                  <CarouselThumbnail
+                    images={images}
+                    selected={index === currentSlide}
+                    index={index}
+                    onClick={() => {
+                      setCurrentSlide(index)
+                      carouselApi?.scrollTo(index)
+                      thumbsApi?.scrollTo(index)
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

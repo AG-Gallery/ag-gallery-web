@@ -1,3 +1,5 @@
+import { cn } from '@/lib/utils'
+
 type CarouselThumbnailProps = {
   images?: string[]
   selected: boolean
@@ -12,12 +14,15 @@ export default function CarouselThumbnail({
   onClick,
 }: CarouselThumbnailProps) {
   if (!images || images.length === 0) {
-    return
+    return null
   }
 
   return (
     <div
-      className={`${selected ? 'border-accent' : 'border-neutral-200/70'} w-full rounded border-2 bg-neutral-50 p-2 shadow-2xs`}
+      className={cn(
+        'w-full rounded border-2 bg-transparent p-2 shadow-2xs',
+        selected ? 'border-accent' : 'border-neutral-200/70',
+      )}
     >
       <img
         src={images[index]}

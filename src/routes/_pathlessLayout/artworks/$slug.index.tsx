@@ -4,10 +4,13 @@ import type {
 } from '@/queries/graphql/generated/react-query'
 import type { Artwork } from '@/types/products'
 
+import { useState } from 'react'
+
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 
 import Carousel from '@/components/Carousel'
+import ZoomedCarousel from '@/components/ZoomedCarousel'
 import AddToBagBtn from '@/features/bag/AddToBagBtn'
 import {
   formatMoney,
@@ -68,21 +71,32 @@ export const Route = createFileRoute('/_pathlessLayout/artworks/$slug/')({
 
 function RouteComponent() {
   const { slug } = Route.useParams()
-  const queryOpts = createProductQuery(slug)
-  const { data } = useSuspenseQuery(queryOpts)
+  const { data } = useSuspenseQuery(createProductQuery(slug))
 
-  const p = data.productByHandle
-  const normalized = p ? formatProduct(p) : undefined
+  const product = data.productByHandle
+  const normalized = product ? formatProduct(product) : undefined
   const artwork = normalized ? productToArtwork(normalized) : undefined
   const images = normalized?.images.map((i) => i.url) ?? []
   const priceDisplay = normalized
     ? formatMoney(normalized.currencyCode, normalized.price)
     : ''
 
+  const [zoomOpen, setZoomOpen] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  const handleImageClick = (index: number) => {
+    setActiveIndex(index)
+    setZoomOpen(true)
+  }
+
   return (
     <main className="page-main">
       <div className="animate-fade-in my-5 items-start justify-center lg:my-14 lg:flex">
-        <Carousel images={images} />
+        <Carousel
+          images={images}
+          enableZoom={images.length > 0}
+          onImageClick={handleImageClick}
+        />
 
         <div className="my-8 align-top text-nowrap lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] 2xl:ml-24 2xl:w-[700px]">
           <section className="space-y-1">
@@ -128,7 +142,7 @@ function RouteComponent() {
               </p>
             )}
 
-            {artwork?.medium && (
+            {artwork?.theme && (
               <p className="font-medium">
                 Theme:
                 <Link
@@ -156,12 +170,17 @@ function RouteComponent() {
 
           <section className="mt-8">
             {artwork && <AddToBagBtn type="solid" product={artwork} />}
-            {/* <button className="w-full cursor-pointer rounded-full bg-neutral-900 px-6 py-3 font-medium text-white transition-colors duration-300 ease-in md:w-fit md:px-12">
-              Add to bag
-            </button> */}
           </section>
         </div>
       </div>
+
+      <ZoomedCarousel
+        images={images}
+        initialIndex={activeIndex}
+        open={zoomOpen}
+        title={artwork?.title}
+        onOpenChange={setZoomOpen}
+      />
     </main>
   )
 }
