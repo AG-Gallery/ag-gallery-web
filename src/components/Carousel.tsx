@@ -7,6 +7,8 @@ import useEmblaCarousel from 'embla-carousel-react'
 import {
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
   Carousel as CarouselRoot,
 } from '@/components/ui/carousel'
 import { cn } from '@/lib/utils'
@@ -23,6 +25,8 @@ type CarouselProps = {
   imageClassName?: string
   thumbnailsClassName?: string
   imageWrapperClassName?: string
+  showNavButtons?: boolean
+  navButtonClassName?: string
 }
 
 export default function Carousel({
@@ -35,6 +39,8 @@ export default function Carousel({
   imageClassName,
   thumbnailsClassName,
   imageWrapperClassName,
+  showNavButtons = false,
+  navButtonClassName,
 }: CarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [carouselApi, setCarouselApi] = useState<CarouselApi>()
@@ -123,6 +129,12 @@ export default function Carousel({
             </CarouselItem>
           ))}
         </CarouselContent>
+        {showNavButtons && (
+          <>
+            <CarouselPrevious className={navButtonClassName} />
+            <CarouselNext className={navButtonClassName} />
+          </>
+        )}
       </CarouselRoot>
 
       {images.length > 1 && (

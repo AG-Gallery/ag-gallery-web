@@ -63,11 +63,13 @@ export default function ZoomedCarousel({
               images={images}
               enableZoom={false}
               initialSlide={safeInitial}
+              showNavButtons={images.length > 1}
               wrapperClassName="flex w-full flex-col items-center justify-center"
               carouselClassName="aspect-[5/4] w-full max-w-5xl"
               imageClassName="max-h-full"
               thumbnailsClassName="mt-20 w-full max-w-5xl"
               imageWrapperClassName="bg-black size-full"
+              navButtonClassName="top-1/2 size-10 bg-black text-white -translate-y-1/2"
             />
 
             <DialogClose
