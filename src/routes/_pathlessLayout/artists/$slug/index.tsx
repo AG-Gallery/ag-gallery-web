@@ -8,7 +8,9 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { PortableText } from '@portabletext/react'
 
 import ArtworksGrid from '@/features/artworks/ArtworksGrid'
+import ArtworksGridSkeleton from '@/features/artworks/ArtworksGridSkeleton'
 import EventsGrid from '@/features/events/EventsGrid'
+import { useArtistArtworksListing } from '@/hooks/useArtistArtworksListing'
 import { ITEMS_PER_PAGE } from '@/hooks/useArtworksListing'
 import { filterEventsByTime, sortEventsByTime } from '@/lib/events/utils'
 import { getArtist } from '@/queries/sanity/artists'
@@ -16,18 +18,11 @@ import {
   getExhibitionsWithArtist,
   getFairsWithArtist,
 } from '@/queries/sanity/events'
-import { getProductsByArtist } from '@/queries/sanity/products'
 
 function createArtistQuery(slug: string) {
   return queryOptions({
     queryKey: [`artist-${slug}`],
     queryFn: () => getArtist(slug),
-  })
-}
-function createProductsQuery(slug: string) {
-  return queryOptions({
-    queryKey: [`${slug}-products-limited`],
-    queryFn: () => getProductsByArtist(slug, 0, 11),
   })
 }
 function createExhibitionsQuery(slug: string) {
@@ -51,7 +46,6 @@ export const Route = createFileRoute('/_pathlessLayout/artists/$slug/')({
 
     const [artist] = await Promise.all([
       artistPromise,
-      context.queryClient.ensureQueryData(createProductsQuery(params.slug)),
       context.queryClient.ensureQueryData(createExhibitionsQuery(params.slug)),
       context.queryClient.ensureQueryData(createFairsQuery(params.slug)),
     ])
@@ -89,23 +83,24 @@ function RouteComponent() {
   const exhibitionsQuery = createExhibitionsQuery(slug)
   const fairsQuery = createFairsQuery(slug)
 
-  const {
-    data: artist,
-    isLoading: artistIsLoading,
-    error: artistError,
-  } = useSuspenseQuery(artistQuery)
-  const {
-    data: exhibitions,
-    isLoading: exhibitionIsLoading,
-    error: exhibitionError,
-  } = useSuspenseQuery(exhibitionsQuery)
-  const {
-    data: fairs,
-    isLoading: fairIsLoading,
-    error: fairError,
-  } = useSuspenseQuery(fairsQuery)
+  const { data: artist } = useSuspenseQuery(artistQuery)
+  const { data: exhibitions } = useSuspenseQuery(exhibitionsQuery)
+  const { data: fairs } = useSuspenseQuery(fairsQuery)
 
-  const artworks = artist.selectedWorks
+  const selectedWorks = artist.selectedWorks
+
+  const {
+    artworks: artistArtworks,
+    status: artworksStatus,
+    isPending: artworksPending,
+    showLoadMoreButton,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useArtistArtworksListing({
+    artistName: artist.name,
+    artistSlug: slug,
+    selectedWorks,
+  })
 
   const sortedExhibitions = useMemo(
     () => sortEventsByTime(exhibitions),
@@ -145,12 +140,15 @@ function RouteComponent() {
     setFairsPage(1)
   }
 
-  const hasProducts = Array.isArray(artworks) && artworks.length > 0
   const hasAnyExhibitions = exhibitions.length > 0
   const hasAnyFairs = fairs.length > 0
 
+  const hasArtworks = artistArtworks.length > 0
+  const showArtworksSection =
+    artworksPending || artworksStatus === 'error' || hasArtworks
+
   return (
-    <main className="page-main">
+    <main className="page-main mx-auto max-w-[1600px]">
       <h2 className="page-headline">{artist.name}</h2>
 
       <section className="animate-fade-in my-5 items-start justify-center lg:my-14 lg:flex">
@@ -160,7 +158,7 @@ function RouteComponent() {
             alt={`A portrait image of the artist ${artist.name}`}
             width={1920}
             height={1080}
-            className="animate-fade-in z-10 aspect-square self-start object-cover grayscale-100 lg:max-w-[400px] xl:max-w-[500px] 2xl:max-w-[600px]"
+            className="animate-fade-in z-10 aspect-square self-start object-cover grayscale-100 lg:max-w-[400px] xl:max-w-[500px] 2xl:max-w-[700px]"
           />
           <img
             src={artist.backgroundImage}
@@ -171,7 +169,7 @@ function RouteComponent() {
           />
         </div>
 
-        <article className="my-6 flex flex-col items-start gap-2 self-start align-top md:my-8 md:flex-row md:gap-4 lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-24 2xl:w-[700px]">
+        <article className="my-6 flex flex-col items-start gap-2 self-start align-top md:my-8 md:flex-row md:gap-4 lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-24 2xl:w-[900px]">
           <h2 className="mb-3 text-xl font-medium tracking-wide lg:mb-0 lg:text-base">
             Biography
           </h2>
@@ -188,40 +186,6 @@ function RouteComponent() {
           </div>
         </article>
       </section>
-
-      {hasProducts && (
-        <>
-          <hr className="w-full bg-neutral-400" />
-          <section className="my-8 lg:my-10">
-            <div className="mb-8 flex items-center justify-between">
-              <h2 className="font-lora text-xl font-medium md:text-2xl md:tracking-tight">
-                Selected Works
-              </h2>
-              <Link
-                to="/artworks"
-                search={{
-                  artists: artist.name,
-                }}
-                className="hover:text-foreground text-sm text-neutral-500 transition-colors duration-200"
-              >
-                View all
-              </Link>
-            </div>
-
-            <ArtworksGrid artworks={artworks} />
-
-            <Link
-              to="/artworks"
-              search={{
-                artists: artist.name,
-              }}
-              className="mx-auto block w-fit cursor-pointer rounded-full border border-black px-6 py-3 font-medium transition-colors duration-200 ease-in hover:bg-black hover:text-white disabled:opacity-50"
-            >
-              View all
-            </Link>
-          </section>
-        </>
-      )}
 
       {hasAnyExhibitions && (
         <>
@@ -344,6 +308,52 @@ function RouteComponent() {
               <div className="flex min-h-[160px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500">
                 No {fairsFilter} fairs
               </div>
+            )}
+          </section>
+        </>
+      )}
+
+      {showArtworksSection && (
+        <>
+          <hr className="w-full bg-neutral-400" />
+          <section className="my-8 lg:my-10">
+            <div className="mb-8 flex items-center justify-between">
+              <h2 className="font-lora text-xl font-medium md:text-2xl md:tracking-tight">
+                Artworks
+              </h2>
+              <Link
+                to="/artworks"
+                search={{
+                  artists: artist.name,
+                }}
+                className="hover:text-foreground text-sm text-neutral-500 transition-colors duration-200"
+              >
+                View all
+              </Link>
+            </div>
+
+            {artworksPending ? (
+              <ArtworksGridSkeleton />
+            ) : artworksStatus === 'error' ? (
+              <div className="flex min-h-[160px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-center text-sm text-red-600">
+                Unable to load selected works. Please try again later.
+              </div>
+            ) : hasArtworks ? (
+              <ArtworksGrid artworks={artistArtworks} />
+            ) : (
+              <div className="flex min-h-[160px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500">
+                No artworks are currently available.
+              </div>
+            )}
+
+            {showLoadMoreButton && (
+              <button
+                onClick={() => void fetchNextPage()}
+                disabled={isFetchingNextPage}
+                className="mx-auto mt-6 block w-fit cursor-pointer rounded-full border border-black px-6 py-3 font-medium transition-colors duration-200 ease-in hover:bg-black hover:text-white disabled:opacity-50"
+              >
+                {isFetchingNextPage ? 'Loading…' : 'Show more'}
+              </button>
             )}
           </section>
         </>
