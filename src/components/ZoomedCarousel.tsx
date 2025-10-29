@@ -88,7 +88,7 @@ export default function ZoomedCarousel({
             <DialogClose
               type="button"
               className={cn(
-                'focus-visible:ring-ring absolute top-6 right-6 flex items-center justify-center rounded-full bg-white/10 p-2 text-white transition-colors',
+                'focus-visible:ring-accent absolute top-6 right-6 flex items-center justify-center rounded-full bg-white/10 p-2 text-white transition-colors',
                 'hover:bg-white/20 focus-visible:ring-2 focus-visible:outline-hidden',
               )}
               aria-label="Close image gallery"

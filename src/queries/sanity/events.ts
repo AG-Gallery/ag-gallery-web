@@ -14,15 +14,6 @@ const exhibitionQuery = `
     "slug": slug.current,
     "coverImageUrl": coverImage.asset->url,
     "images": images[].asset->url,
-    "isGroup": groupToggle,
-    artist->{
-      "id": _id,
-      name,
-      "slug": slug.current,
-      "artistImage": artistImage.asset->url,
-      "backgroundImage": backgroundImage.asset->url,
-      tagline,
-    },
     artists[]->{
       "id": _id,
       name,
@@ -49,15 +40,6 @@ const allExhibitionsQuery = `
     "slug": slug.current,
     "coverImageUrl": coverImage.asset->url,
     "images": images[].asset->url,
-    "isGroup": groupToggle,
-    artist->{
-      "id": _id,
-      name,
-      "slug": slug.current,
-      "artistImage": artistImage.asset->url,
-      "backgroundImage": backgroundImage.asset->url,
-      tagline,
-    },
     artists[]->{
       "id": _id,
       name,
@@ -76,13 +58,7 @@ const exhibitionsWithArtistQuery = `
   *[
     _type == "exhibition" &&
     !(_id in path("drafts.**")) &&
-    (
-      // solo exhibition case
-      (!groupToggle && artist->slug.current == $slug) ||
-
-      // group exhibition case
-      (groupToggle && $slug in artists[]->slug.current)
-    )
+    $slug in artists[]->slug.current
   ]
   | order(startDate desc)
   {
@@ -92,15 +68,6 @@ const exhibitionsWithArtistQuery = `
     "slug": slug.current,
     "coverImageUrl": coverImage.asset->url,
     "images": images[].asset->url,
-    "isGroup": groupToggle,
-    artist->{
-      "id": _id,
-      name,
-      "slug": slug.current,
-      "artistImage": artistImage.asset->url,
-      "backgroundImage": backgroundImage.asset->url,
-      tagline,
-    },
     artists[]->{
       "id": _id,
       name,
@@ -126,15 +93,6 @@ const fairQuery = `
     "slug": slug.current,
     "coverImageUrl": coverImage.asset->url,
     "images": images[].asset->url,
-    "isGroup": groupToggle,
-    artist->{
-      "id": _id,
-      name,
-      "slug": slug.current,
-      "artistImage": artistImage.asset->url,
-      "backgroundImage": backgroundImage.asset->url,
-      tagline,
-    },
     artists[]->{
       "id": _id,
       name,

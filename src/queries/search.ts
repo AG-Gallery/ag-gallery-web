@@ -32,11 +32,16 @@ const searchExhibitionsQuery = `
     "coverImageUrl": coverImage.asset->url,
     startDate,
     endDate,
-    isGroup,
-    artist-> {
+    artists[]->{
+      "id": _id,
       name,
-      "slug": slug.current
-    }
+      "slug": slug.current,
+      "artistImage": artistImage.asset->url,
+      "backgroundImage": backgroundImage.asset->url,
+      tagline,
+    },
+    body,
+    images,
   }
 `
 

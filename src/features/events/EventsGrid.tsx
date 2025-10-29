@@ -22,9 +22,9 @@ export default function EventsGrid({ events }: EventsGridProps) {
           let slug: string
 
           if (event.type === 'exhibition') {
-            if (event.isGroup === false) {
-              exhibitionSubtitle = event.artist.name
-              slug = event.artist.slug
+            if (event.artists.length === 1) {
+              exhibitionSubtitle = event.artists[0].name
+              slug = event.artists[0].slug
             } else {
               exhibitionSubtitle = 'Group Event'
               slug = event.slug
@@ -57,8 +57,10 @@ export default function EventsGrid({ events }: EventsGridProps) {
               <Link
                 to="/artists/$slug"
                 params={{ slug: slug }}
-                className={` ${event.type === 'exhibition' && !event.isGroup && 'hover:text-accent'} w-fit text-sm text-neutral-500 transition-colors duration-200`}
-                disabled={event.type !== 'exhibition' || event.isGroup}
+                className={`${event.type === 'exhibition' && event.artists.length === 1 && 'hover:text-accent'} w-fit text-sm text-neutral-500 transition-colors duration-200`}
+                disabled={
+                  event.type !== 'exhibition' || event.artists.length > 1
+                }
               >
                 {exhibitionSubtitle ?? fairSubtitle}
               </Link>

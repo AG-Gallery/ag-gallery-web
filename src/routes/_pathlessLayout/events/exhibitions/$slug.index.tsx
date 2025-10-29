@@ -24,9 +24,10 @@ function createExhibitionQuery(slug: string) {
 function generateSeoDescription(exhibition: Exhibition) {
   const dates = formatDateRange(exhibition.startDate, exhibition.endDate)
 
-  const primaryArtist = exhibition.isGroup
-    ? 'a group of artists'
-    : exhibition.artist.name
+  const primaryArtist =
+    exhibition.artists.length === 1
+      ? exhibition.artists[0].name
+      : 'a group of artists'
 
   const descriptionParts = [`On view ${dates}`, `Featuring ${primaryArtist}`]
 
@@ -100,11 +101,7 @@ function RouteComponent() {
           Artists
         </h2>
 
-        <ArtistsGrid
-          artists={
-            exhibition.isGroup ? exhibition.artists : [exhibition.artist]
-          }
-        />
+        <ArtistsGrid artists={exhibition.artists} />
       </section>
     </main>
   )
