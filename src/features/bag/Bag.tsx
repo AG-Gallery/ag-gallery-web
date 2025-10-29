@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { BagIcon } from '@/components/icons/BagIcon'
 import { Button } from '@/components/ui/button'
@@ -21,6 +21,7 @@ type BagState = 'right' | 'bottom'
 
 export default function Bag() {
   const [drawerDirection, setDrawerDirection] = useState<BagState>('right')
+  const triggerButtonRef = useRef<HTMLButtonElement>(null)
 
   const items = useBagStore.use.items()
   const getItemCount = useBagStore.use.getItemCount()
@@ -35,6 +36,12 @@ export default function Bag() {
 
   const itemCount = getItemCount()
   const totalPrice = getTotalPriceFormatted()
+
+  const handleTriggerClick = () => {
+    // Blur the trigger button immediately to prevent aria-hidden conflict
+    // when the drawer applies aria-hidden to background elements
+    triggerButtonRef.current?.blur()
+  }
 
   useEffect(() => {
     useBagStore.persist.rehydrate()
@@ -123,9 +130,11 @@ export default function Bag() {
   )
 
   return (
-    <Drawer direction={drawerDirection}>
+    <Drawer direction={drawerDirection} autoFocus={true}>
       <DrawerTrigger asChild>
         <button
+          ref={triggerButtonRef}
+          onClick={handleTriggerClick}
           className="relative cursor-pointer p-2 disabled:cursor-not-allowed disabled:opacity-50"
           disabled={isCheckoutLoading}
           type="button"
