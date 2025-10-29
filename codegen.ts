@@ -31,7 +31,7 @@ const config: CodegenConfig = {
     },
     // Generates TanStack Query hooks
     'src/queries/graphql/generated/react-query.ts': {
-      documents: 'src/queries/graphql/queries/**/*.graphql',
+      documents: 'src/queries/graphql/queries/**/*.{graphql,gql}',
       plugins: ['typescript-operations', 'typescript-react-query'],
       config: {
         reactQueryVersion: 5,

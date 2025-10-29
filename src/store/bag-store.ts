@@ -20,12 +20,17 @@ export type BagItem = {
 
 type BagStore = {
   items: BagItem[]
+  pendingCheckoutUrl: string | null
+  pendingCheckoutCreatedAt: number | null
+  pendingCheckoutCartId: string | null
 
   // Actions
   addItem: (item: BagItem) => boolean
   removeItem: (id: string) => void
   clearBag: () => void
   isItemInBag: (id: string) => boolean
+  setPendingCheckout: (payload: { url: string; cartId: string | null }) => void
+  clearPendingCheckout: () => void
 
   // Computed values
   getTotalPrice: () => number // in cents to avoid float issues
@@ -37,6 +42,9 @@ const useBagStoreBase = create<BagStore>()(
   persist(
     (set, get) => ({
       items: [],
+      pendingCheckoutUrl: null,
+      pendingCheckoutCreatedAt: null,
+      pendingCheckoutCartId: null,
 
       addItem: (item: BagItem) => {
         const { items } = get()
@@ -45,24 +53,57 @@ const useBagStoreBase = create<BagStore>()(
           return false
         }
 
-        set({
-          items: [...items, { ...item, addedAt: Date.now() }],
-        })
+        set(({ items: existingItems }) => ({
+          items: [...existingItems, { ...item, addedAt: Date.now() }],
+          pendingCheckoutUrl: null,
+          pendingCheckoutCreatedAt: null,
+          pendingCheckoutCartId: null,
+        }))
         return true
       },
 
       removeItem: (id: string) => {
         set((state) => ({
           items: state.items.filter((item) => item.id !== id),
+          pendingCheckoutUrl: null,
+          pendingCheckoutCreatedAt: null,
+          pendingCheckoutCartId: null,
         }))
       },
 
       clearBag: () => {
-        set({ items: [] })
+        set({
+          items: [],
+          pendingCheckoutUrl: null,
+          pendingCheckoutCreatedAt: null,
+          pendingCheckoutCartId: null,
+        })
       },
 
       isItemInBag: (id: string) => {
         return get().items.some((item) => item.id === id)
+      },
+
+      setPendingCheckout: ({
+        url,
+        cartId,
+      }: {
+        url: string
+        cartId: string | null
+      }) => {
+        set({
+          pendingCheckoutUrl: url,
+          pendingCheckoutCreatedAt: Date.now(),
+          pendingCheckoutCartId: cartId,
+        })
+      },
+
+      clearPendingCheckout: () => {
+        set({
+          pendingCheckoutUrl: null,
+          pendingCheckoutCreatedAt: null,
+          pendingCheckoutCartId: null,
+        })
       },
 
       getTotalPrice: () => {
@@ -92,8 +133,24 @@ const useBagStoreBase = create<BagStore>()(
     }),
     {
       name: 'bag-storage',
-      version: 1,
+      version: 3,
       skipHydration: true,
+      migrate: (persistedState, version) => {
+        if (!persistedState || typeof persistedState !== 'object') {
+          return persistedState as BagStore
+        }
+
+        if (version < 3) {
+          return {
+            ...(persistedState as Record<string, unknown>),
+            pendingCheckoutUrl: null,
+            pendingCheckoutCreatedAt: null,
+            pendingCheckoutCartId: null,
+          }
+        }
+
+        return persistedState as BagStore
+      },
     },
   ),
 )

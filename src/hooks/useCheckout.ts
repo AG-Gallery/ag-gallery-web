@@ -1,12 +1,10 @@
 import { useState } from 'react'
 
-import { useMutation, useQuery } from '@tanstack/react-query'
-
-import { useBagStore } from '@/store/bag-store'
 import {
   useCreateCartMutation,
   useGetProductsForCheckoutQuery,
 } from '@/queries/graphql/generated/react-query'
+import { useBagStore } from '@/store/bag-store'
 
 type CheckoutError = {
   type: 'unavailable' | 'network' | 'validation' | 'unknown'
@@ -17,35 +15,45 @@ type CheckoutError = {
 export function useCheckout() {
   const [error, setError] = useState<CheckoutError | null>(null)
   const items = useBagStore.use.items()
-  const clearBag = useBagStore.use.clearBag()
+  const setPendingCheckout = useBagStore.use.setPendingCheckout()
+  const pendingCheckoutUrl = useBagStore.use.pendingCheckoutUrl()
 
   // Validate inventory before checkout
-  const { data: productsData, refetch: refetchProducts } =
-    useGetProductsForCheckoutQuery(
-      {
-        ids: items.map((item) => item.id),
-      },
-      {
-        enabled: false, // Only run when we manually trigger
-      },
-    )
+  const { refetch: refetchProducts } = useGetProductsForCheckoutQuery(
+    {
+      ids: items.map((item) => item.id),
+    },
+    {
+      enabled: false, // Only run when we manually trigger
+    },
+  )
 
   const createCartMutation = useCreateCartMutation({
     onSuccess: (data) => {
-      if (data.cartCreate?.cart?.checkoutUrl) {
-        // Clear bag on successful checkout creation
-        clearBag()
-        // Open Shopify checkout in new tab
-        window.open(data.cartCreate.cart.checkoutUrl, '_blank', 'noopener,noreferrer')
-      } else if (data.cartCreate?.userErrors && data.cartCreate.userErrors.length > 0) {
-        const errorMessages = data.cartCreate.userErrors
-          .map((err) => err.message)
-          .join(', ')
+      const cartCreate = data.cartCreate
+      const checkoutUrl = cartCreate?.cart?.checkoutUrl
+      const cartId = cartCreate?.cart?.id ?? null
+      const userErrors = cartCreate?.userErrors ?? []
+
+      if (checkoutUrl && userErrors.length === 0) {
+        setPendingCheckout({ url: checkoutUrl, cartId })
+        window.open(checkoutUrl, '_blank', 'noopener,noreferrer')
+        return
+      }
+
+      if (userErrors.length > 0) {
+        const errorMessages = userErrors.map((err) => err.message).join(', ')
         setError({
           type: 'validation',
-          message: errorMessages,
+          message: errorMessages || 'Unable to complete checkout.',
         })
+        return
       }
+
+      setError({
+        type: 'unknown',
+        message: 'Checkout did not complete. Please try again.',
+      })
     },
     onError: (err) => {
       console.error('Checkout error:', err)
@@ -58,6 +66,14 @@ export function useCheckout() {
 
   const proceedToCheckout = async () => {
     setError(null)
+
+    if (pendingCheckoutUrl) {
+      setError({
+        type: 'validation',
+        message: 'Please resume or dismiss your existing checkout first.',
+      })
+      return
+    }
 
     if (items.length === 0) {
       setError({

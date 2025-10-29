@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { BagIcon } from '@/components/icons/BagIcon'
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,7 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer'
 import { useCheckout } from '@/hooks/useCheckout'
+import { usePendingCheckoutWatcher } from '@/hooks/usePendingCheckoutWatcher'
 import { useBagStore } from '@/store/bag-store'
 
 import BagItem from './BagItem'
@@ -23,9 +24,15 @@ export default function Bag() {
   const [drawerDirection, setDrawerDirection] = useState<BagState>('right')
   const triggerButtonRef = useRef<HTMLButtonElement>(null)
 
+  usePendingCheckoutWatcher()
+
   const items = useBagStore.use.items()
   const getItemCount = useBagStore.use.getItemCount()
   const getTotalPriceFormatted = useBagStore.use.getTotalPriceFormatted()
+  const clearBag = useBagStore.use.clearBag()
+  const pendingCheckoutUrl = useBagStore.use.pendingCheckoutUrl()
+  const pendingCheckoutCreatedAt = useBagStore.use.pendingCheckoutCreatedAt()
+  const clearPendingCheckout = useBagStore.use.clearPendingCheckout()
 
   const {
     proceedToCheckout,
@@ -63,7 +70,26 @@ export default function Bag() {
     : ''
   const innerContainerClassName = `mx-auto size-full ${isSideDrawer ? 'max-w-none' : 'max-w-md'}`
   const hasItems = itemCount > 0
+  const hasPendingCheckout = Boolean(pendingCheckoutUrl)
   const bagBadgeLabel = itemCount > 9 ? '9+' : itemCount
+
+  const checkoutButtonLabel = hasPendingCheckout
+    ? 'Checkout in progress'
+    : 'Checkout'
+
+  const handleResumeCheckout = () => {
+    if (!pendingCheckoutUrl) return
+    window.open(pendingCheckoutUrl, '_blank', 'noopener,noreferrer')
+  }
+
+  const handleClearBag = () => {
+    clearBag()
+  }
+
+  const pendingCheckoutTimestamp = useMemo(() => {
+    if (!pendingCheckoutCreatedAt) return 'Created just now.'
+    return `Created ${new Date(pendingCheckoutCreatedAt).toLocaleString()}`
+  }, [pendingCheckoutCreatedAt])
 
   const bagContent = hasItems ? (
     <div className="space-y-4">
@@ -91,6 +117,34 @@ export default function Bag() {
 
   const bagFooter = !hasItems ? null : (
     <DrawerFooter className="border-t border-neutral-200">
+      {hasPendingCheckout && (
+        <div className="mb-4 rounded-lg border border-sky-200 bg-sky-50 p-4">
+          <p className="text-sm text-sky-900">
+            You have a checkout in progress.
+          </p>
+          <p className="mt-1 text-xs text-sky-800">
+            {pendingCheckoutTimestamp}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              onClick={handleResumeCheckout}
+              variant="secondary"
+              className="hover:transparent cursor-pointer border border-sky-700 bg-sky-50 text-sky-800 hover:border-sky-600 hover:bg-sky-100 hover:text-sky-700"
+            >
+              Resume checkout
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="text-sky-800 hover:bg-sky-100 hover:text-sky-900"
+              onClick={clearPendingCheckout}
+            >
+              Dismiss
+            </Button>
+          </div>
+        </div>
+      )}
       {checkoutError && (
         <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3">
           <p className="text-sm text-red-800">{checkoutError.message}</p>
@@ -117,13 +171,24 @@ export default function Bag() {
       <Button
         className="rounded-md border border-sky-800 bg-sky-700 font-medium text-white hover:border-sky-700 hover:bg-sky-600 disabled:cursor-not-allowed disabled:opacity-50"
         onClick={proceedToCheckout}
-        disabled={isCheckoutLoading}
+        disabled={isCheckoutLoading || hasPendingCheckout}
       >
-        {isCheckoutLoading ? 'Processing...' : 'Checkout'}
+        {isCheckoutLoading ? 'Processing...' : checkoutButtonLabel}
       </Button>
       <DrawerClose asChild>
         <Button variant="outline" type="button" disabled={isCheckoutLoading}>
           Continue Browsing
+        </Button>
+      </DrawerClose>
+      <DrawerClose asChild>
+        <Button
+          variant="ghost"
+          type="button"
+          className="text-neutral-600 hover:bg-transparent hover:text-neutral-900"
+          disabled={isCheckoutLoading}
+          onClick={handleClearBag}
+        >
+          Clear bag
         </Button>
       </DrawerClose>
     </DrawerFooter>

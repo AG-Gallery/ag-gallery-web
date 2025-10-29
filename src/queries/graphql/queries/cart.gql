@@ -1,0 +1,13 @@
+query GetCartById($id: ID!) {
+  cart(id: $id) {
+    id
+    createdAt
+    lines(first: 1) {
+      edges {
+        node {
+          id
+        }
+      }
+    }
+  }
+}
