@@ -37,19 +37,20 @@ export default function SearchMobileDrawer({
   useEffect(() => {
     if (!open) return
 
+    const viewport = window.visualViewport
+    if (!viewport) return
+
     // Initialize with current visual viewport height
-    if (typeof window !== 'undefined' && window.visualViewport) {
-      setViewportHeight(window.visualViewport.height)
+    setViewportHeight(viewport.height)
 
-      // Update on viewport change (keyboard appears/disappears)
-      const handleViewportChange = () => {
-        setViewportHeight(window.visualViewport?.height ?? null)
-      }
+    // Update on viewport change (keyboard appears/disappears)
+    const handleViewportChange = () => {
+      setViewportHeight(window.visualViewport?.height ?? null)
+    }
 
-      window.visualViewport.addEventListener('resize', handleViewportChange)
-      return () => {
-        window.visualViewport?.removeEventListener('resize', handleViewportChange)
-      }
+    viewport.addEventListener('resize', handleViewportChange)
+    return () => {
+      viewport.removeEventListener('resize', handleViewportChange)
     }
   }, [open])
 

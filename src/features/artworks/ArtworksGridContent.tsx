@@ -151,8 +151,6 @@ export default function ArtworksGridContent() {
   const [sidebarMaxHeight, setSidebarMaxHeight] = useState<number | null>(null)
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
-
     const wrapper = sidebarWrapperRef.current
     const content = sidebarRef.current
     if (!wrapper || !content) return

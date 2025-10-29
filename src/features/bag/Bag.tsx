@@ -29,9 +29,13 @@ export default function Bag() {
   const items = useBagStore.use.items()
   const getItemCount = useBagStore.use.getItemCount()
   const getTotalPriceFormatted = useBagStore.use.getTotalPriceFormatted()
-  const clearBag = useBagStore.use.clearBag()
 
-  const { proceedToCheckout, isLoading: isCheckoutLoading, error: checkoutError, clearError } = useCheckout()
+  const {
+    proceedToCheckout,
+    isLoading: isCheckoutLoading,
+    error: checkoutError,
+    clearError,
+  } = useCheckout()
 
   const itemCount = getItemCount()
   const totalPrice = getTotalPriceFormatted()
@@ -48,8 +52,6 @@ export default function Bag() {
   }, [])
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
-
     const checkScreenSize = () => {
       setDrawerDirection(window.innerWidth < 768 ? 'bottom' : 'right')
     }
@@ -95,16 +97,15 @@ export default function Bag() {
     <DrawerFooter className="border-t border-neutral-200">
       {checkoutError && (
         <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3">
-          <p className="text-sm text-red-800">
-            {checkoutError.message}
-          </p>
-          {checkoutError.unavailableItems && checkoutError.unavailableItems.length > 0 && (
-            <ul className="mt-2 text-xs text-red-700">
-              {checkoutError.unavailableItems.map((item) => (
-                <li key={item}>• {item}</li>
-              ))}
-            </ul>
-          )}
+          <p className="text-sm text-red-800">{checkoutError.message}</p>
+          {checkoutError.unavailableItems &&
+            checkoutError.unavailableItems.length > 0 && (
+              <ul className="mt-2 text-xs text-red-700">
+                {checkoutError.unavailableItems.map((item) => (
+                  <li key={item}>• {item}</li>
+                ))}
+              </ul>
+            )}
           <button
             onClick={clearError}
             className="mt-2 text-xs text-red-600 underline hover:text-red-800"
@@ -125,11 +126,7 @@ export default function Bag() {
         {isCheckoutLoading ? 'Processing...' : 'Checkout'}
       </Button>
       <DrawerClose asChild>
-        <Button
-          variant="outline"
-          type="button"
-          disabled={isCheckoutLoading}
-        >
+        <Button variant="outline" type="button" disabled={isCheckoutLoading}>
           Continue Browsing
         </Button>
       </DrawerClose>
