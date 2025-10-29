@@ -17,14 +17,10 @@ import { useBagStore } from '@/store/bag-store'
 
 import BagItem from './BagItem'
 
+type BagState = 'right' | 'bottom'
+
 export default function Bag() {
-  const [drawerDirection, setDrawerDirection] = useState<'right' | 'bottom'>(
-    () =>
-      typeof window !== 'undefined' && window.innerWidth < 768
-        ? 'bottom'
-        : 'right',
-  )
-  const [isHydrated, setIsHydrated] = useState(false)
+  const [drawerDirection, setDrawerDirection] = useState<BagState>('right')
 
   const items = useBagStore.use.items()
   const getItemCount = useBagStore.use.getItemCount()
@@ -41,14 +37,7 @@ export default function Bag() {
   const totalPrice = getTotalPriceFormatted()
 
   useEffect(() => {
-    const rehydrate = useBagStore.persist.rehydrate()
-
-    if (rehydrate instanceof Promise) {
-      rehydrate.finally(() => setIsHydrated(true))
-      return
-    }
-
-    setIsHydrated(true)
+    useBagStore.persist.rehydrate()
   }, [])
 
   useEffect(() => {
@@ -132,38 +121,6 @@ export default function Bag() {
       </DrawerClose>
     </DrawerFooter>
   )
-
-  if (!isHydrated) {
-    return (
-      <Drawer direction={drawerDirection}>
-        <DrawerTrigger asChild>
-          <button
-            className="relative cursor-pointer p-2 transition-colors duration-150"
-            type="button"
-          >
-            <BagIcon classes="size-5" />
-          </button>
-        </DrawerTrigger>
-        <DrawerContent className={drawerContentClassName}>
-          <div className={innerContainerClassName}>
-            <DrawerHeader>
-              <DrawerTitle>Bag</DrawerTitle>
-              <DrawerDescription className="sr-only">
-                View the artwork in your bag.
-              </DrawerDescription>
-            </DrawerHeader>
-            <div className="flex-1 overflow-y-auto p-4">
-              <div className="flex h-full flex-col items-center justify-center">
-                <div className="animate-pulse">
-                  <BagIcon classes="size-12 text-neutral-300" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </DrawerContent>
-      </Drawer>
-    )
-  }
 
   return (
     <Drawer direction={drawerDirection}>

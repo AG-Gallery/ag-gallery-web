@@ -5,6 +5,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { PortableText } from '@portabletext/react'
 
+import { formatDateLong } from '@/lib/utils'
 import { getArticle } from '@/queries/sanity/magazine'
 
 function createArticleQuery(slug: string) {
@@ -15,11 +16,7 @@ function createArticleQuery(slug: string) {
 }
 
 function generateSeoDescription(article: Article) {
-  const publishedOn = new Date(article.date).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+  const publishedOn = formatDateLong(article.date)
 
   return `${article.title} — published ${publishedOn} by AG Gallery Magazine.`
 }
@@ -53,11 +50,7 @@ function RouteComponent() {
 
   const { data: article, isLoading, error } = useSuspenseQuery(articleQuery)
 
-  const date = new Date(article.date).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+  const date = formatDateLong(article.date)
 
   return (
     <main className="page-main">

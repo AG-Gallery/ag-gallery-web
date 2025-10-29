@@ -1,6 +1,7 @@
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 
+import { formatDateLong } from '@/lib/utils'
 import { getAllArticles } from '@/queries/sanity/magazine'
 
 const allArticlesQueryOptions = queryOptions({
@@ -42,11 +43,7 @@ function RouteComponent() {
       <section className="animate-fade-in">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {articles.map((a) => {
-            const date = new Date(a.date).toLocaleDateString(undefined, {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })
+            const date = formatDateLong(a.date)
 
             return (
               <Link

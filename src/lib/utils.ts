@@ -7,6 +7,47 @@ export function cn(...inputs: Array<ClassValue>) {
   return twMerge(clsx(inputs))
 }
 
+const DAY_FORMATTER = new Intl.DateTimeFormat('en-US', {
+  day: 'numeric',
+  timeZone: 'UTC',
+})
+
+const MONTH_FORMATTER = new Intl.DateTimeFormat('en-US', {
+  month: 'long',
+  timeZone: 'UTC',
+})
+
+const YEAR_FORMATTER = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  timeZone: 'UTC',
+})
+
+const LONG_DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+})
+
+function toDate(value: string | Date): Date | null {
+  const date = value instanceof Date ? value : new Date(value)
+
+  if (Number.isNaN(date.getTime())) {
+    console.warn(`Invalid date provided: ${value}`)
+    return null
+  }
+
+  return date
+}
+
+export function formatDateLong(value: string | Date) {
+  const date = toDate(value)
+
+  if (!date) return ''
+
+  return LONG_DATE_FORMATTER.format(date)
+}
+
 /**
  * Formats a given date range into a readable string.
  *
@@ -15,17 +56,16 @@ export function cn(...inputs: Array<ClassValue>) {
  * @returns A human-readable string for the date range.
  */
 export function formatDateRange(start: string, end: string): string {
-  const startDate = new Date(start)
-  const endDate = new Date(end)
+  const startDate = toDate(start)
+  const endDate = toDate(end)
 
-  const startDay = startDate.getDate()
-  const startMonth = startDate.toLocaleString('en-US', { month: 'long' })
+  if (!startDate || !endDate) return ''
 
-  const endDay = endDate.getDate()
-  const endMonth = endDate.toLocaleString('en-US', { month: 'long' })
-  const endYear = endDate.getFullYear()
-
-  return `${startDay} ${startMonth} – ${endDay} ${endMonth}, ${endYear}`
+  return `${DAY_FORMATTER.format(startDate)} ${MONTH_FORMATTER.format(
+    startDate,
+  )} – ${DAY_FORMATTER.format(endDate)} ${MONTH_FORMATTER.format(
+    endDate,
+  )}, ${YEAR_FORMATTER.format(endDate)}`
 }
 
 /**

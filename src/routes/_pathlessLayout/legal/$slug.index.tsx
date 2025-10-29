@@ -5,6 +5,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { PortableText } from '@portabletext/react'
 
+import { formatDateLong } from '@/lib/utils'
 import { getPage } from '@/queries/sanity/pages'
 
 function createQueryOptions(slug: string) {
@@ -40,16 +41,7 @@ function Page() {
   const pageQuery = useSuspenseQuery(pageQueryOptions)
 
   const data = pageQuery.isSuccess ? pageQuery.data : null
-  const lastUpdated = data
-    ? (() => {
-        const [year, month, day] = data.lastUpdated.split('-').map(Number)
-        return new Date(year, month - 1, day).toLocaleDateString(undefined, {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })
-      })()
-    : ''
+  const lastUpdated = data ? formatDateLong(data.lastUpdated) : ''
 
   return (
     <main className="page-main">
