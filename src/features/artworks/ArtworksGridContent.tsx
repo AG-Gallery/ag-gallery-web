@@ -18,7 +18,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import {
-  loadFilterOptions,
+  artworkFilterOptionsQueryOptions,
   useArtworksListing,
 } from '@/hooks/useArtworksListing'
 import { mergeFilterOptions } from '@/lib/artworks/utils'
@@ -55,12 +55,14 @@ export default function ArtworksGridContent() {
   const syncQueryFromUrl = useUrlStore.use.syncQueryFromUrl()
   const hasSyncedFromUrlRef = useRef(false)
 
+  const initialDataUpdatedAt = useMemo(() => Date.now(), [])
   const { data: remoteFilterOptions } = useQuery({
-    queryKey: ['artwork-filter-options'],
-    queryFn: loadFilterOptions,
-    staleTime: 7 * 60 * 1000,
+    ...artworkFilterOptionsQueryOptions,
     initialData: initialFilterOptions,
+    initialDataUpdatedAt,
   })
+
+  const effectiveFilterOptions = remoteFilterOptions ?? initialFilterOptions
 
   useEffect(() => {
     function syncFromLocation() {
@@ -120,8 +122,8 @@ export default function ArtworksGridContent() {
   } = useArtworksListing({ sortOption, filters })
 
   const availableOptions = useMemo<ArtworksFilterOptions>(() => {
-    return mergeFilterOptions(remoteFilterOptions, fallbackOptions)
-  }, [remoteFilterOptions, fallbackOptions])
+    return mergeFilterOptions(effectiveFilterOptions, fallbackOptions)
+  }, [effectiveFilterOptions, fallbackOptions])
 
   function handleFiltersChange(nextFilters: ArtworksFilterState) {
     const updates: Record<string, string[] | undefined> = {}

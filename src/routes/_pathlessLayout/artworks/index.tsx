@@ -1,10 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import ArtworksGridContent from '@/features/artworks/ArtworksGridContent'
-import { loadFilterOptions } from '@/hooks/useArtworksListing'
+import { artworkFilterOptionsQueryOptions } from '@/hooks/useArtworksListing'
 
 export const Route = createFileRoute('/_pathlessLayout/artworks/')({
-  loader: loadFilterOptions,
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(artworkFilterOptionsQueryOptions),
   head: () => ({
     meta: [
       {

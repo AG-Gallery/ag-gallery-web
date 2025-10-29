@@ -6,7 +6,7 @@ import type {
 
 import { useMemo } from 'react'
 
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { queryOptions, useInfiniteQuery } from '@tanstack/react-query'
 
 import { dedupeArtworks } from '@/lib/artworks/utils'
 import {
@@ -15,6 +15,14 @@ import {
 } from '@/queries/artworks'
 
 export const ITEMS_PER_PAGE = 32
+
+export const artworkFilterOptionsQueryOptions = queryOptions({
+  queryKey: ['artwork-filter-options'],
+  queryFn: fetchFilterOptions,
+  staleTime: 15 * 60 * 1000,
+  gcTime: 30 * 60 * 1000,
+  retry: 2,
+})
 
 interface UseArtworksListingArgs {
   sortOption: ArtworksSortOption
@@ -73,8 +81,4 @@ export function useArtworksListing({
     fetchNextPage,
     isFetchingNextPage,
   }
-}
-
-export async function loadFilterOptions() {
-  return fetchFilterOptions()
 }

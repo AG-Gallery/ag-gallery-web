@@ -1,4 +1,8 @@
-import type { ArtworksFilterOptions, ArtworksFilterState } from '@/types/filters'
+import type { CollectionSummary } from './types'
+import type {
+  ArtworksFilterOptions,
+  ArtworksFilterState,
+} from '@/types/filters'
 
 import { slugify } from '@/lib/utils'
 
@@ -9,7 +13,6 @@ import {
   FILTER_COLLECTION_PREFIXES,
 } from './constants'
 import { fetchCollectionsPage } from './fetchers'
-import type { CollectionSummary } from './types'
 import {
   normalizeCollectionTitle,
   resolveCollectionHandlesForArtist,
@@ -17,25 +20,34 @@ import {
 
 type FilterKey = keyof ArtworksFilterOptions
 
-const collectionHandleLookup: Record<FilterKey, Map<string, string>> = {
-  styles: new Map(),
-  categories: new Map(),
-  themes: new Map(),
-  artists: new Map(),
+const FILTER_KEYS: FilterKey[] = ['styles', 'categories', 'themes', 'artists']
+
+type LookupMaps = Record<FilterKey, Map<string, string>>
+
+function createLookupMaps(): LookupMaps {
+  return {
+    styles: new Map(),
+    categories: new Map(),
+    themes: new Map(),
+    artists: new Map(),
+  }
 }
 
-const collectionTitleLookup: Record<FilterKey, Map<string, string>> = {
-  styles: new Map(),
-  categories: new Map(),
-  themes: new Map(),
-  artists: new Map(),
-}
+const collectionHandleLookup: LookupMaps = createLookupMaps()
+const collectionTitleLookup: LookupMaps = createLookupMaps()
+export const collectionHandleToTitle: LookupMaps = createLookupMaps()
 
-export const collectionHandleToTitle: Record<FilterKey, Map<string, string>> = {
-  styles: new Map(),
-  categories: new Map(),
-  themes: new Map(),
-  artists: new Map(),
+let lastSuccessfulOptions: ArtworksFilterOptions | null = null
+
+function syncLookupMaps(target: LookupMaps, source: LookupMaps) {
+  FILTER_KEYS.forEach((key) => {
+    const targetMap = target[key]
+    const sourceMap = source[key]
+    targetMap.clear()
+    sourceMap.forEach((value, entryKey) => {
+      targetMap.set(entryKey, value)
+    })
+  })
 }
 
 function addCollectionToOptions(
@@ -46,44 +58,43 @@ function addCollectionToOptions(
     themes: Set<string>
     artists: Set<string>
   },
-) {
+  lookups: {
+    handleLookup: LookupMaps
+    titleLookup: LookupMaps
+    handleToTitle: LookupMaps
+  },
+): boolean {
   const { handle, title } = collection
-  if (!handle || !title) return
+  if (!handle || !title) return false
 
   const entry = Object.entries(FILTER_COLLECTION_PREFIXES).find(([_, prefix]) =>
     handle.startsWith(prefix),
   ) as [FilterKey, string] | undefined
 
-  if (!entry) return
+  if (!entry) return false
 
   const [type] = entry
   const normalizedTitle = title.trim()
-  if (!normalizedTitle) return
+  if (!normalizedTitle) return false
 
   const canonical = normalizeCollectionTitle(normalizedTitle)
-  const seenTitles = collectionTitleLookup[type]
+  const seenTitles = lookups.titleLookup[type]
   if (seenTitles.has(canonical)) {
-    if (!collectionHandleToTitle[type].has(handle)) {
-      collectionHandleToTitle[type].set(handle, normalizedTitle)
+    if (!lookups.handleToTitle[type].has(handle)) {
+      lookups.handleToTitle[type].set(handle, normalizedTitle)
     }
-    return
+    return false
   }
 
   seenTitles.set(canonical, normalizedTitle)
   optionSets[type].add(normalizedTitle)
-  if (!collectionHandleLookup[type].has(normalizedTitle)) {
-    collectionHandleLookup[type].set(normalizedTitle, handle)
+  if (!lookups.handleLookup[type].has(normalizedTitle)) {
+    lookups.handleLookup[type].set(normalizedTitle, handle)
   }
-  if (!collectionHandleToTitle[type].has(handle)) {
-    collectionHandleToTitle[type].set(handle, normalizedTitle)
+  if (!lookups.handleToTitle[type].has(handle)) {
+    lookups.handleToTitle[type].set(handle, normalizedTitle)
   }
-}
-
-function getRegisteredHandle(
-  type: keyof typeof FILTER_COLLECTION_PREFIXES,
-  value: string,
-): string | undefined {
-  return collectionHandleLookup[type].get(value)
+  return true
 }
 
 function normalizeHandleFromValue(
@@ -116,7 +127,9 @@ function resolveHandlesForFilter(
   return handle ? [handle] : []
 }
 
-export function buildFilterCollectionHandles(filters: ArtworksFilterState): string[] {
+export function buildFilterCollectionHandles(
+  filters: ArtworksFilterState,
+): string[] {
   const allHandles = new Set<string>()
 
   ;(Object.keys(filters) as Array<keyof ArtworksFilterState>).forEach((key) => {
@@ -132,18 +145,9 @@ export function buildFilterCollectionHandles(filters: ArtworksFilterState): stri
 }
 
 export async function fetchFilterOptions(): Promise<ArtworksFilterOptions> {
-  collectionHandleLookup.styles.clear()
-  collectionHandleLookup.categories.clear()
-  collectionHandleLookup.themes.clear()
-  collectionHandleLookup.artists.clear()
-  collectionTitleLookup.styles.clear()
-  collectionTitleLookup.categories.clear()
-  collectionTitleLookup.themes.clear()
-  collectionTitleLookup.artists.clear()
-  collectionHandleToTitle.styles.clear()
-  collectionHandleToTitle.categories.clear()
-  collectionHandleToTitle.themes.clear()
-  collectionHandleToTitle.artists.clear()
+  const nextHandleLookup = createLookupMaps()
+  const nextTitleLookup = createLookupMaps()
+  const nextHandleToTitle = createLookupMaps()
 
   const optionSets = {
     styles: new Set<string>(),
@@ -155,6 +159,7 @@ export async function fetchFilterOptions(): Promise<ArtworksFilterOptions> {
   let after: string | undefined = undefined
   let hasNextPage = true
   let iterations = 0
+  let encounteredError = false
 
   while (hasNextPage && iterations < COLLECTIONS_FETCH_MAX_PAGES) {
     iterations += 1
@@ -163,28 +168,48 @@ export async function fetchFilterOptions(): Promise<ArtworksFilterOptions> {
     try {
       page = await fetchCollectionsPage(after, COLLECTIONS_FETCH_PAGE_SIZE)
     } catch (error) {
+      encounteredError = true
       console.error('Failed to fetch filter collections page', error)
       break
     }
 
     page.items.forEach((collection) => {
-      addCollectionToOptions(collection, optionSets)
+      addCollectionToOptions(collection, optionSets, {
+        handleLookup: nextHandleLookup,
+        titleLookup: nextTitleLookup,
+        handleToTitle: nextHandleToTitle,
+      })
     })
 
     hasNextPage = page.pageInfo.hasNextPage
     after = page.pageInfo.endCursor
   }
 
+  if (encounteredError) {
+    if (lastSuccessfulOptions) {
+      return lastSuccessfulOptions
+    }
+    return EMPTY_FILTER_OPTIONS
+  }
+
   const hasAnyOptions = Object.values(optionSets).some((set) => set.size > 0)
 
   if (!hasAnyOptions) {
+    if (lastSuccessfulOptions) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(
+          '[filter-options] no collections discovered (using cached options)',
+        )
+      }
+      return lastSuccessfulOptions
+    }
     if (process.env.NODE_ENV !== 'production') {
       console.warn('[filter-options] no collections discovered')
     }
     return EMPTY_FILTER_OPTIONS
   }
 
-  return {
+  const nextOptions: ArtworksFilterOptions = {
     styles: Array.from(optionSets.styles).sort((a, b) => a.localeCompare(b)),
     categories: Array.from(optionSets.categories).sort((a, b) =>
       a.localeCompare(b),
@@ -192,4 +217,12 @@ export async function fetchFilterOptions(): Promise<ArtworksFilterOptions> {
     themes: Array.from(optionSets.themes).sort((a, b) => a.localeCompare(b)),
     artists: Array.from(optionSets.artists).sort((a, b) => a.localeCompare(b)),
   }
+
+  syncLookupMaps(collectionHandleLookup, nextHandleLookup)
+  syncLookupMaps(collectionTitleLookup, nextTitleLookup)
+  syncLookupMaps(collectionHandleToTitle, nextHandleToTitle)
+
+  lastSuccessfulOptions = nextOptions
+
+  return nextOptions
 }
