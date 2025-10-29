@@ -120,7 +120,7 @@ export default function Carousel({
                   width="1920"
                   height="1080"
                   className={cn(
-                    'animate-fade-in mx-auto aspect-[5/4] rounded-md object-contain',
+                    'animate-fade-in mx-auto aspect-[5/4] h-full rounded-md object-contain',
                     imageClassName,
                   )}
                   fetchPriority={index === 0 ? 'high' : 'low'}
