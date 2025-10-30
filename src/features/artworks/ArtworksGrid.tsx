@@ -6,14 +6,16 @@ import { ArtworkGridItem } from './ArtworkGridItem'
 
 type ArtworksGridProps = {
   artworks: Artwork[]
+  showPrice: boolean
 }
 
-export default function ArtworksGrid({ artworks }: ArtworksGridProps) {
+export default function ArtworksGrid({
+  artworks,
+  showPrice = false,
+}: ArtworksGridProps) {
   const pathname = useLocation({
     select: (location) => location.pathname,
   })
-
-  const isArtworksRoute = pathname.startsWith('/artworks')
 
   return (
     <div className="featured-grid-container">
@@ -27,7 +29,7 @@ export default function ArtworksGrid({ artworks }: ArtworksGridProps) {
               key={artwork.id}
               artwork={artwork}
               index={index}
-              isArtworksRoute={isArtworksRoute}
+              showPrice={showPrice}
               isArtistLinkActive={isArtistLinkActive}
             />
           )

@@ -14,15 +14,15 @@ import { cn } from '@/lib/utils'
 type ArtworkGridItemProps = {
   artwork: Artwork
   index: number
-  isArtworksRoute: boolean
+  showPrice: boolean
   isArtistLinkActive: boolean
 }
 
 export function ArtworkGridItem({
   artwork,
   index,
-  isArtworksRoute,
   isArtistLinkActive,
+  showPrice = false,
 }: ArtworkGridItemProps) {
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const imageRef = useRef<HTMLImageElement | null>(null)
@@ -110,7 +110,7 @@ export function ArtworkGridItem({
           </p>
         </div>
 
-        {isArtworksRoute && (
+        {showPrice && (
           <p className="mt-2 text-sm text-neutral-500/80">{priceDisplay}</p>
         )}
 

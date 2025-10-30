@@ -47,7 +47,11 @@ function isSortOption(value: string | undefined): value is ArtworksSortOption {
   )
 }
 
-export default function ArtworksGridContent() {
+export default function ArtworksGridContent({
+  showPrice = false,
+}: {
+  showPrice: boolean
+}) {
   const initialFilterOptions = Route.useLoaderData()
   const query = useUrlStore.use.query()
   const setQuery = useUrlStore.use.setQuery()
@@ -287,7 +291,7 @@ export default function ArtworksGridContent() {
               Unable to load artworks. Please try again.
             </div>
           ) : sortedArtworks.length > 0 ? (
-            <ArtworksGrid artworks={sortedArtworks} />
+            <ArtworksGrid artworks={sortedArtworks} showPrice={showPrice} />
           ) : (
             <div className="flex min-h-[240px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500">
               No artworks match your current filters. Try adjusting or clearing

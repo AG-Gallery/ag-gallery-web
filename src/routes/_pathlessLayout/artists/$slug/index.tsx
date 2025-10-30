@@ -273,7 +273,7 @@ function RouteComponent() {
                 Unable to load selected works. Please try again later.
               </div>
             ) : hasArtworks ? (
-              <ArtworksGrid artworks={artistArtworks} />
+              <ArtworksGrid artworks={artistArtworks} showPrice={true} />
             ) : (
               <div className="flex min-h-[160px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500">
                 No artworks are currently available.

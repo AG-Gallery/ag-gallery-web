@@ -22,7 +22,7 @@ function RouteComponent() {
   return (
     <main className="page-main min-w-full">
       <h2 className="page-headline">Artworks</h2>
-      <ArtworksGridContent />
+      <ArtworksGridContent showPrice={true} />
     </main>
   )
 }
