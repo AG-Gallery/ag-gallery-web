@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { useClientId } from '@/hooks/useClientId'
+import { announceCheckoutSession } from '@/lib/checkout-session'
 import {
   useCreateCartMutation,
   useGetProductsForCheckoutQuery,
@@ -17,6 +19,7 @@ export function useCheckout() {
   const items = useBagStore.use.items()
   const setPendingCheckout = useBagStore.use.setPendingCheckout()
   const pendingCheckoutUrl = useBagStore.use.pendingCheckoutUrl()
+  const clientId = useClientId()
 
   // Validate inventory before checkout
   const { refetch: refetchProducts } = useGetProductsForCheckoutQuery(
@@ -36,7 +39,20 @@ export function useCheckout() {
       const userErrors = cartCreate?.userErrors ?? []
 
       if (checkoutUrl && userErrors.length === 0) {
-        setPendingCheckout({ url: checkoutUrl, cartId })
+        setPendingCheckout({
+          url: checkoutUrl,
+          cartId,
+          clientId: clientId ?? null,
+        })
+
+        if (clientId && cartId) {
+          void announceCheckoutSession({
+            clientId,
+            cartId,
+            checkoutUrl,
+          })
+        }
+
         window.open(checkoutUrl, '_blank', 'noopener,noreferrer')
         return
       }

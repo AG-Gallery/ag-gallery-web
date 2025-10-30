@@ -1,54 +1,55 @@
 import { useEffect } from 'react'
 
-import { useGetCartByIdQuery } from '@/queries/graphql/generated/react-query'
+import { useClientId } from '@/hooks/useClientId'
+import { fetchCheckoutStatus } from '@/lib/checkout-session'
 import { useBagStore } from '@/store/bag-store'
 
 const EXPIRE_AFTER_MS = 60 * 60 * 1000 // 60 minutes
+const STATUS_POLL_INTERVAL = 15 * 1000 // 15 seconds
 
 export function usePendingCheckoutWatcher() {
   const pendingCheckoutUrl = useBagStore.use.pendingCheckoutUrl()
   const pendingCheckoutCartId = useBagStore.use.pendingCheckoutCartId()
   const pendingCheckoutCreatedAt = useBagStore.use.pendingCheckoutCreatedAt()
   const clearPendingCheckout = useBagStore.use.clearPendingCheckout()
+  const clearBag = useBagStore.use.clearBag()
+  const clientId = useClientId()
 
   const isExpired =
     pendingCheckoutCreatedAt !== null &&
     Date.now() - pendingCheckoutCreatedAt > EXPIRE_AFTER_MS
 
-  const shouldQuery = Boolean(
-    pendingCheckoutUrl && pendingCheckoutCartId && !isExpired,
-  )
-
-  const { data, error } = useGetCartByIdQuery(
-    { id: pendingCheckoutCartId ?? '' },
-    {
-      enabled: shouldQuery,
-      staleTime: 5 * 60 * 1000,
-    },
-  )
+  const shouldQuery = Boolean(pendingCheckoutUrl && !isExpired && clientId)
 
   useEffect(() => {
-    if (!shouldQuery) {
-      if (pendingCheckoutUrl && isExpired) {
+    if (pendingCheckoutUrl && isExpired) {
+      clearPendingCheckout()
+    }
+  }, [pendingCheckoutUrl, isExpired, clearPendingCheckout])
+
+  useEffect(() => {
+    if (!shouldQuery || !clientId) return
+
+    let cancelled = false
+
+    async function checkStatus() {
+      const status = await fetchCheckoutStatus(clientId)
+      if (cancelled || !status) return
+
+      if (status.status === 'completed') {
+        clearBag()
         clearPendingCheckout()
       }
-      return
     }
 
-    if (error) {
-      clearPendingCheckout()
-      return
-    }
+    void checkStatus()
+    const interval = window.setInterval(() => {
+      void checkStatus()
+    }, STATUS_POLL_INTERVAL)
 
-    if (data?.cart === null) {
-      clearPendingCheckout()
+    return () => {
+      cancelled = true
+      window.clearInterval(interval)
     }
-  }, [
-    shouldQuery,
-    pendingCheckoutUrl,
-    isExpired,
-    data?.cart,
-    error,
-    clearPendingCheckout,
-  ])
+  }, [shouldQuery, clientId, clearPendingCheckout, clearBag])
 }

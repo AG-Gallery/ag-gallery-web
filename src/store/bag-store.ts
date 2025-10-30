@@ -23,13 +23,18 @@ type BagStore = {
   pendingCheckoutUrl: string | null
   pendingCheckoutCreatedAt: number | null
   pendingCheckoutCartId: string | null
+  pendingCheckoutClientId: string | null
 
   // Actions
   addItem: (item: BagItem) => boolean
   removeItem: (id: string) => void
   clearBag: () => void
   isItemInBag: (id: string) => boolean
-  setPendingCheckout: (payload: { url: string; cartId: string | null }) => void
+  setPendingCheckout: (payload: {
+    url: string
+    cartId: string | null
+    clientId: string | null
+  }) => void
   clearPendingCheckout: () => void
 
   // Computed values
@@ -45,6 +50,7 @@ const useBagStoreBase = create<BagStore>()(
       pendingCheckoutUrl: null,
       pendingCheckoutCreatedAt: null,
       pendingCheckoutCartId: null,
+      pendingCheckoutClientId: null,
 
       addItem: (item: BagItem) => {
         const { items } = get()
@@ -58,6 +64,7 @@ const useBagStoreBase = create<BagStore>()(
           pendingCheckoutUrl: null,
           pendingCheckoutCreatedAt: null,
           pendingCheckoutCartId: null,
+          pendingCheckoutClientId: null,
         }))
         return true
       },
@@ -68,6 +75,7 @@ const useBagStoreBase = create<BagStore>()(
           pendingCheckoutUrl: null,
           pendingCheckoutCreatedAt: null,
           pendingCheckoutCartId: null,
+          pendingCheckoutClientId: null,
         }))
       },
 
@@ -77,6 +85,7 @@ const useBagStoreBase = create<BagStore>()(
           pendingCheckoutUrl: null,
           pendingCheckoutCreatedAt: null,
           pendingCheckoutCartId: null,
+          pendingCheckoutClientId: null,
         })
       },
 
@@ -87,14 +96,17 @@ const useBagStoreBase = create<BagStore>()(
       setPendingCheckout: ({
         url,
         cartId,
+        clientId,
       }: {
         url: string
         cartId: string | null
+        clientId: string | null
       }) => {
         set({
           pendingCheckoutUrl: url,
           pendingCheckoutCreatedAt: Date.now(),
           pendingCheckoutCartId: cartId,
+          pendingCheckoutClientId: clientId,
         })
       },
 
@@ -103,6 +115,7 @@ const useBagStoreBase = create<BagStore>()(
           pendingCheckoutUrl: null,
           pendingCheckoutCreatedAt: null,
           pendingCheckoutCartId: null,
+          pendingCheckoutClientId: null,
         })
       },
 
@@ -133,19 +146,20 @@ const useBagStoreBase = create<BagStore>()(
     }),
     {
       name: 'bag-storage',
-      version: 3,
+      version: 4,
       skipHydration: true,
       migrate: (persistedState, version) => {
         if (!persistedState || typeof persistedState !== 'object') {
           return persistedState as BagStore
         }
 
-        if (version < 3) {
+        if (version < 4) {
           return {
             ...(persistedState as Record<string, unknown>),
             pendingCheckoutUrl: null,
             pendingCheckoutCreatedAt: null,
             pendingCheckoutCartId: null,
+            pendingCheckoutClientId: null,
           }
         }
 
