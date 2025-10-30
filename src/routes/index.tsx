@@ -42,7 +42,7 @@ function IndexPage() {
       <Header isFloating={true} />
       <main>
         <HeroVideo
-          posterSrc="/hero/hero-image.png"
+          posterSrc="/hero/hero-image.webp"
           videoSrc="/hero/hero-video.webm"
         />
 
