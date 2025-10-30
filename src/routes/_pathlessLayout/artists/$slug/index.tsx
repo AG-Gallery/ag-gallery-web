@@ -14,10 +14,7 @@ import { useArtistArtworksListing } from '@/hooks/useArtistArtworksListing'
 import { ITEMS_PER_PAGE } from '@/hooks/useArtworksListing'
 import { filterEventsByTime, sortEventsByTime } from '@/lib/events/utils'
 import { getArtist } from '@/queries/sanity/artists'
-import {
-  getExhibitionsWithArtist,
-  getFairsWithArtist,
-} from '@/queries/sanity/events'
+import { getExhibitionsWithArtist } from '@/queries/sanity/events'
 
 function createArtistQuery(slug: string) {
   return queryOptions({
@@ -31,12 +28,12 @@ function createExhibitionsQuery(slug: string) {
     queryFn: () => getExhibitionsWithArtist(slug),
   })
 }
-function createFairsQuery(slug: string) {
-  return queryOptions({
-    queryKey: [`${slug}-fairs`],
-    queryFn: () => getFairsWithArtist(slug),
-  })
-}
+// function createFairsQuery(slug: string) {
+//   return queryOptions({
+//     queryKey: [`${slug}-fairs`],
+//     queryFn: () => getFairsWithArtist(slug),
+//   })
+// }
 
 export const Route = createFileRoute('/_pathlessLayout/artists/$slug/')({
   loader: async ({ context, params }) => {
@@ -47,7 +44,7 @@ export const Route = createFileRoute('/_pathlessLayout/artists/$slug/')({
     const [artist] = await Promise.all([
       artistPromise,
       context.queryClient.ensureQueryData(createExhibitionsQuery(params.slug)),
-      context.queryClient.ensureQueryData(createFairsQuery(params.slug)),
+      // context.queryClient.ensureQueryData(createFairsQuery(params.slug)),
     ])
 
     return { artist }
@@ -77,15 +74,15 @@ function RouteComponent() {
     useState<EventTimeFilter>('all')
   const [fairsFilter, setFairsFilter] = useState<EventTimeFilter>('all')
   const [exhibitionsPage, setExhibitionsPage] = useState(1)
-  const [fairsPage, setFairsPage] = useState(1)
+  // const [fairsPage, setFairsPage] = useState(1)
 
   const artistQuery = createArtistQuery(slug)
   const exhibitionsQuery = createExhibitionsQuery(slug)
-  const fairsQuery = createFairsQuery(slug)
+  // const fairsQuery = createFairsQuery(slug)
 
   const { data: artist } = useSuspenseQuery(artistQuery)
   const { data: exhibitions } = useSuspenseQuery(exhibitionsQuery)
-  const { data: fairs } = useSuspenseQuery(fairsQuery)
+  // const { data: fairs } = useSuspenseQuery(fairsQuery)
 
   const selectedWorks = artist.selectedWorks
 
@@ -106,29 +103,29 @@ function RouteComponent() {
     () => sortEventsByTime(exhibitions),
     [exhibitions],
   )
-  const sortedFairs = useMemo(() => sortEventsByTime(fairs), [fairs])
+  // const sortedFairs = useMemo(() => sortEventsByTime(fairs), [fairs])
 
   const filteredExhibitions = useMemo(
     () => filterEventsByTime(sortedExhibitions, exhibitionsFilter),
     [sortedExhibitions, exhibitionsFilter],
   )
-  const filteredFairs = useMemo(
-    () => filterEventsByTime(sortedFairs, fairsFilter),
-    [sortedFairs, fairsFilter],
-  )
+  // const filteredFairs = useMemo(
+  //   () => filterEventsByTime(sortedFairs, fairsFilter),
+  //   [sortedFairs, fairsFilter],
+  // )
 
   const paginatedExhibitions = useMemo(
     () => filteredExhibitions.slice(0, exhibitionsPage * ITEMS_PER_PAGE),
     [filteredExhibitions, exhibitionsPage],
   )
-  const paginatedFairs = useMemo(
-    () => filteredFairs.slice(0, fairsPage * ITEMS_PER_PAGE),
-    [filteredFairs, fairsPage],
-  )
+  // const paginatedFairs = useMemo(
+  //   () => filteredFairs.slice(0, fairsPage * ITEMS_PER_PAGE),
+  //   [filteredFairs, fairsPage],
+  // )
 
   const hasMoreExhibitions =
     filteredExhibitions.length > exhibitionsPage * ITEMS_PER_PAGE
-  const hasMoreFairs = filteredFairs.length > fairsPage * ITEMS_PER_PAGE
+  // const hasMoreFairs = filteredFairs.length > fairsPage * ITEMS_PER_PAGE
 
   const handleExhibitionsFilterChange = (filter: EventTimeFilter) => {
     setExhibitionsFilter(filter)
@@ -137,11 +134,11 @@ function RouteComponent() {
 
   const handleFairsFilterChange = (filter: EventTimeFilter) => {
     setFairsFilter(filter)
-    setFairsPage(1)
+    // setFairsPage(1)
   }
 
   const hasAnyExhibitions = exhibitions.length > 0
-  const hasAnyFairs = fairs.length > 0
+  // const hasAnyFairs = fairs.length > 0
 
   const hasArtworks = artistArtworks.length > 0
   const showArtworksSection =
@@ -250,69 +247,6 @@ function RouteComponent() {
         </>
       )}
 
-      {hasAnyFairs && (
-        <>
-          <hr className="w-full bg-neutral-400" />
-          <section className="my-6 lg:my-8">
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="font-lora text-xl font-medium md:text-2xl md:tracking-tight">
-                Fairs
-              </h2>
-              <div className="flex gap-4 text-sm">
-                <button
-                  onClick={() => handleFairsFilterChange('all')}
-                  className={`transition-colors duration-200 ${
-                    fairsFilter === 'all'
-                      ? 'font-medium text-black underline'
-                      : 'text-neutral-500 hover:text-black'
-                  }`}
-                >
-                  All
-                </button>
-                <button
-                  onClick={() => handleFairsFilterChange('current')}
-                  className={`transition-colors duration-200 ${
-                    fairsFilter === 'current'
-                      ? 'font-medium text-black underline'
-                      : 'text-neutral-500 hover:text-black'
-                  }`}
-                >
-                  Current
-                </button>
-                <button
-                  onClick={() => handleFairsFilterChange('past')}
-                  className={`transition-colors duration-200 ${
-                    fairsFilter === 'past'
-                      ? 'font-medium text-black underline'
-                      : 'text-neutral-500 hover:text-black'
-                  }`}
-                >
-                  Past
-                </button>
-              </div>
-            </div>
-
-            {paginatedFairs.length > 0 ? (
-              <>
-                <EventsGrid events={paginatedFairs} />
-                {hasMoreFairs && (
-                  <button
-                    onClick={() => setFairsPage((prev) => prev + 1)}
-                    className="mx-auto mt-6 block cursor-pointer rounded-full border border-black px-6 py-3 font-medium transition-colors duration-200 ease-in hover:bg-black hover:text-white"
-                  >
-                    Show more
-                  </button>
-                )}
-              </>
-            ) : (
-              <div className="flex min-h-[160px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500">
-                No {fairsFilter} fairs
-              </div>
-            )}
-          </section>
-        </>
-      )}
-
       {showArtworksSection && (
         <>
           <hr className="w-full bg-neutral-400" />
@@ -360,4 +294,72 @@ function RouteComponent() {
       )}
     </main>
   )
+}
+
+{
+  /*
+  Hiding fairs on client request
+  {hasAnyFairs && (
+  <>
+    <hr className="w-full bg-neutral-400" />
+    <section className="my-6 lg:my-8">
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="font-lora text-xl font-medium md:text-2xl md:tracking-tight">
+          Fairs
+        </h2>
+        <div className="flex gap-4 text-sm">
+          <button
+            onClick={() => handleFairsFilterChange('all')}
+            className={`transition-colors duration-200 ${
+              fairsFilter === 'all'
+                ? 'font-medium text-black underline'
+                : 'text-neutral-500 hover:text-black'
+            }`}
+          >
+            All
+          </button>
+          <button
+            onClick={() => handleFairsFilterChange('current')}
+            className={`transition-colors duration-200 ${
+              fairsFilter === 'current'
+                ? 'font-medium text-black underline'
+                : 'text-neutral-500 hover:text-black'
+            }`}
+          >
+            Current
+          </button>
+          <button
+            onClick={() => handleFairsFilterChange('past')}
+            className={`transition-colors duration-200 ${
+              fairsFilter === 'past'
+                ? 'font-medium text-black underline'
+                : 'text-neutral-500 hover:text-black'
+            }`}
+          >
+            Past
+          </button>
+        </div>
+      </div>
+
+      {paginatedFairs.length > 0 ? (
+        <>
+          <EventsGrid events={paginatedFairs} />
+          {hasMoreFairs && (
+            <button
+              onClick={() => setFairsPage((prev) => prev + 1)}
+              className="mx-auto mt-6 block cursor-pointer rounded-full border border-black px-6 py-3 font-medium transition-colors duration-200 ease-in hover:bg-black hover:text-white"
+            >
+              Show more
+            </button>
+          )}
+        </>
+      ) : (
+        <div className="flex min-h-[160px] items-center justify-center rounded-lg border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500">
+          No {fairsFilter} fairs
+        </div>
+      )}
+    </section>
+  </>
+)}
+*/
 }
