@@ -69,7 +69,7 @@ function RouteComponent() {
   const eventDates = formatDateRange(fair.startDate, fair.endDate)
 
   return (
-    <main className="page-main">
+    <main className="page-main mx-auto max-w-[1600px]">
       <h2 className="page-headline flex items-center gap-4">
         {fair.title} <span className="text-lg">•</span> {fair.location}
       </h2>
@@ -80,7 +80,7 @@ function RouteComponent() {
       <section className="animate-fade-in my-5 items-center justify-center lg:my-14 lg:flex">
         <Carousel images={fair.images} />
 
-        <article className="my-8 w-full gap-4 align-top tracking-wide text-pretty lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-24 2xl:w-[700px]">
+        <article className="my-8 w-full gap-4 align-top tracking-wide text-pretty lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] xl:gap-8 2xl:ml-44 2xl:w-[700px]">
           <PortableText
             value={fair.body}
             components={{

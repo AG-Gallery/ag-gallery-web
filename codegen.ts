@@ -42,24 +42,6 @@ const config: CodegenConfig = {
         fetcher: { func: 'src/queries/graphql/fetcher#fetcher' },
       },
     },
-    // 'src/graphql/generated/react-query.ts': {
-    //   documents: 'src/graphql/queries/**/*.graphql',
-    //   plugins: ['typescript-operations', 'typescript-react-query'],
-    //   config: {
-    //     reactQueryVersion: 5,
-    //     exposeQueryKeys: true,
-    //     exposeDocument: true,
-    //     addInfiniteQuery: true,
-    //     // Uses server proxy
-    //     fetcher: {
-    //       endpoint: "'/api/shopify/graphql'",
-    //       fetchParams: {
-    //         method: 'POST',
-    //         headers: { 'Content-Type': 'application/json' },
-    //       },
-    //     },
-    //   },
-    // },
   },
   ignoreNoDocuments: true,
   hooks: {
