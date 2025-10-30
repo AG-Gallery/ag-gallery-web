@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { ensureClientId } from '@/lib/client-id'
 
 export function useClientId() {
-  const [clientId, setClientId] = useState<string | null>(null)
+  const [clientId, setClientId] = useState<string | null>(() => ensureClientId())
 
   useEffect(() => {
     const id = ensureClientId()
