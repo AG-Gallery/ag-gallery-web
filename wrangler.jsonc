@@ -4,7 +4,16 @@
   "main": "@tanstack/react-start/server-entry",
   "compatibility_date": "2025-09-02",
   "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": false
+  },
   "assets": {
     "binding": "ASSETS"
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "CART_KV_BINDING",
+      "id": "4ecebe4d48d343fc8992b975aed79f40"
+    }
+  ]
 }
