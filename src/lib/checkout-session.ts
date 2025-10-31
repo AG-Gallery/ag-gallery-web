@@ -1,6 +1,6 @@
 const ENDPOINT =
   import.meta.env.VITE_CHECKOUT_SESSION_ENDPOINT ??
-  '/api/internal/checkout-session'
+  'https://ag-gallery.com/api/internal/checkout-session'
 
 export type CheckoutSessionPayload = {
   clientId: string
@@ -45,10 +45,10 @@ export async function fetchCheckoutStatus(
   if (!ENDPOINT) return null
 
   try {
-    const url = new URL(ENDPOINT)
-    url.searchParams.set('clientId', clientId)
+    const statusUrl = new URL(ENDPOINT)
+    statusUrl.searchParams.set('clientId', clientId)
 
-    const res = await fetch(url.toString(), {
+    const res = await fetch(statusUrl.toString(), {
       headers: {
         Accept: 'application/json',
       },
