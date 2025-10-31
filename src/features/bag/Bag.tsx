@@ -231,7 +231,10 @@ export default function Bag() {
               </DrawerDescription>
             </div>
             <DrawerClose asChild>
-              <Button variant="ghost" className="text-neutral-600">
+              <Button
+                variant="ghost"
+                className="text-neutral-600 hover:text-neutral-900"
+              >
                 Close
               </Button>
             </DrawerClose>
