@@ -1,4 +1,6 @@
-const ENDPOINT = import.meta.env.VITE_CHECKOUT_SESSION_ENDPOINT ?? ''
+const ENDPOINT =
+  import.meta.env.VITE_CHECKOUT_SESSION_ENDPOINT ??
+  '/api/internal/checkout-session'
 
 export type CheckoutSessionPayload = {
   clientId: string
