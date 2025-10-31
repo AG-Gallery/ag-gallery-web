@@ -1,4 +1,7 @@
-import type { ArtworksPage, ArtworksPageParam } from '@/queries/artworks'
+import type {
+  ArtworksPage,
+  ArtworksPageParam,
+} from '@/queries/artworks/types'
 import type { Artwork } from '@/types/products'
 
 import { useMemo } from 'react'
@@ -6,10 +9,8 @@ import { useMemo } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 
 import { dedupeArtworks } from '@/lib/artworks/utils'
-import {
-  getNextArtworksPageParam,
-  resolveCollectionHandlesForArtist,
-} from '@/queries/artworks'
+import { getNextArtworksPageParam } from '@/queries/artworks/queryOptions'
+import { resolveCollectionHandlesForArtist } from '@/queries/artworks/utils'
 import { fetchArtworksForCollectionHandles } from '@/queries/artworks/multiCollectionFetch'
 
 import { ITEMS_PER_PAGE } from './useArtworksListing'

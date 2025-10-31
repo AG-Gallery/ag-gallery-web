@@ -1,6 +1,6 @@
 const ENDPOINT =
   import.meta.env.VITE_CHECKOUT_SESSION_ENDPOINT ??
-  'https://ag-gallery.com/api/internal/checkout-session'
+  'https://workers.ag-gallery.com/api/internal/checkout-session'
 
 export type CheckoutSessionPayload = {
   clientId: string
@@ -61,19 +61,9 @@ export async function fetchCheckoutStatus(
       return null
     }
 
-    const json = (await res.json()) as {
-      status: CheckoutStatus['status']
-      checkoutUrl: string
-      cartId: string | null
-      completedAt: string | null
-    }
+    const json = (await res.json()) as CheckoutStatus
 
-    return {
-      status: json.status,
-      checkoutUrl: json.checkoutUrl,
-      cartId: json.cartId,
-      completedAt: json.completedAt,
-    }
+    return json
   } catch (error) {
     console.warn('[checkout-session] failed to fetch status', error)
     return null
