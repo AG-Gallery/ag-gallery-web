@@ -57,7 +57,7 @@ function IndexPage() {
           </p>
           <a
             href="#curators-picks"
-            className="w-fit transform rounded-full border border-white bg-white/30 px-6 py-3 text-lg font-medium tracking-wide shadow-sm backdrop-blur-md transition duration-200 ease-in hover:bg-white hover:text-black"
+            className="w-fit transform rounded-full border border-white bg-white/30 px-5 py-2 text-lg font-medium tracking-wide shadow-sm backdrop-blur-md transition duration-200 ease-in hover:bg-white hover:text-black md:px-6 md:py-3"
           >
             Explore the Gallery
           </a>
@@ -68,7 +68,7 @@ function IndexPage() {
           className="mt-8 scroll-mt-[var(--header-height)]"
         >
           <h2 className="featured-headline">Curator's Picks</h2>
-          <ArtworksGrid artworks={curatorsPicks} />
+          <ArtworksGrid artworks={curatorsPicks} showPrice={false} />
         </section>
 
         <hr className="mb-4 w-full bg-neutral-400 md:mb-8" />
