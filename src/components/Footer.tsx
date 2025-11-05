@@ -14,8 +14,8 @@ export default function Footer() {
   ]
 
   const socialMediaLinks = [
-    { title: 'Instagram', link: 'https://instagram.com' },
-    { title: 'Facebook', link: 'https://facebook.com' },
+    { title: 'Instagram', link: 'https://instagram.com/aggallery_la' },
+    // { title: 'Facebook', link: 'https://facebook.com' },
   ]
 
   const footerBgClass = isMagazineRoute
