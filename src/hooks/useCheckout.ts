@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { useClientId } from '@/hooks/useClientId'
 import { announceCheckoutSession } from '@/lib/checkout-session'
+import { ensureClientId } from '@/lib/client-id'
 import {
   useCreateCartMutation,
   useGetProductsForCheckoutQuery,
@@ -20,6 +21,7 @@ export function useCheckout() {
   const setPendingCheckout = useBagStore.use.setPendingCheckout()
   const pendingCheckoutUrl = useBagStore.use.pendingCheckoutUrl()
   const clientId = useClientId()
+  const checkoutClientIdRef = useRef<string | null>(null)
 
   // Validate inventory before checkout
   const { refetch: refetchProducts } = useGetProductsForCheckoutQuery(
@@ -37,17 +39,27 @@ export function useCheckout() {
       const checkoutUrl = cartCreate?.cart?.checkoutUrl
       const cartId = cartCreate?.cart?.id ?? null
       const userErrors = cartCreate?.userErrors ?? []
+      const activeClientId =
+        checkoutClientIdRef.current ?? clientId ?? ensureClientId()
+
+      if (!activeClientId) {
+        setError({
+          type: 'unknown',
+          message: 'Could not start checkout. Please try again.',
+        })
+        return
+      }
 
       if (checkoutUrl && userErrors.length === 0) {
         setPendingCheckout({
           url: checkoutUrl,
           cartId,
-          clientId: clientId ?? null,
+          clientId: activeClientId,
         })
 
-        if (clientId && cartId) {
+        if (cartId) {
           void announceCheckoutSession({
-            clientId,
+            clientId: activeClientId,
             cartId,
             checkoutUrl,
           })
@@ -99,6 +111,17 @@ export function useCheckout() {
       return
     }
 
+    const resolvedClientId = clientId ?? ensureClientId()
+    if (!resolvedClientId) {
+      setError({
+        type: 'validation',
+        message: 'Please enable cookies to continue to checkout.',
+      })
+      return
+    }
+
+    checkoutClientIdRef.current = resolvedClientId
+
     try {
       // First, validate inventory availability
       const { data } = await refetchProducts()
@@ -123,14 +146,23 @@ export function useCheckout() {
         }
 
         if (product.__typename === 'Product') {
-          const variant = product.variants?.edges[0]?.node
+          const firstVariantEdge = product.variants.edges.at(0)
+
+          if (!firstVariantEdge) {
+            unavailableItems.push(bagItem.title)
+            return
+          }
+
+          const variant = firstVariantEdge.node
+          const quantity = variant.quantityAvailable
+          const isVariantOutOfStock =
+            quantity !== null &&
+            quantity < 1
 
           if (
             !product.availableForSale ||
-            !variant?.availableForSale ||
-            (variant.quantityAvailable !== null &&
-              variant.quantityAvailable !== undefined &&
-              variant.quantityAvailable < 1)
+            !variant.availableForSale ||
+            isVariantOutOfStock
           ) {
             unavailableItems.push(bagItem.title)
           }
@@ -152,24 +184,24 @@ export function useCheckout() {
 
       // All items available, proceed with cart creation
       // Convert bag items to cart line items with variant IDs
-      const lines = await Promise.all(
-        items.map(async (item) => {
-          const product = data.products.find((p) => p?.id === item.id)
-          const variantId =
-            product?.__typename === 'Product'
-              ? product.variants?.edges[0]?.node?.id
-              : null
+      const lines = items.map((item) => {
+        const product = data.products.find((p) => p?.id === item.id)
+        if (product?.__typename !== 'Product') {
+          throw new Error(`Unexpected product type for ${item.title}`)
+        }
 
-          if (!variantId) {
-            throw new Error(`No variant found for ${item.title}`)
-          }
+        const firstVariantEdge = product.variants.edges.at(0)
+        if (!firstVariantEdge) {
+          throw new Error(`No variant found for ${item.title}`)
+        }
 
-          return {
-            merchandiseId: variantId,
-            quantity: 1,
-          }
-        }),
-      )
+        const variantId = firstVariantEdge.node.id
+
+        return {
+          merchandiseId: variantId,
+          quantity: 1,
+        }
+      })
 
       // Create the cart with Shopify
       createCartMutation.mutate({

@@ -9,17 +9,18 @@ const STATUS_POLL_INTERVAL = 15 * 1000 // 15 seconds
 
 export function usePendingCheckoutWatcher() {
   const pendingCheckoutUrl = useBagStore.use.pendingCheckoutUrl()
-  const pendingCheckoutCartId = useBagStore.use.pendingCheckoutCartId()
   const pendingCheckoutCreatedAt = useBagStore.use.pendingCheckoutCreatedAt()
+  const pendingCheckoutClientId = useBagStore.use.pendingCheckoutClientId()
   const clearPendingCheckout = useBagStore.use.clearPendingCheckout()
   const clearBag = useBagStore.use.clearBag()
   const clientId = useClientId()
+  const statusClientId = pendingCheckoutClientId ?? clientId
 
   const isExpired =
     pendingCheckoutCreatedAt !== null &&
     Date.now() - pendingCheckoutCreatedAt > EXPIRE_AFTER_MS
 
-  const shouldQuery = Boolean(pendingCheckoutUrl && !isExpired && clientId)
+  const shouldQuery = Boolean(pendingCheckoutUrl && !isExpired && statusClientId)
 
   useEffect(() => {
     if (pendingCheckoutUrl && isExpired) {
@@ -28,12 +29,12 @@ export function usePendingCheckoutWatcher() {
   }, [pendingCheckoutUrl, isExpired, clearPendingCheckout])
 
   useEffect(() => {
-    if (!shouldQuery || !clientId) return
+    if (!shouldQuery || !statusClientId) return
 
     let cancelled = false
 
     async function checkStatus() {
-      const status = await fetchCheckoutStatus(clientId)
+      const status = await fetchCheckoutStatus(statusClientId)
       if (cancelled || !status) return
 
       if (status.status === 'completed') {
@@ -51,5 +52,5 @@ export function usePendingCheckoutWatcher() {
       cancelled = true
       window.clearInterval(interval)
     }
-  }, [shouldQuery, clientId, clearPendingCheckout, clearBag])
+  }, [shouldQuery, statusClientId, clearPendingCheckout, clearBag])
 }

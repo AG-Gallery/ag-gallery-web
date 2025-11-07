@@ -33,7 +33,7 @@ type BagStore = {
   setPendingCheckout: (payload: {
     url: string
     cartId: string | null
-    clientId: string | null
+    clientId: string
   }) => void
   clearPendingCheckout: () => void
 
@@ -100,7 +100,7 @@ const useBagStoreBase = create<BagStore>()(
       }: {
         url: string
         cartId: string | null
-        clientId: string | null
+        clientId: string
       }) => {
         set({
           pendingCheckoutUrl: url,

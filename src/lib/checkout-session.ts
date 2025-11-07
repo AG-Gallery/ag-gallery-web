@@ -20,22 +20,44 @@ export async function announceCheckoutSession(
 ): Promise<void> {
   if (!ENDPOINT) return
 
-  try {
-    const res = await fetch(ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-      keepalive: true,
-    })
+  const MAX_ATTEMPTS = 3
 
-    if (!res.ok) {
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        keepalive: attempt === 1,
+      })
+
+      if (res.ok) {
+        return
+      }
+
       const text = await res.text().catch(() => '')
-      console.warn('[checkout-session] failed to announce', res.status, text)
+      console.warn(
+        `[checkout-session] failed to announce (attempt ${attempt})`,
+        res.status,
+        text,
+      )
+    } catch (error) {
+      console.warn(
+        `[checkout-session] error announcing session (attempt ${attempt})`,
+        error,
+      )
     }
-  } catch (error) {
-    console.warn('[checkout-session] error announcing session', error)
+
+    if (attempt < MAX_ATTEMPTS) {
+      await new Promise((resolve) => {
+        const delay = attempt * 1000
+        const timerHost: typeof globalThis =
+          typeof window !== 'undefined' ? window : globalThis
+        timerHost.setTimeout(resolve, delay)
+      })
+    }
   }
 }
 
