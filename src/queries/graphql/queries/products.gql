@@ -69,8 +69,15 @@ query Public_GetAllProducts(
   $sortKey: ProductSortKeys = TITLE
   $reverse: Boolean = false
   $imagesFirst: Int = 1
+  $query: String = "available_for_sale:true AND inventory_total:>0"
 ) {
-  products(first: $first, after: $after, sortKey: $sortKey, reverse: $reverse) {
+  products(
+    first: $first
+    after: $after
+    sortKey: $sortKey
+    reverse: $reverse
+    query: $query
+  ) {
     pageInfo {
       hasNextPage
       endCursor
@@ -98,6 +105,7 @@ query Public_GetCollectionProducts(
       after: $productsAfter
       sortKey: $productsSortKey
       reverse: $productsReverse
+      filters: [{ available: true }]
     ) {
       pageInfo {
         hasNextPage

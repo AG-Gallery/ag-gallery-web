@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 
 import { useQuery } from '@tanstack/react-query'
 
+import { SHOPIFY_AVAILABLE_IN_STOCK_QUERY } from '@/queries/constants'
 import { performSearch, useSearchProductsQuery } from '@/queries/search'
 
 export type UseSearchLogicReturn = {
@@ -20,6 +21,11 @@ export type UseSearchLogicReturn = {
 export function useSearchLogic(): UseSearchLogicReturn {
   const [searchTerm, setSearchTerm] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
+  const normalizedSearch = debouncedSearch.trim()
+  const shopifyProductQuery =
+    normalizedSearch.length > 0
+      ? `(title:*${normalizedSearch}*) AND ${SHOPIFY_AVAILABLE_IN_STOCK_QUERY}`
+      : SHOPIFY_AVAILABLE_IN_STOCK_QUERY
 
   // Debounce search input with 300ms delay
   useEffect(() => {
@@ -34,18 +40,18 @@ export function useSearchLogic(): UseSearchLogicReturn {
   const { data: sanityResults, isLoading: sanityLoading } = useQuery({
     queryKey: ['search-sanity', debouncedSearch],
     queryFn: () => performSearch(debouncedSearch),
-    enabled: debouncedSearch.length > 0,
+    enabled: normalizedSearch.length > 0,
   })
 
   // Shopify search (products)
   const { data: shopifyResults, isLoading: shopifyLoading } =
     useSearchProductsQuery(
       {
-        query: `title:*${debouncedSearch}*`,
+        query: shopifyProductQuery,
         first: 5,
       },
       {
-        enabled: debouncedSearch.length > 0,
+        enabled: normalizedSearch.length > 0,
       },
     )
 

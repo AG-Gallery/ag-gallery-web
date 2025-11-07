@@ -18,6 +18,7 @@ import type { ArtworksSortOption } from '@/types/filters'
 import type { Artwork } from '@/types/products'
 
 import { formatProducts, productsToArtworks } from '@/lib/normalizers/products'
+import { SHOPIFY_AVAILABLE_IN_STOCK_QUERY } from '@/queries/constants'
 import { fetcher } from '@/queries/graphql/fetcher'
 import {
   Public_GetAllProductsDocument,
@@ -77,6 +78,7 @@ export async function fetchShopifyPage(
     sortKey,
     reverse,
     imagesFirst: 1,
+    query: SHOPIFY_AVAILABLE_IN_STOCK_QUERY,
   }
 
   const res = await fetcher<
