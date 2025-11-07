@@ -5,7 +5,7 @@ import { fetchCheckoutStatus } from '@/lib/checkout-session'
 import { useBagStore } from '@/store/bag-store'
 
 const EXPIRE_AFTER_MS = 60 * 60 * 1000 // 60 minutes
-const STATUS_POLL_INTERVAL = 15 * 1000 // 15 seconds
+const STATUS_POLL_INTERVAL = 7 * 1000 // 7 seconds
 
 export function usePendingCheckoutWatcher() {
   const pendingCheckoutUrl = useBagStore.use.pendingCheckoutUrl()
