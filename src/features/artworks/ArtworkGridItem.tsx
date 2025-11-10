@@ -62,7 +62,6 @@ export function ArtworkGridItem({
             // ----------
             // TODO: ALT TEXT
             // ----------
-            alt={'GET ALT TEXT'}
             width="1920"
             height="1080"
             loading={index <= 8 ? 'eager' : 'lazy'}

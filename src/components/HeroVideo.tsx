@@ -13,11 +13,13 @@ export default function HeroVideo({ posterSrc, videoSrc }: HeroVideoProps) {
   return (
     <section className="relative -z-50 -mx-3 -mt-[var(--header-height)] h-[85vh] overflow-hidden md:-mx-10 md:h-[90vh]">
       <video
+        aria-hidden="true"
         autoPlay
         muted
         loop
         playsInline
         poster={posterSrc}
+        tabIndex={-1}
         className="size-full object-cover"
       >
         <source src={videoSrc} type="video/webm" />
