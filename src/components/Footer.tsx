@@ -66,8 +66,10 @@ export default function Footer() {
             {socialMediaLinks.map((socialMedia) => (
               <li key={socialMedia.link} className="text-sm tracking-wide">
                 <a
+                  aria-label={`View AG Gallery's ${socialMedia.title} (opens in a new tab).`}
                   href={socialMedia.link}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="hover:text-accent transition-colors"
                 >
                   {socialMedia.title}

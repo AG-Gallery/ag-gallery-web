@@ -26,7 +26,6 @@ export default function CarouselThumbnail({
     >
       <img
         src={images[index]}
-        alt=""
         width="1920"
         height="1080"
         onClick={onClick}

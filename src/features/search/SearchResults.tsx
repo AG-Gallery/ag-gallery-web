@@ -87,7 +87,7 @@ export default function SearchResultsComponent({
                 {product.images.edges[0] && (
                   <img
                     src={product.images.edges[0].node.url}
-                    alt={product.title}
+                    alt={`${product.title} by ${product.artist?.value}`}
                     className="h-10 w-10 rounded object-cover"
                   />
                 )}

@@ -59,9 +59,7 @@ export function ArtworkGridItem({
           <img
             ref={imageRef}
             src={artwork.previewImageUrl}
-            // ----------
-            // TODO: ALT TEXT
-            // ----------
+            alt={`${artwork.title} by ${artwork.artist.name} - ${artwork.theme} - ${artwork.medium}`}
             width="1920"
             height="1080"
             loading={index <= 8 ? 'eager' : 'lazy'}

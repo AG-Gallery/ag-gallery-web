@@ -23,7 +23,7 @@ export default function ArtistsGrid({ artists }: ArtistsGridProps) {
                   <div className="relative">
                     <img
                       src={artist.backgroundImage}
-                      alt={`A portrait image of the artist ${artist.name}`}
+                      alt={`A portrait of the artist ${artist.name}`}
                       width={1920}
                       height={1080}
                       draggable={false}
@@ -31,7 +31,7 @@ export default function ArtistsGrid({ artists }: ArtistsGridProps) {
                     />
                     <img
                       src={artist.artistImage}
-                      alt={`A portrait image of the artist ${artist.name}`}
+                      alt={`A portrait of the artist ${artist.name}`}
                       width={1920}
                       height={1080}
                       draggable={false}

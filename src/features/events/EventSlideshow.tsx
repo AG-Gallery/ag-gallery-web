@@ -208,7 +208,6 @@ export default function EventSlideshow({
       {aSrc && (
         <img
           src={aSrc}
-          alt=""
           aria-hidden="true"
           decoding="async"
           draggable={false}
@@ -231,7 +230,6 @@ export default function EventSlideshow({
       {bSrc && (
         <img
           src={bSrc}
-          alt=""
           aria-hidden="true"
           decoding="async"
           draggable={false}
