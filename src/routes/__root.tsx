@@ -65,17 +65,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
   const isMagazineRoute = pathname.startsWith('/magazine')
 
-  useEffect(() => {
-    const script = document.createElement('script')
-    script.src = 'https://acsbapp.com/apps/app/dist/js/app.js'
-    script.async = true
-    script.onload = () => {
-      // @ts-ignore
-      if (window.acsbJS) window.acsbJS.init()
-    }
-    document.head.appendChild(script)
-  }, [])
-
   return (
     <html lang="en" className="scroll-smooth">
       <head>
@@ -92,8 +81,27 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <Footer />
         </div>
 
-        {import.meta.env.DEV && <Devtools />}
         <Scripts />
+
+        {import.meta.env.DEV && <Devtools />}
+
+        {import.meta.env.PROD && (
+          <script
+            // This injects static, trusted content → no runtime user data
+            dangerouslySetInnerHTML={{
+              __html: `
+              (function() {
+                var s = document.createElement('script');
+                var h = document.querySelector('head') || document.body;
+                s.src = 'https://acsbapp.com/apps/app/dist/js/app.js';
+                s.async = true;
+                s.onload = function(){ if (window.acsbJS) acsbJS.init(); };
+                h.appendChild(s);
+              })();
+            `,
+            }}
+          />
+        )}
       </body>
     </html>
   )
