@@ -1,5 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query'
 
+import { useEffect } from 'react'
+
 import { TanstackDevtools } from '@tanstack/react-devtools'
 import {
   createRootRouteWithContext,
@@ -14,6 +16,7 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import appCss from '../styles.css?url'
 
 import Footer from '@/components/Footer'
+import Accessibe from '@/integrations/accessiBe/accessibe'
 import { seo } from '@/lib/seo'
 import { cn } from '@/lib/utils'
 
@@ -61,6 +64,17 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   })
 
   const isMagazineRoute = pathname.startsWith('/magazine')
+
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.src = 'https://acsbapp.com/apps/app/dist/js/app.js'
+    script.async = true
+    script.onload = () => {
+      // @ts-ignore
+      if (window.acsbJS) window.acsbJS.init()
+    }
+    document.head.appendChild(script)
+  }, [])
 
   return (
     <html lang="en" className="scroll-smooth">
