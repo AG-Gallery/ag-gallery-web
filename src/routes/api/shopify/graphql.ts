@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-const SHOPIFY_DOMAIN = process.env.SHOPIFY_DOMAIN!
-const SHOPIFY_TOKEN = process.env.SHOPIFY_STOREFRONT_PUBLIC_TOKEN!
+const SHOPIFY_DOMAIN = process.env.VITE_SHOPIFY_DOMAIN!
+const SHOPIFY_TOKEN = process.env.VITE_SHOPIFY_STOREFRONT_PUBLIC_TOKEN!
 const SHOPIFY_API_VERSION = process.env.SHOPIFY_API_VERSION ?? '2025-07'
 
 if (!SHOPIFY_DOMAIN || !SHOPIFY_TOKEN) {

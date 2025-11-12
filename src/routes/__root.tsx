@@ -16,7 +16,6 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import appCss from '../styles.css?url'
 
 import Footer from '@/components/Footer'
-import Accessibe from '@/integrations/accessiBe/accessibe'
 import { seo } from '@/lib/seo'
 import { cn } from '@/lib/utils'
 
@@ -65,6 +64,47 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
   const isMagazineRoute = pathname.startsWith('/magazine')
 
+  useEffect(() => {
+    const SF_API_TOKEN = import.meta.env.VITE_SHOPIFY_STOREFRONT_PUBLIC_TOKEN
+    const CHECKOUT_DOMAIN = import.meta.env.VITE_SHOPIFY_CHECKOUT_DOMAIN
+    const LOCAL_CONSENT_KEY = 'cookie-consent'
+
+    const scriptId = 'shopify-privacy-banner-js'
+    if (document.getElementById(scriptId)) return
+
+    const script = document.createElement('script')
+    script.id = scriptId
+    script.src =
+      'https://cdn.shopify.com/shopifycloud/privacy-banner/storefront-banner.js'
+    script.async = true
+    document.body.appendChild(script)
+
+    script.onload = () => {
+      const cfg = {
+        storefrontAccessToken: SF_API_TOKEN,
+        checkoutRootDomain: CHECKOUT_DOMAIN,
+        storefrontRootDomain: 'ag-gallery.com',
+      }
+
+      const localConsent = localStorage.getItem(LOCAL_CONSENT_KEY)
+
+      if (!localConsent && window.privacyBanner) {
+        window.privacyBanner.loadBanner(cfg)
+      }
+
+      const rememberConsent = () => {
+        // Cookie consent stored as "decline" by default
+        localStorage.setItem(LOCAL_CONSENT_KEY, '1')
+      }
+
+      document.addEventListener('visitorConsentCollected', rememberConsent)
+    }
+
+    return () => {
+      document.removeEventListener('visitorConsentCollected', () => {})
+    }
+  }, [])
+
   return (
     <html lang="en" className="scroll-smooth">
       <head>
@@ -87,7 +127,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
         {import.meta.env.PROD && (
           <script
-            // This injects static, trusted content → no runtime user data
+            // accessiBe integration
             dangerouslySetInnerHTML={{
               __html: `
               (function() {

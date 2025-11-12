@@ -4,6 +4,10 @@ export default function Footer() {
   const location = useLocation()
   const isMagazineRoute = location.pathname.startsWith('/magazine')
 
+  const SF_API_TOKEN = import.meta.env.VITE_SHOPIFY_STOREFRONT_PUBLIC_TOKEN
+  const CHECKOUT_DOMAIN = import.meta.env.VITE_SHOPIFY_CHECKOUT_DOMAIN
+  const STOREFRONT_DOMAIN = 'ag-gallery.com'
+
   const navLinks = [
     { title: 'Home', path: '/' },
     { title: 'Artists', path: '/artists' },
@@ -97,6 +101,22 @@ export default function Footer() {
               >
                 Terms of Service
               </a>
+            </li>
+            <li className="text-sm tracking-wide">
+              <button
+                className="hover:text-accent transition-colors"
+                onClick={() => {
+                  if (window.privacyBanner) {
+                    window.privacyBanner.showPreferences({
+                      storefrontAccessToken: SF_API_TOKEN,
+                      checkoutRootDomain: CHECKOUT_DOMAIN,
+                      storefrontRootDomain: STOREFRONT_DOMAIN,
+                    })
+                  }
+                }}
+              >
+                Cookie Preferences
+              </button>
             </li>
           </ul>
         </section>

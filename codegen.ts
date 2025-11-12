@@ -2,9 +2,9 @@ import 'dotenv/config'
 
 import type { CodegenConfig } from '@graphql-codegen/cli'
 
-const storeDomain = process.env.SHOPIFY_DOMAIN as string
+const storeDomain = process.env.VITE_SHOPIFY_DOMAIN as string
 const storefrontAccessToken = process.env
-  .SHOPIFY_STOREFRONT_PUBLIC_TOKEN as string
+  .VITE_SHOPIFY_STOREFRONT_PUBLIC_TOKEN as string
 const apiVersion = process.env.SHOPIFY_API_VERSION || '2025-07'
 
 if (!storeDomain || !storefrontAccessToken) {
