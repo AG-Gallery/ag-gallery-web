@@ -66,7 +66,7 @@ export default function ArtworksGridContent({
     initialDataUpdatedAt,
   })
 
-  const effectiveFilterOptions = remoteFilterOptions ?? initialFilterOptions
+  const effectiveFilterOptions = remoteFilterOptions
 
   useEffect(() => {
     function syncFromLocation() {

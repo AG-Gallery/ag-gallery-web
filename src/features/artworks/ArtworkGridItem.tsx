@@ -1,3 +1,7 @@
+import type {
+  Public_GetProductByHandleQuery,
+  Public_GetProductByHandleQueryVariables,
+} from '@/queries/graphql/generated/react-query'
 import type { Artwork } from '@/types/products'
 
 import { useEffect, useState } from 'react'
@@ -6,18 +10,14 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 
 import { Skeleton } from '../../components/ui/skeleton'
-import HoverSlideshow from '@/components/HoverSlideshow'
 
+import HoverSlideshow from '@/components/HoverSlideshow'
 // import AddToBagBtn from '../bag/AddToBagBtn'
 
 import { formatMoney } from '@/lib/normalizers/products'
 import { cn } from '@/lib/utils'
 import { fetcher } from '@/queries/graphql/fetcher'
-import {
-  Public_GetProductByHandleDocument,
-  type Public_GetProductByHandleQuery,
-  type Public_GetProductByHandleQueryVariables,
-} from '@/queries/graphql/generated/react-query'
+import { Public_GetProductByHandleDocument } from '@/queries/graphql/generated/react-query'
 
 type ArtworkGridItemProps = {
   artwork: Artwork
@@ -53,8 +53,8 @@ export function ArtworkGridItem({
   })
 
   const slideshowImages =
-    detail?.productByHandle?.images?.edges
-      ?.map((edge) => edge.node?.url)
+    detail?.productByHandle?.images.edges
+      .map((edge) => edge.node.url)
       .filter(Boolean) ?? []
 
   useEffect(() => {
