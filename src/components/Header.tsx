@@ -24,6 +24,7 @@ type HeaderProps = {
 
 export default function Header({ isFloating = false }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const headerRef = useRef<HTMLElement | null>(null)
   const pathname = useLocation({
     select: (location) => location.pathname,
@@ -63,7 +64,7 @@ export default function Header({ isFloating = false }: HeaderProps) {
   ]
 
   // When not floating, we want solid header styling immediately (as if scrolled)
-  const solidMode = !isFloating || scrolled
+  const solidMode = !isFloating || scrolled || drawerOpen
   const isMagazineRoute = pathname.startsWith('/magazine')
   const logoSrc =
     solidMode && !isMagazineRoute ? 'logo-black.webp' : 'logo-white.webp'
@@ -72,7 +73,7 @@ export default function Header({ isFloating = false }: HeaderProps) {
     <header
       ref={headerRef}
       className={cn(
-        'fixed inset-x-0 top-0 z-50 w-full p-4 transition-colors duration-200',
+        'fixed inset-x-0 top-0 z-50 w-full p-4 pl-0.5 transition-colors duration-200',
         isMagazineRoute
           ? 'bg-black text-white'
           : solidMode
@@ -127,7 +128,11 @@ export default function Header({ isFloating = false }: HeaderProps) {
             <Bag />
           </div>
 
-          <Drawer direction="right">
+          <Drawer
+            direction="right"
+            open={drawerOpen}
+            onOpenChange={setDrawerOpen}
+          >
             <DrawerTrigger className="z-40 py-3 pl-2 text-base font-medium md:hidden">
               Menu
             </DrawerTrigger>
