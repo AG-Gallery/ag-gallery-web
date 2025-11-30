@@ -4,7 +4,7 @@ import { Link } from '@tanstack/react-router'
 
 import { formatDateRange } from '@/lib/utils'
 
-import EventSlideshow from './EventSlideshow'
+import HoverSlideshow from '@/components/HoverSlideshow'
 
 type EventsGridProps = {
   events: Event[]
@@ -40,7 +40,7 @@ export default function EventsGrid({ events }: EventsGridProps) {
                 to={`/events/${event.type}s/$slug`}
                 params={{ slug: event.slug }}
               >
-                <EventSlideshow
+                <HoverSlideshow
                   cover={event.coverImageUrl}
                   images={event.images}
                   alt={`An image of the event ${event.title}`}

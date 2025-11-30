@@ -1,15 +1,23 @@
 import type { Artwork } from '@/types/products'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 
 import { Skeleton } from '../../components/ui/skeleton'
+import HoverSlideshow from '@/components/HoverSlideshow'
 
 // import AddToBagBtn from '../bag/AddToBagBtn'
 
 import { formatMoney } from '@/lib/normalizers/products'
 import { cn } from '@/lib/utils'
+import { fetcher } from '@/queries/graphql/fetcher'
+import {
+  Public_GetProductByHandleDocument,
+  type Public_GetProductByHandleQuery,
+  type Public_GetProductByHandleQueryVariables,
+} from '@/queries/graphql/generated/react-query'
 
 type ArtworkGridItemProps = {
   artwork: Artwork
@@ -25,19 +33,45 @@ export function ArtworkGridItem({
   showPrice = false,
 }: ArtworkGridItemProps) {
   const [isImageLoaded, setIsImageLoaded] = useState(false)
-  const imageRef = useRef<HTMLImageElement | null>(null)
-
-  useEffect(() => {
-    if (imageRef.current?.complete) {
-      setIsImageLoaded(true)
-    }
-  }, [])
+  const [shouldFetchImages, setShouldFetchImages] = useState(false)
+  const [isHovering, setIsHovering] = useState(false)
+  const [playSignal, setPlaySignal] = useState(0)
 
   const href = `/artists/${artwork.artist.slug}`
+  const { data: detail } = useQuery({
+    queryKey: ['product-by-handle', artwork.slug, 'images'],
+    queryFn: fetcher<
+      Public_GetProductByHandleQuery,
+      Public_GetProductByHandleQueryVariables
+    >(Public_GetProductByHandleDocument, {
+      handle: artwork.slug,
+      imagesFirst: 6,
+    }),
+    enabled: shouldFetchImages,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  })
+
+  const slideshowImages =
+    detail?.productByHandle?.images?.edges
+      ?.map((edge) => edge.node?.url)
+      .filter(Boolean) ?? []
+
+  useEffect(() => {
+    if (isHovering && slideshowImages.length > 0) {
+      setPlaySignal((n) => n + 1)
+    }
+  }, [isHovering, slideshowImages.length])
 
   const handleImageReady = () => {
     setIsImageLoaded(true)
   }
+
+  const handleHover = () => {
+    setIsHovering(true)
+    setShouldFetchImages(true)
+  }
+  const handleLeave = () => setIsHovering(false)
 
   const priceDisplay = formatMoney(artwork.currencyCode, artwork.price)
 
@@ -47,6 +81,10 @@ export function ArtworkGridItem({
         to="/artworks/$slug"
         params={{ slug: artwork.slug }}
         className="block w-full"
+        onMouseEnter={handleHover}
+        onFocus={handleHover}
+        onMouseLeave={handleLeave}
+        onBlur={handleLeave}
       >
         <div className="relative flex aspect-[5/4] w-full items-center justify-center overflow-hidden rounded border border-neutral-200/80 bg-neutral-50 transition-colors duration-100 ease-in select-none hover:bg-neutral-200/50">
           <Skeleton
@@ -56,19 +94,20 @@ export function ArtworkGridItem({
               isImageLoaded && 'pointer-events-none animate-none opacity-0',
             )}
           />
-          <img
-            ref={imageRef}
-            src={artwork.previewImageUrl}
+          <HoverSlideshow
+            cover={artwork.previewImageUrl}
+            images={slideshowImages}
             alt={`${artwork.title} by ${artwork.artist.name} - ${artwork.theme} - ${artwork.medium}`}
-            width="1920"
-            height="1080"
             loading={index <= 8 ? 'eager' : 'lazy'}
-            onLoad={handleImageReady}
-            onError={handleImageReady}
-            className={cn(
-              'aspect-[5/4] max-h-full max-w-full object-contain p-2 transition-opacity duration-200 lg:p-4',
+            className="h-full w-full"
+            aspectClassName="aspect-[5/4]"
+            imageClassName={cn(
+              'max-h-full max-w-full object-contain p-2 transition-opacity duration-200 lg:p-4',
               isImageLoaded ? 'opacity-100' : 'opacity-0',
             )}
+            objectFit="contain"
+            onCoverLoad={handleImageReady}
+            playSignal={playSignal}
           />
         </div>
       </Link>

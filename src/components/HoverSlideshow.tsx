@@ -1,18 +1,38 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-export default function EventSlideshow({
-  cover,
-  images,
-  alt,
-}: {
-  cover: string
-  images: string[]
-  alt: string
-}) {
-  const delayMs = 200
-  const intervalMs = 2000
-  const fadeMs = 200
+import { cn } from '@/lib/utils'
 
+type HoverSlideshowProps = {
+  cover: string
+  images?: string[]
+  alt: string
+  className?: string
+  aspectClassName?: string
+  imageClassName?: string
+  objectFit?: 'cover' | 'contain'
+  loading?: 'lazy' | 'eager'
+  delayMs?: number
+  intervalMs?: number
+  fadeMs?: number
+  onCoverLoad?: () => void
+  playSignal?: number
+}
+
+export default function HoverSlideshow({
+  cover,
+  images = [],
+  alt,
+  className,
+  aspectClassName = 'aspect-[5/4]',
+  imageClassName,
+  objectFit = 'cover',
+  loading = 'lazy',
+  delayMs = 200,
+  intervalMs = 2000,
+  fadeMs = 200,
+  onCoverLoad,
+  playSignal = 0,
+}: HoverSlideshowProps) {
   const [hoverCapable, setHoverCapable] = useState(false)
   const [reduceMotion, setReduceMotion] = useState(false)
 
@@ -52,6 +72,7 @@ export default function EventSlideshow({
   }, [images, cover])
 
   const [playing, setPlaying] = useState(false)
+  const startRef = useRef<() => void>(() => {})
 
   // Double-buffered overlays for smooth cross-fades
   const [aSrc, setASrc] = useState<string | null>(null)
@@ -197,12 +218,19 @@ export default function EventSlideshow({
     }, delayMs)
   }
 
+  startRef.current = start
+
   useEffect(() => stop, []) // cleanup on unmount
   useEffect(() => stop, [cover, images]) // reset when data changes
+  useEffect(() => {
+    if (playSignal > 0) {
+      startRef.current()
+    }
+  }, [playSignal])
 
   return (
     <div
-      className="relative overflow-hidden"
+      className={cn('relative overflow-hidden', className)}
       onMouseEnter={start}
       onMouseLeave={stop}
     >
@@ -210,19 +238,21 @@ export default function EventSlideshow({
       <img
         src={cover}
         alt={alt}
-        loading="lazy"
+        loading={loading}
         decoding="async"
         draggable={false}
         referrerPolicy="no-referrer"
+        onLoad={onCoverLoad}
+        onError={onCoverLoad}
         style={{
           display: 'block',
           width: '100%',
           height: '100%',
-          objectFit: 'cover',
+          objectFit,
           transition: reduceMotion ? 'none' : `opacity ${fadeMs}ms ease-in`,
           opacity: playing ? 0 : 1,
         }}
-        className="aspect-[5/4] object-cover"
+        className={cn(aspectClassName, imageClassName)}
       />
 
       {/* Overlay A */}
@@ -238,12 +268,12 @@ export default function EventSlideshow({
             inset: 0,
             width: '100%',
             height: '100%',
-            objectFit: 'cover',
+            objectFit,
             opacity: playing && frontIsA ? 1 : 0,
             transition: reduceMotion ? 'none' : `opacity ${fadeMs}ms ease-in`,
             willChange: 'opacity',
           }}
-          className="aspect-[5/4] object-cover"
+          className={cn(aspectClassName, imageClassName)}
         />
       )}
 
@@ -260,12 +290,12 @@ export default function EventSlideshow({
             inset: 0,
             width: '100%',
             height: '100%',
-            objectFit: 'cover',
+            objectFit,
             opacity: playing && !frontIsA ? 1 : 0,
             transition: reduceMotion ? 'none' : `opacity ${fadeMs}ms ease-in`,
             willChange: 'opacity',
           }}
-          className="aspect-[5/4] object-cover"
+          className={cn(aspectClassName, imageClassName)}
         />
       )}
     </div>
