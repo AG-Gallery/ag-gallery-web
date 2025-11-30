@@ -1,13 +1,6 @@
 import { Link, useLocation } from '@tanstack/react-router'
 
-import {
-  FacebookIcon,
-  InstagramIcon,
-  PinterestIcon,
-  TiktokIcon,
-  XIcon,
-  YouTubeIcon,
-} from './icons/SocialIcons'
+import SocialMedia from './SocialMedia'
 
 export default function Footer() {
   const location = useLocation()
@@ -24,35 +17,6 @@ export default function Footer() {
     { title: 'Exhibitions & Fairs', path: '/events?filter=current' },
     { title: 'Magazine', path: '/magazine' },
     { title: 'About', path: '/about' },
-  ]
-
-  const socialMediaLinks = [
-    {
-      title: 'Facebook',
-      link: 'https://www.facebook.com/profile.php?id=61584462503981&mibextid=wwXIfr',
-      icon: FacebookIcon,
-    },
-    {
-      title: 'Instagram',
-      link: 'https://instagram.com/aggallery_la',
-      icon: InstagramIcon,
-    },
-    {
-      title: 'Pinterest',
-      link: 'https://www.pinterest.com/092qz6ix49wzpibhuj4rond3ec772a/',
-      icon: PinterestIcon,
-    },
-    {
-      title: 'Tiktok',
-      link: 'https://www.tiktok.com/@aggallery_',
-      icon: TiktokIcon,
-    },
-    { title: 'X', link: 'https://x.com/AGGallery_', icon: XIcon },
-    {
-      title: 'YouTube',
-      link: 'https://www.youtube.com/@AGGallery',
-      icon: YouTubeIcon,
-    },
   ]
 
   const footerBgClass = isMagazineRoute
@@ -100,24 +64,7 @@ export default function Footer() {
           <h5 className="font-lora font-semibold tracking-wide">
             Social Media
           </h5>
-          <ul className="mx-auto grid grid-cols-2 gap-3">
-            {socialMediaLinks.map((socialMedia) => {
-              const Icon = socialMedia.icon
-              return (
-                <li key={socialMedia.link} className="text-sm tracking-wide">
-                  <a
-                    aria-label={`View AG Gallery's ${socialMedia.title} profile (opens in a new tab).`}
-                    href={socialMedia.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-accent transition-colors duration-150 ease-in"
-                  >
-                    <Icon classes="w-8" />
-                  </a>
-                </li>
-              )
-            })}
-          </ul>
+          <SocialMedia displayStyle="grid" />
         </section>
 
         <section className="flex flex-col gap-3">
