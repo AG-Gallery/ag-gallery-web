@@ -13,24 +13,43 @@ export default function EventSlideshow({
   const intervalMs = 2000
   const fadeMs = 200
 
-  const hoverCapable = useMemo(
-    () =>
-      typeof window !== 'undefined' &&
-      window.matchMedia('(hover: hover)').matches,
-    [],
-  )
-  const reduceMotion = useMemo(
-    () =>
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-    [],
-  )
+  const [hoverCapable, setHoverCapable] = useState(false)
+  const [reduceMotion, setReduceMotion] = useState(false)
 
-  // Clean input: drop falsy + duplicates of cover
-  const slides = useMemo(
-    () => images.filter(Boolean).filter((u) => u !== cover),
-    [images, cover],
-  )
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const hoverQuery = window.matchMedia('(hover: hover)')
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+    const updateHover = (event: MediaQueryList | MediaQueryListEvent) =>
+      setHoverCapable(event.matches)
+    const updateMotion = (event: MediaQueryList | MediaQueryListEvent) =>
+      setReduceMotion(event.matches)
+
+    updateHover(hoverQuery)
+    updateMotion(motionQuery)
+
+    hoverQuery.addEventListener('change', updateHover)
+    motionQuery.addEventListener('change', updateMotion)
+
+    return () => {
+      hoverQuery.removeEventListener('change', updateHover)
+      motionQuery.removeEventListener('change', updateMotion)
+    }
+  }, [])
+
+  // Clean input: keep cover first (for wrap), drop falsy + later duplicates
+  const slides = useMemo(() => {
+    const seen = new Set<string>()
+    return [cover, ...images]
+      .filter(Boolean)
+      .filter((u) => {
+        if (seen.has(u)) return false
+        seen.add(u)
+        return true
+      })
+  }, [images, cover])
 
   const [playing, setPlaying] = useState(false)
 
@@ -109,8 +128,7 @@ export default function EventSlideshow({
   }
 
   const runTick = async () => {
-    if (!activeRef.current || switchingRef.current || slides.length === 0)
-      return
+    if (!activeRef.current || switchingRef.current || slides.length <= 1) return
     switchingRef.current = true
 
     const nextIdx = (idxRef.current + 1) % slides.length
@@ -142,19 +160,21 @@ export default function EventSlideshow({
   }
 
   const start = () => {
-    if (!hoverCapable || reduceMotion || slides.length === 0) return
+    if (!hoverCapable || reduceMotion || slides.length <= 1) return
     if (delayRef.current) return // already queued
     activeRef.current = true
 
+    const firstIdx = Math.min(1, slides.length - 1) // skip cover initially
+
     delayRef.current = window.setTimeout(async () => {
       if (!activeRef.current) return
-      idxRef.current = 0
+      idxRef.current = firstIdx
 
-      // Gate the first fade on decode of slides[0]
-      await decodeImage(slides[0])
+      // Gate the first fade on decode of slides[firstIdx]
+      await decodeImage(slides[firstIdx])
 
       // Put first slide into A, keep hidden, then flip visible after commit
-      setASrc(slides[0])
+      setASrc(slides[firstIdx])
       setFrontIsA(false)
       frontRef.current = false
 
@@ -165,10 +185,10 @@ export default function EventSlideshow({
           setFrontIsA(true) // fades A in
           frontRef.current = true
 
-          // Preload next
+          // Preload next (can be cover if wrapping)
           if (slides.length > 1) {
             const pre = new Image()
-            pre.src = slides[1]
+            pre.src = slides[(firstIdx + 1) % slides.length]
           }
 
           scheduleNext()
@@ -178,6 +198,7 @@ export default function EventSlideshow({
   }
 
   useEffect(() => stop, []) // cleanup on unmount
+  useEffect(() => stop, [cover, images]) // reset when data changes
 
   return (
     <div
