@@ -86,7 +86,7 @@ export default function Header({ isFloating = false }: HeaderProps) {
           aria-label="Home"
           className="tracking flex flex-col items-start justify-center tracking-tight"
         >
-          <img src={logoSrc} className="w-32" />
+          <img src={logoSrc} className="w-24 md:w-32" />
           {/*
           <h1 className="font-playfair text-lg font-medium md:text-2xl md:text-[1.75rem]">
             AG Gallery
