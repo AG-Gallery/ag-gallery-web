@@ -65,12 +65,14 @@ export default function Header({ isFloating = false }: HeaderProps) {
   // When not floating, we want solid header styling immediately (as if scrolled)
   const solidMode = !isFloating || scrolled
   const isMagazineRoute = pathname.startsWith('/magazine')
+  const logoSrc =
+    solidMode && !isMagazineRoute ? 'logo-black.webp' : 'logo-white.webp'
 
   return (
     <header
       ref={headerRef}
       className={cn(
-        'fixed inset-x-0 top-0 z-50 w-full p-4 transition-colors duration-200 md:p-8 xl:p-10',
+        'fixed inset-x-0 top-0 z-50 w-full p-4 transition-colors duration-200',
         isMagazineRoute
           ? 'bg-black text-white'
           : solidMode
@@ -84,12 +86,15 @@ export default function Header({ isFloating = false }: HeaderProps) {
           aria-label="Home"
           className="tracking flex flex-col items-start justify-center tracking-tight"
         >
+          <img src={logoSrc} className="w-32" />
+          {/*
           <h1 className="font-playfair text-lg font-medium md:text-2xl md:text-[1.75rem]">
             AG Gallery
           </h1>
           <p className="text-xs tracking-wider md:text-sm md:tracking-wide">
             Glendale
           </p>
+          */}
         </Link>
 
         <div className="flex items-center">

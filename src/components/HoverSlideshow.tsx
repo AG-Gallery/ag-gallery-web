@@ -59,16 +59,14 @@ export default function HoverSlideshow({
     }
   }, [])
 
-  // Clean input: keep cover first (for wrap), drop falsy + later duplicates
+  // Cover first (for wrap), drop falsy + later duplicates
   const slides = useMemo(() => {
     const seen = new Set<string>()
-    return [cover, ...images]
-      .filter(Boolean)
-      .filter((u) => {
-        if (seen.has(u)) return false
-        seen.add(u)
-        return true
-      })
+    return [cover, ...images].filter(Boolean).filter((u) => {
+      if (seen.has(u)) return false
+      seen.add(u)
+      return true
+    })
   }, [images, cover])
 
   const [playing, setPlaying] = useState(false)
@@ -109,7 +107,7 @@ export default function HoverSlideshow({
     switchingRef.current = false
   }
 
-  // Decode helper with a tiny cache to avoid decoding the same URL repeatedly
+  // Decode helper with a small cache to avoid decoding the same URL repeatedly
   const decodedSetRef = useRef<Set<string>>(new Set())
   function decodeImage(src: string) {
     return new Promise<void>((resolve) => {

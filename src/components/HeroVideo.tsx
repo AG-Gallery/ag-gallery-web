@@ -24,7 +24,7 @@ export default function HeroVideo({ posterSrc, videoSrc }: HeroVideoProps) {
       >
         <source src={videoSrc} type="video/webm" />
       </video>
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-transparent md:from-black/30" />
+      <div className="pointer-events-none absolute inset-0 h-full bg-gradient-to-b from-black/50 via-black/20 to-transparent md:from-black/70" />
     </section>
   )
 }
