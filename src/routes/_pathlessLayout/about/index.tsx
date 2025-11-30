@@ -65,7 +65,7 @@ function AboutPage() {
 
           <div className="flex w-full flex-col items-stretch gap-6">
             <a href={href} className="w-full max-w-[600px]">
-              <img src="gallery-location.png" className="size-full" />
+              <img src="gallery-location.webp" className="size-full" />
             </a>
 
             <div className="flex max-w-[600px] flex-col items-start justify-between gap-8 lg:flex-row">
