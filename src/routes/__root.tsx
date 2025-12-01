@@ -16,6 +16,7 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import appCss from '../styles.css?url'
 
 import Footer from '@/components/Footer'
+import Header from '@/components/Header'
 import { seo } from '@/lib/seo'
 import { cn } from '@/lib/utils'
 
@@ -116,6 +117,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           isMagazineRoute ? 'bg-black text-white' : 'bg-white text-black',
         )}
       >
+        <Header />
         <div className="mx-auto flex w-full flex-1 flex-col items-center pt-[var(--header-height)]">
           {children}
           <Footer />

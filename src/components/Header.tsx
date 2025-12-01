@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 
 import { Link, useLocation } from '@tanstack/react-router'
 
@@ -18,11 +18,7 @@ import {
   DrawerTrigger,
 } from './ui/drawer'
 
-type HeaderProps = {
-  isFloating?: boolean
-}
-
-export default function Header({ isFloating = false }: HeaderProps) {
+export default function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const headerRef = useRef<HTMLElement | null>(null)
@@ -30,7 +26,7 @@ export default function Header({ isFloating = false }: HeaderProps) {
     select: (location) => location.pathname,
   })
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const onScroll = () => {
       const doc = document.documentElement
       const scrollable = Math.max(0, doc.scrollHeight - window.innerHeight)
@@ -52,7 +48,7 @@ export default function Header({ isFloating = false }: HeaderProps) {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onResize)
     }
-  }, [])
+  }, [pathname])
 
   const navLinks = [
     { title: 'Home', path: '/' },
@@ -64,7 +60,8 @@ export default function Header({ isFloating = false }: HeaderProps) {
   ]
 
   // When not floating, we want solid header styling immediately (as if scrolled)
-  const solidMode = !isFloating || scrolled || drawerOpen
+  const floatingRoute = pathname === '/'
+  const solidMode = !floatingRoute || scrolled || drawerOpen
   const isMagazineRoute = pathname.startsWith('/magazine')
   const logoSrc =
     solidMode && !isMagazineRoute ? 'logo-black.webp' : 'logo-white.webp'

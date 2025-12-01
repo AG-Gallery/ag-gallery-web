@@ -1,7 +1,6 @@
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
-import Header from '@/components/Header'
 import HeroVideo from '@/components/HeroVideo'
 import ArtworksGrid from '@/features/artworks/ArtworksGrid'
 import EventsGrid from '@/features/events/EventsGrid'
@@ -39,7 +38,6 @@ function IndexPage() {
 
   return (
     <>
-      <Header isFloating={true} />
       <main>
         <HeroVideo
           posterSrc="/hero/hero-image.webp"
