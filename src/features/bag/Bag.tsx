@@ -77,15 +77,6 @@ export default function Bag() {
     ? 'Checkout in progress'
     : 'Checkout'
 
-  const handleResumeCheckout = () => {
-    if (!pendingCheckoutUrl) return
-    window.open(pendingCheckoutUrl, '_blank', 'noopener,noreferrer')
-  }
-
-  const handleClearBag = () => {
-    clearBag()
-  }
-
   const pendingCheckoutTimestamp = useMemo(() => {
     if (!pendingCheckoutCreatedAt) return 'Created just now.'
     return `Created ${new Date(pendingCheckoutCreatedAt).toLocaleString()}`
@@ -126,14 +117,16 @@ export default function Bag() {
             {pendingCheckoutTimestamp}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <Button
-              size="sm"
-              onClick={handleResumeCheckout}
-              variant="secondary"
-              className="hover:transparent cursor-pointer border border-sky-700 bg-sky-50 text-sky-800 hover:border-sky-600 hover:bg-sky-100 hover:text-sky-700"
-            >
-              Resume checkout
-            </Button>
+            {pendingCheckoutUrl && (
+              <Button
+                size="sm"
+                onClick={() => (window.location.href = pendingCheckoutUrl)}
+                variant="secondary"
+                className="hover:transparent cursor-pointer border border-sky-700 bg-sky-50 text-sky-800 hover:border-sky-600 hover:bg-sky-100 hover:text-sky-700"
+              >
+                Resume checkout
+              </Button>
+            )}
             <Button
               size="sm"
               variant="ghost"
@@ -186,7 +179,7 @@ export default function Bag() {
           type="button"
           className="text-neutral-600 hover:bg-transparent hover:text-neutral-900"
           disabled={isCheckoutLoading}
-          onClick={handleClearBag}
+          onClick={clearBag}
         >
           Clear bag
         </Button>

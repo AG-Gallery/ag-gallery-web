@@ -22,7 +22,6 @@ export function useCheckout() {
   const pendingCheckoutUrl = useBagStore.use.pendingCheckoutUrl()
   const clientId = useClientId()
   const checkoutClientIdRef = useRef<string | null>(null)
-
   // Validate inventory before checkout
   const { refetch: refetchProducts } = useGetProductsForCheckoutQuery(
     {
@@ -65,7 +64,7 @@ export function useCheckout() {
           })
         }
 
-        window.open(checkoutUrl, '_blank', 'noopener,noreferrer')
+        window.location.href = checkoutUrl
         return
       }
 
@@ -156,8 +155,7 @@ export function useCheckout() {
           const variant = firstVariantEdge.node
           const quantity = variant.quantityAvailable
           const isVariantOutOfStock =
-            quantity !== null &&
-            quantity < 1
+            quantity !== null && quantity !== undefined && quantity < 1
 
           if (
             !product.availableForSale ||
