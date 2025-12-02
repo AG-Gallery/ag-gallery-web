@@ -2,6 +2,14 @@ import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
 import HeroVideo from '@/components/HeroVideo'
+import {
+  AmexIcon,
+  ApplePayIcon,
+  GooglePayIcon,
+  MastercardIcon,
+  PaypalIcon,
+  VisaIcon,
+} from '@/components/icons/PaymentIcons'
 import ArtworksGrid from '@/features/artworks/ArtworksGrid'
 import EventsGrid from '@/features/events/EventsGrid'
 import HighlightedArtistsGrid from '@/features/home/HighlightedArtistsGrid'
@@ -90,6 +98,22 @@ function IndexPage() {
         <section>
           <h2 className="featured-headline">Highlighted Artists</h2>
           <HighlightedArtistsGrid artists={featuredArtists} />
+        </section>
+
+        <hr className="mb-4 w-full bg-neutral-400 md:mb-8" />
+
+        <section>
+          <h3 className="featured-headline text-center">
+            Secure Payment Options
+          </h3>
+          <div className="flex items-center justify-center gap-4">
+            <VisaIcon />
+            <AmexIcon />
+            <PaypalIcon />
+            <MastercardIcon />
+            <ApplePayIcon />
+            <GooglePayIcon />
+          </div>
         </section>
       </main>
     </>
