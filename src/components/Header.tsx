@@ -64,7 +64,7 @@ export default function Header() {
   const solidMode = !floatingRoute || scrolled || drawerOpen
   const isMagazineRoute = pathname.startsWith('/magazine')
   const logoSrc =
-    solidMode && !isMagazineRoute ? 'logo-black.webp' : 'logo-white.webp'
+    solidMode && !isMagazineRoute ? '/logo-black.webp' : '/logo-white.webp'
 
   return (
     <header
@@ -84,7 +84,16 @@ export default function Header() {
           aria-label="Home"
           className="tracking flex flex-col items-start justify-center tracking-tight"
         >
-          <img src={logoSrc} className="w-24 md:w-32" />
+          <img
+            src={logoSrc}
+            alt="AG Gallery logo"
+            className="w-24 md:w-32"
+            width="128"
+            height="48"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
           {/*
           <h1 className="font-playfair text-lg font-medium md:text-2xl md:text-[1.75rem]">
             AG Gallery
