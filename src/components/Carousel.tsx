@@ -96,7 +96,7 @@ export default function Carousel({
       <CarouselRoot
         setApi={setCarouselApi}
         opts={{ startIndex: 0, skipSnaps: false, loop: true }}
-        className={cn('aspect-[5/4] max-w-[700px]', carouselClassName)}
+        className={cn('mx-auto aspect-[5/4] max-w-[700px]', carouselClassName)}
       >
         <CarouselContent>
           {images.map((image, index) => (
@@ -137,7 +137,12 @@ export default function Carousel({
       </CarouselRoot>
 
       {images.length > 1 && (
-        <div className={cn('mt-3 w-full max-w-[700px]', thumbnailsClassName)}>
+        <div
+          className={cn(
+            'mx-auto mt-3 w-full max-w-[700px]',
+            thumbnailsClassName,
+          )}
+        >
           <div ref={thumbsRef} className="overflow-hidden">
             <div className="-ml-2 flex">
               {images.map((image, index) => (

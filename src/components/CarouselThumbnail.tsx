@@ -20,7 +20,7 @@ export default function CarouselThumbnail({
   return (
     <div
       className={cn(
-        'w-full rounded border-2 bg-transparent p-2 shadow-2xs',
+        'mx-auto w-full rounded border-2 bg-transparent p-2 shadow-2xs',
         selected ? 'border-accent' : 'border-neutral-200/70',
       )}
     >

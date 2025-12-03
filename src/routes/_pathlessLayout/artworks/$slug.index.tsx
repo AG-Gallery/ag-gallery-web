@@ -10,6 +10,7 @@ import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 
 import Carousel from '@/components/Carousel'
+import { ShopPayIcon } from '@/components/icons/PaymentIcons'
 import ZoomedCarousel from '@/components/ZoomedCarousel'
 import AddToBagBtn from '@/features/bag/AddToBagBtn'
 import {
@@ -98,7 +99,7 @@ function RouteComponent() {
           onImageClick={handleImageClick}
         />
 
-        <div className="my-8 align-top text-nowrap lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] 2xl:ml-24 2xl:w-[700px]">
+        <div className="mx-auto my-8 max-w-[700px] align-top text-nowrap lg:my-0 lg:ml-8 lg:w-1/2 xl:ml-16 xl:w-[600px] 2xl:ml-24 2xl:w-[700px]">
           <section className="space-y-1">
             <h2 className="font-lora text-xl font-medium text-wrap md:text-[1.625rem]">
               {artwork?.title}
@@ -168,8 +169,11 @@ function RouteComponent() {
             </p>
           </section>
 
-          <section className="mt-8">
+          <section className="mt-8 flex flex-col items-center gap-6 md:flex-row">
             {artwork && <AddToBagBtn type="solid" product={artwork} />}
+            <p className="text-sm">
+              Pay in installments <br /> with <ShopPayIcon />
+            </p>
           </section>
         </div>
       </div>
