@@ -38,7 +38,7 @@ export const Route = createFileRoute('/')({
         href: '/hero/hero-video.webm',
         as: 'video',
         type: 'video/webm',
-        fetchpriority: 'high',
+        fetchPriority: 'high',
       },
     ],
   }),

@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { cn } from '@/lib/utils'
+import { generateSanitySrcSet, SANITY_IMAGE_SIZES } from '@/lib/sanity-images'
+import { generateShopifyGridSrcSet, SHOPIFY_IMAGE_SIZES } from '@/lib/shopify-images'
 
 type HoverSlideshowProps = {
   cover: string
   images?: string[]
   alt: string
+  cdnType?: 'shopify' | 'sanity'
   className?: string
   aspectClassName?: string
   imageClassName?: string
@@ -22,6 +25,7 @@ export default function HoverSlideshow({
   cover,
   images = [],
   alt,
+  cdnType = 'shopify',
   className,
   aspectClassName = 'aspect-[5/4]',
   imageClassName,
@@ -33,6 +37,9 @@ export default function HoverSlideshow({
   onCoverLoad,
   playSignal = 0,
 }: HoverSlideshowProps) {
+  // Select the appropriate srcset generator based on CDN type
+  const generateSrcSet = cdnType === 'sanity' ? generateSanitySrcSet : generateShopifyGridSrcSet
+  const imageSizes = cdnType === 'sanity' ? SANITY_IMAGE_SIZES.grid : SHOPIFY_IMAGE_SIZES.grid
   const [hoverCapable, setHoverCapable] = useState(false)
   const [reduceMotion, setReduceMotion] = useState(false)
 
@@ -235,6 +242,8 @@ export default function HoverSlideshow({
       {/* Base cover image */}
       <img
         src={cover}
+        srcSet={generateSrcSet(cover)}
+        sizes={imageSizes}
         alt={alt}
         loading={loading}
         decoding="async"
@@ -257,6 +266,8 @@ export default function HoverSlideshow({
       {aSrc && (
         <img
           src={aSrc}
+          srcSet={generateSrcSet(aSrc)}
+          sizes={imageSizes}
           aria-hidden="true"
           decoding="async"
           draggable={false}
@@ -279,6 +290,8 @@ export default function HoverSlideshow({
       {bSrc && (
         <img
           src={bSrc}
+          srcSet={generateSrcSet(bSrc)}
+          sizes={imageSizes}
           aria-hidden="true"
           decoding="async"
           draggable={false}

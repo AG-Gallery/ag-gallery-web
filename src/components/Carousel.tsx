@@ -12,6 +12,7 @@ import {
   Carousel as CarouselRoot,
 } from '@/components/ui/carousel'
 import { cn } from '@/lib/utils'
+import { generateShopifySrcSet, SHOPIFY_IMAGE_SIZES } from '@/lib/shopify-images'
 
 import CarouselThumbnail from './CarouselThumbnail'
 
@@ -116,6 +117,8 @@ export default function Carousel({
               >
                 <img
                   src={image}
+                  srcSet={generateShopifySrcSet(image)}
+                  sizes={SHOPIFY_IMAGE_SIZES.detail}
                   width="1920"
                   height="1080"
                   className={cn(

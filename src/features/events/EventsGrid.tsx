@@ -44,6 +44,7 @@ export default function EventsGrid({ events }: EventsGridProps) {
                   cover={event.coverImageUrl}
                   images={event.images}
                   alt={`An image of the event ${event.title}`}
+                  cdnType="sanity"
                 />
                 <div className="mt-4 flex flex-col gap-1">
                   <h3 className="hover:text-accent text-lg font-medium transition-colors duration-200">
