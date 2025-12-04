@@ -71,24 +71,32 @@ export default function ZoomedCarousel({
         </DialogHeader>
 
         {hasImages && (
-          <div className="relative mx-auto flex h-full w-full max-w-screen flex-col items-center justify-center bg-black px-2 py-3 sm:px-6 sm:py-6">
-            <Carousel
-              images={images}
-              enableZoom={false}
-              initialSlide={safeInitial}
-              showNavButtons={isDesktop && images.length > 1}
-              wrapperClassName="flex w-full flex-col h-full items-center justify-center"
-              carouselClassName="aspect-[5/4] w-full max-w-5xl"
-              imageClassName="max-h-full"
-              thumbnailsClassName="mt-20 w-full max-w-5xl"
-              imageWrapperClassName="bg-black size-full"
-              navButtonClassName="top-1/2 size-10 bg-black text-white -translate-y-1/2"
-            />
+          <div
+            className="relative flex w-full flex-col overflow-hidden bg-black px-2 py-3 sm:px-6 sm:py-6"
+            style={{
+              height: '100vh',
+              maxHeight: '-webkit-fill-available',
+            }}
+          >
+            <div className="mx-auto flex h-full w-full max-w-5xl flex-col" style={{ minHeight: 0 }}>
+              <Carousel
+                images={images}
+                enableZoom={false}
+                initialSlide={safeInitial}
+                showNavButtons={isDesktop && images.length > 1}
+                wrapperClassName="flex h-full min-h-0 w-full flex-col items-center justify-center"
+                carouselClassName="aspect-[5/4] w-full max-w-[700px]"
+                imageClassName="max-h-full"
+                thumbnailsClassName="mt-3 w-full max-w-[700px] flex-shrink-0 sm:mt-4"
+                imageWrapperClassName="bg-black size-full"
+                navButtonClassName="top-1/2 size-10 bg-black text-white -translate-y-1/2"
+              />
+            </div>
 
             <DialogClose
               type="button"
               className={cn(
-                'focus-visible:ring-accent absolute top-6 right-6 flex items-center justify-center rounded-full bg-white/10 p-2 text-white transition-colors',
+                'focus-visible:ring-accent absolute top-3 right-3 z-10 flex items-center justify-center rounded-full bg-white/10 p-2 text-white transition-colors sm:top-6 sm:right-6',
                 'hover:bg-white/20 focus-visible:ring-2 focus-visible:outline-hidden',
               )}
               aria-label="Close image gallery"
