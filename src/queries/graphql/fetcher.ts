@@ -1,3 +1,5 @@
+import { fetchShopifyGraphQL } from './shopify-server-fn'
+
 /**
  * Extract the operation name from a GraphQL document string
  *
@@ -22,6 +24,9 @@ function isObject(v: unknown): v is Record<string, unknown> {
 /**
  * Generic fetcher used by the codegen plugin.
  *
+ * Uses a server function to avoid HTTP fetch during SSR on Cloudflare Workers.
+ * This prevents 522 errors when trying to fetch back to the same worker during SSR.
+ *
  * @param query - The query to make.
  * @param variables - The query variables.
  * @returns A function (the queryFn) as expected by the codegen plugin.
@@ -33,39 +38,13 @@ export function fetcher<
   return async (): Promise<TData> => {
     const opName = parseOperationName(query)
 
-    // Use absolute URL for SSR compatibility
-    const isServer = typeof window === 'undefined'
-    const baseUrl = isServer
-      ? (import.meta.env.VITE_BASE_URL || 'https://ag-gallery.com')
-      : ''
-    const url = `${baseUrl}/api/shopify/graphql`
+    // Use server function instead of HTTP fetch
+    // During SSR: executes directly, no HTTP overhead
+    // During client navigation: becomes a fetch request
+    const raw = (await fetchShopifyGraphQL({
+      data: { query, variables, operationName: opName },
+    })) as unknown
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query, variables, operationName: opName }),
-    })
-
-    // Non-2xx: try to surface server body (text) for debugging
-    if (!res.ok) {
-      const text = await res.text().catch(() => '')
-      throw new Error(
-        `GraphQL ${opName} failed (${res.status}): ${text || res.statusText}`,
-      )
-    }
-
-    // Guard: empty/204 or non-JSON content
-    const ctype = res.headers.get('content-type') || ''
-    if (res.status === 204 || !ctype.includes('application/json')) {
-      const text = await res.text().catch(() => '')
-      throw new Error(
-        `GraphQL ${opName} returned non-JSON or empty body (${res.status}). ${text}`,
-      )
-    }
-
-    const raw = (await res.json().catch(() => undefined)) as unknown
     if (!isObject(raw)) {
       throw new Error(`GraphQL ${opName} returned invalid JSON shape.`)
     }
