@@ -33,7 +33,14 @@ export function fetcher<
   return async (): Promise<TData> => {
     const opName = parseOperationName(query)
 
-    const res = await fetch('/api/shopify/graphql', {
+    // Use absolute URL for SSR compatibility
+    const isServer = typeof window === 'undefined'
+    const baseUrl = isServer
+      ? (import.meta.env.VITE_BASE_URL || 'https://ag-gallery.com')
+      : ''
+    const url = `${baseUrl}/api/shopify/graphql`
+
+    const res = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
