@@ -18,6 +18,7 @@ export default function HeroVideo({ posterSrc, videoSrc }: HeroVideoProps) {
         muted
         loop
         playsInline
+        preload="auto"
         poster={posterSrc}
         tabIndex={-1}
         className="size-full object-cover"

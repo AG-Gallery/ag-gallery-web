@@ -32,6 +32,15 @@ export const Route = createFileRoute('/')({
           "Explore curator's picks, highlighted artists, and current exhibitions from AG Gallery in Glendale, California.",
       },
     ],
+    links: [
+      {
+        rel: 'preload',
+        href: '/hero/hero-video.webm',
+        as: 'video',
+        type: 'video/webm',
+        fetchpriority: 'high',
+      },
+    ],
   }),
   component: IndexPage,
 })

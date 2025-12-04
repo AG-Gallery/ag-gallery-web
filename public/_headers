@@ -1,0 +1,24 @@
+# Cache hero video for 1 year (immutable since it won't change)
+/hero/hero-video.webm
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache hero poster image for 1 year
+/hero/hero-image.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache other static assets (images, fonts, etc.) for 1 year
+/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache favicon for 1 week (might change more often)
+/favicon.ico
+  Cache-Control: public, max-age=604800
