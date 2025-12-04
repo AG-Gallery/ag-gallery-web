@@ -27,6 +27,10 @@ export default function Header() {
   })
 
   useLayoutEffect(() => {
+    // Force scroll to top on navigation to prevent iOS Safari bug
+    // where header appears at wrong position during page transitions
+    window.scrollTo(0, 0)
+
     const onScroll = () => {
       const doc = document.documentElement
       const scrollable = Math.max(0, doc.scrollHeight - window.innerHeight)
@@ -69,8 +73,9 @@ export default function Header() {
   return (
     <header
       ref={headerRef}
+      style={{ position: 'fixed', top: 0 }}
       className={cn(
-        'fixed inset-x-0 top-0 z-50 w-full p-4 pl-0.5 transition-colors duration-200',
+        'inset-x-0 z-50 w-full p-4 pl-0.5 transition-colors duration-200',
         isMagazineRoute
           ? 'bg-black text-white'
           : solidMode
