@@ -52,7 +52,7 @@ export const Route = createFileRoute('/_pathlessLayout/artists/$slug/')({
   head: ({ loaderData, params }) => {
     const artist = loaderData?.artist
     const title = artist?.name ?? params.slug
-    const description = `Explore exhibitions, fairs, and selected works by ${title} at AG Gallery in Glendale, California.`
+    const description = `Explore exhibitions, fairs, and selected works by ${title} at VayerArt Gallery in Los Angeles, California.`
 
     return {
       meta: [

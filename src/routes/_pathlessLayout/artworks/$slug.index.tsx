@@ -41,7 +41,7 @@ function generateSeoDescription(artwork: Artwork) {
     `Dimensions: ${artwork.dimensionsImperial}`,
   ]
 
-  return `${descriptionSegments.join(' • ')}. Available through AG Gallery.`
+  return `${descriptionSegments.join(' • ')}. Available through VayerArt Gallery.`
 }
 
 export const Route = createFileRoute('/_pathlessLayout/artworks/$slug/')({
@@ -54,7 +54,7 @@ export const Route = createFileRoute('/_pathlessLayout/artworks/$slug/')({
 
     const description = artwork
       ? generateSeoDescription(artwork)
-      : 'Discover original artworks available through AG Gallery in Glendale, California.'
+      : 'Discover original artworks available through VayerArt Gallery in Los Angeles, California.'
 
     return {
       meta: [

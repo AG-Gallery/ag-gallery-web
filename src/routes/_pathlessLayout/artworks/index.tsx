@@ -11,7 +11,7 @@ export const Route = createFileRoute('/_pathlessLayout/artworks/')({
       {
         title: 'Artworks Collection',
         description:
-          'Browse AG Gallery’s curated selection of contemporary artworks, filter by style, medium, or artist, and discover your next acquisition.',
+          'Browse VayerArt Gallery’s curated selection of contemporary artworks, filter by style, medium, or artist, and discover your next acquisition.',
       },
     ],
   }),

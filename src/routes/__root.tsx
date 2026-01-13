@@ -35,9 +35,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       ...seo({
-        title: 'AG Gallery | Discover Contemporary Art',
+        title: 'VayerArt Gallery | Discover Contemporary Art',
         description:
-          'AG Gallery is a contemporary art gallery in Glendale, California showcasing curated exhibitions, artists, and collectible works.',
+          'VayerArt Gallery is a contemporary art gallery in Los Angeles, California showcasing curated exhibitions, artists, and collectible works.',
       }),
     ],
     links: [

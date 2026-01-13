@@ -27,9 +27,9 @@ export const Route = createFileRoute('/')({
   head: () => ({
     meta: [
       {
-        title: 'AG Gallery | Discover Contemporary Art',
+        title: 'VayerArt Gallery | Discover Contemporary Art',
         description:
-          "Explore curator's picks, highlighted artists, and current exhibitions from AG Gallery in Glendale, California.",
+          "Explore curator's picks, highlighted artists, and current exhibitions from VayerArt Gallery in Los Angeles, California.",
       },
     ],
     links: [
@@ -64,7 +64,7 @@ function IndexPage() {
         <section className="absolute top-[45%] left-1/2 z-40 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-8 text-white md:gap-10">
           <p className="mb-2 text-xl font-medium tracking-wide text-nowrap md:text-[1.75rem]">
             <span className="font-lora bg-white/85 bg-clip-text font-semibold text-transparent">
-              Welcome to the Agajanian Gallery
+              Welcome to the VayerArt Gallery
             </span>
           </p>
           <p className="font-playfair mb-4 w-full text-2xl font-medium tracking-wide text-nowrap md:text-5xl md:tracking-[-0.0125rem]">

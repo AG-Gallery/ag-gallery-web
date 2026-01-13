@@ -50,7 +50,7 @@ export default function SocialMedia({ displayStyle }: SocialMediaProps) {
         return (
           <li key={socialMedia.link} className="text-sm tracking-wide">
             <a
-              aria-label={`View AG Gallery's ${socialMedia.title} profile (opens in a new tab).`}
+              aria-label={`View VayerArt Gallery's ${socialMedia.title} profile (opens in a new tab).`}
               href={socialMedia.link}
               target="_blank"
               rel="noopener noreferrer"

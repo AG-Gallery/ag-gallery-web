@@ -32,7 +32,7 @@ function generateSeoDescription(fair: Fair) {
     artistSummary,
   ]
 
-  return `${descriptionParts.join(' • ')}. Experience this fair with AG Gallery.`
+  return `${descriptionParts.join(' • ')}. Experience this fair with VayerArt Gallery.`
 }
 
 export const Route = createFileRoute('/_pathlessLayout/events/fairs/$slug/')({
@@ -44,7 +44,7 @@ export const Route = createFileRoute('/_pathlessLayout/events/fairs/$slug/')({
   head: ({ loaderData, params }) => {
     const description = loaderData
       ? generateSeoDescription(loaderData)
-      : 'Explore the latest art fairs featuring AG Gallery artists and works.'
+      : 'Explore the latest art fairs featuring VayerArt Gallery artists and works.'
 
     return {
       meta: [

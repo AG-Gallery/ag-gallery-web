@@ -17,9 +17,9 @@ export const Route = createFileRoute('/_pathlessLayout/about/')({
   head: () => ({
     meta: [
       {
-        title: 'About AG Gallery',
+        title: 'About VayerArt Gallery',
         description:
-          'Learn about AG Gallery’s commitment to contemporary art, our Glendale roots, and how we support artists and collectors.',
+          'Learn about VayerArt Gallery’s commitment to contemporary art, our roots, and how we support artists and collectors.',
       },
     ],
   }),
@@ -43,12 +43,12 @@ function AboutPage() {
   return (
     <main className="page-main">
       <div className="mb-12">
-        <h2 className="page-headline">About AG Gallery</h2>
+        <h2 className="page-headline">About VayerArt Gallery</h2>
 
         <section className="flex flex-col gap-4 md:flex-row">
           {data && (
             <article className="tracking-wide text-pretty">
-              <div className="w-full max-w-[1000px] md:w-4/5">
+              <div className="w-full max-w-250 md:w-4/5">
                 <PortableText
                   value={data.body}
                   components={{
@@ -64,25 +64,25 @@ function AboutPage() {
           )}
 
           <div className="flex w-full flex-col items-stretch gap-6">
-            <a href={href} className="w-full max-w-[600px]">
+            <a href={href} className="w-full max-w-150">
               <img src="gallery-location.webp" className="size-full" />
             </a>
 
-            <div className="flex max-w-[600px] flex-col items-start justify-between gap-8 lg:flex-row">
+            <div className="flex max-w-150 flex-col items-start justify-between gap-8 lg:flex-row">
               <section>
                 <h3 className="mb-2 text-lg font-semibold">Contact</h3>
-                <p className="mt-2 text-sm">
+                {/* <p className="mt-2 text-sm">
                   418 E Colorado Blvd, Glendale, CA 91205
-                </p>
+                </p> */}
                 <a
-                  href="mailto:info@ag-gallery.com"
+                  href="mailto:support@vayerartgallery.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-accent mt-1 text-sm transition-colors"
                 >
-                  info@ag-gallery.com
+                  support@vayerartgallery.com
                 </a>
-                <p className="mt-0.5 text-sm">+1 (747) 372-1084</p>
+                <p className="mt-0.5 text-sm">+1 (818) 770-4643</p>
               </section>
 
               <section>

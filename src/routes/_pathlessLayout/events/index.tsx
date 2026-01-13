@@ -35,7 +35,7 @@ export const Route = createFileRoute('/_pathlessLayout/events/')({
       {
         title: 'Exhibitions & Art Fairs',
         description:
-          'Stay current on AG Gallery exhibitions and art fairs, filter by upcoming or past events, and plan your next visit.',
+          'Stay current on VayerArt Gallery exhibitions and art fairs, filter by upcoming or past events, and plan your next visit.',
         type: 'event',
       },
     ],

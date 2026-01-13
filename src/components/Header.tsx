@@ -83,7 +83,7 @@ export default function Header() {
             : 'bg-transparent text-white',
       )}
     >
-      <nav className="mx-auto flex max-w-[1600px] items-center justify-between">
+      <nav className="mx-auto flex max-w-400 items-center justify-between">
         <Link
           to="/"
           aria-label="Home"
@@ -91,22 +91,14 @@ export default function Header() {
         >
           <img
             src={logoSrc}
-            alt="AG Gallery logo"
-            className="w-24 md:w-32"
+            alt="Vayer Art Gallery logo"
+            className="w-32 md:w-44"
             width="128"
             height="48"
             loading="eager"
             decoding="async"
             fetchPriority="high"
           />
-          {/*
-          <h1 className="font-playfair text-lg font-medium md:text-2xl md:text-[1.75rem]">
-            AG Gallery
-          </h1>
-          <p className="text-xs tracking-wider md:text-sm md:tracking-wide">
-            Glendale
-          </p>
-          */}
         </Link>
 
         <div className="flex items-center">

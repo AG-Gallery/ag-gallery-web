@@ -18,7 +18,7 @@ export const Route = createFileRoute('/_pathlessLayout/artists/')({
       {
         title: 'Artists',
         description:
-          'Meet the artists represented by AG Gallery and explore their latest works, exhibitions, and creative practices.',
+          'Meet the artists represented by VayerArt Gallery and explore their latest works, exhibitions, and creative practices.',
       },
     ],
   }),

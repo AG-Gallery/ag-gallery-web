@@ -29,17 +29,19 @@ export default function Footer() {
     >
       <div className="mt-5 flex flex-col items-start justify-between gap-6 md:flex-row md:gap-0 lg:mx-32 xl:mx-56">
         <div>
-          <h4 className="font-playfair text-2xl font-medium">AG Gallery</h4>
-          <p className="mt-2 text-sm">
+          <h4 className="font-playfair text-2xl font-medium">
+            VayerArt Gallery
+          </h4>
+          {/* <p className="mt-2 text-sm">
             418 E Colorado Blvd, Glendale, CA 91205
-          </p>
+          </p> */}
           <a
-            href="mailto:info@ag-gallery.com"
+            href="mailto:support@vayerartgallery.com"
             className="hover:text-accent mt-1 text-sm transition-colors"
           >
-            info@ag-gallery.com
+            support@vayerartgallery.com
           </a>
-          <p className="mt-0.5 text-sm">+1 (747) 372-1084</p>
+          <p className="mt-0.5 text-sm">+1 (818) 770-4643</p>
         </div>
 
         <section className="flex flex-col gap-3">
@@ -107,7 +109,7 @@ export default function Footer() {
       </div>
 
       <p className="mt-10 text-center text-sm md:mt-12">
-        Copyright © 2025 AG Gallery. All Rights Reserved
+        Copyright © 2026 VayerArt Gallery. All Rights Reserved
       </p>
     </footer>
   )

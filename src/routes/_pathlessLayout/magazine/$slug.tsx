@@ -18,7 +18,7 @@ function createArticleQuery(slug: string) {
 function generateSeoDescription(article: Article) {
   const publishedOn = formatDateLong(article.date)
 
-  return `${article.title} — published ${publishedOn} by AG Gallery Magazine.`
+  return `${article.title} — published ${publishedOn} by VayerArt Gallery Magazine.`
 }
 
 export const Route = createFileRoute('/_pathlessLayout/magazine/$slug')({
@@ -28,7 +28,7 @@ export const Route = createFileRoute('/_pathlessLayout/magazine/$slug')({
     const title = loaderData?.title ?? params.slug
     const description = loaderData
       ? generateSeoDescription(loaderData)
-      : `Explore ${title} from AG Gallery Magazine.`
+      : `Explore ${title} from VayerArt Gallery Magazine.`
 
     return {
       meta: [

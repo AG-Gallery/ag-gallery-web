@@ -1,12 +1,12 @@
-# AG Gallery
+# VayerArt Gallery
 
-An e-commerce website for AG Gallery in Glendale, California. Built with React, featuring sophisticated artwork filtering, artist portfolios, exhibitions, and integrated shopping functionality.
+An e-commerce website for VayerArt Gallery in Los Angeles, California. Built with React, featuring sophisticated artwork filtering, artist portfolios, exhibitions, and integrated shopping functionality.
 
-**View Live Deployment: [AG Gallery](https://ag-gallery.com)**
+**View Live Deployment: [VayerArt Gallery](https://vayerartgallery.com)**
 
 ## Overview
 
-AG Gallery is a full-featured digital storefront for contemporary art, providing:
+VayerArt Gallery is a full-featured digital storefront for contemporary art, providing:
 - **Artwork Browsing** with advanced filtering by styles, themes, categories, and artists
 - **Artist Directory** with detailed portfolios and biographies
 - **Exhibitions & Fairs** showcasing gallery events with date-based filtering

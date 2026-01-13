@@ -31,7 +31,7 @@ function generateSeoDescription(exhibition: Exhibition) {
 
   const descriptionParts = [`On view ${dates}`, `Featuring ${primaryArtist}`]
 
-  const description = `${descriptionParts.join(' • ')} at AG Gallery.`
+  const description = `${descriptionParts.join(' • ')} at VayerArt Gallery.`
 
   return description
 }
@@ -44,7 +44,7 @@ export const Route = createFileRoute(
   head: ({ loaderData, params }) => {
     const description = loaderData
       ? generateSeoDescription(loaderData)
-      : 'Discover current and upcoming exhibitions at AG Gallery in Glendale, California.'
+      : 'Discover current and upcoming exhibitions at VayerArt Gallery in Los Angeles, California.'
 
     return {
       meta: [

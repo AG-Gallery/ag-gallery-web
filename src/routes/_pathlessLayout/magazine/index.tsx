@@ -19,7 +19,7 @@ export const Route = createFileRoute('/_pathlessLayout/magazine/')({
       {
         title: 'Magazine',
         description:
-          'Read essays, interviews, and stories from AG Gallery highlighting artists, exhibitions, and the contemporary art scene.',
+          'Read essays, interviews, and stories from VayerArt Gallery highlighting artists, exhibitions, and the contemporary art scene.',
         type: 'article',
       },
     ],
