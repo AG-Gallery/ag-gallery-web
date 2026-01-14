@@ -126,24 +126,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
 
         {import.meta.env.DEV && <Devtools />}
-
-        {import.meta.env.PROD && (
-          <script
-            // accessiBe integration
-            dangerouslySetInnerHTML={{
-              __html: `
-              (function() {
-                var s = document.createElement('script');
-                var h = document.querySelector('head') || document.body;
-                s.src = 'https://acsbapp.com/apps/app/dist/js/app.js';
-                s.async = true;
-                s.onload = function(){ if (window.acsbJS) acsbJS.init(); };
-                h.appendChild(s);
-              })();
-            `,
-            }}
-          />
-        )}
       </body>
     </html>
   )

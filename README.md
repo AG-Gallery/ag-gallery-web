@@ -23,7 +23,6 @@ VayerArt Gallery is a full-featured digital storefront for contemporary art, pro
 - **Search**: Search across artworks, artists, and site content
 - **Responsive Design**: Mobile-first with Tailwind CSS and adaptive layouts
 - **SEO Optimized**: Dynamic meta tags and structured data for all pages
-- **Accessibility**: accessiBe integration for WCAG compliance
 
 ## Tech Stack
 
