@@ -75,7 +75,7 @@ export default function Header() {
       ref={headerRef}
       style={{ position: 'fixed', top: 0 }}
       className={cn(
-        'inset-x-0 z-50 w-full p-4 pl-0.5 transition-colors duration-200',
+        'inset-x-0 z-50 w-full px-3 py-4 transition-colors duration-200 md:px-8',
         isMagazineRoute
           ? 'bg-black text-white'
           : solidMode

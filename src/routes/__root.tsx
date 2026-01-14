@@ -118,7 +118,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         )}
       >
         <Header />
-        <div className="mx-auto flex w-full flex-1 flex-col items-center pt-[var(--header-height)]">
+        <div className="mx-auto flex w-full flex-1 flex-col items-center pt-(--header-height)">
           {children}
           <Footer />
         </div>
