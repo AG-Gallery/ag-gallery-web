@@ -1,6 +1,6 @@
 const ENDPOINT =
   import.meta.env.VITE_CHECKOUT_SESSION_ENDPOINT ??
-  'https://workers.ag-gallery.com/api/internal/checkout-session'
+  'https://workers.vayerartgallery.com/api/internal/checkout-session'
 
 export type CheckoutSessionPayload = {
   clientId: string

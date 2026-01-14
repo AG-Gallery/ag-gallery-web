@@ -8,7 +8,7 @@ export default function Footer() {
 
   const SF_API_TOKEN = import.meta.env.VITE_SHOPIFY_STOREFRONT_PUBLIC_TOKEN
   const CHECKOUT_DOMAIN = import.meta.env.VITE_SHOPIFY_CHECKOUT_DOMAIN
-  const STOREFRONT_DOMAIN = 'ag-gallery.com'
+  const STOREFRONT_DOMAIN = 'vayerartgallery.com'
 
   const navLinks = [
     { title: 'Home', path: '/' },

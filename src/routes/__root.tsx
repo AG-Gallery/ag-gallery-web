@@ -84,7 +84,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       const cfg = {
         storefrontAccessToken: SF_API_TOKEN,
         checkoutRootDomain: CHECKOUT_DOMAIN,
-        storefrontRootDomain: 'ag-gallery.com',
+        storefrontRootDomain: 'vayerartgallery.com',
       }
 
       const localConsent = localStorage.getItem(LOCAL_CONSENT_KEY)
