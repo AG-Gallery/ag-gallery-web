@@ -51,6 +51,8 @@ const allExhibitionsQuery = `
     body,
     startDate,
     endDate,
+    _updatedAt,
+    _createdAt
   }
 `
 
@@ -130,6 +132,8 @@ const allFairsQuery = `
     startDate,
     endDate,
     body,
+    _updatedAt,
+    _createdAt
   }
 `
 

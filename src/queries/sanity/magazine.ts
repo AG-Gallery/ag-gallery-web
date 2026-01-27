@@ -10,7 +10,9 @@ const allArticlesQuery = `
     date,
     "slug": slug.current,
     "coverImage": coverImage.asset->url,
-    body
+    body,
+    _updatedAt,
+    _createdAt
   }
 `
 

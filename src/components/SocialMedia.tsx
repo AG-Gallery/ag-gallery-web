@@ -14,7 +14,7 @@ interface SocialMediaProps {
 const socialMediaLinks = [
   {
     title: 'Facebook',
-    link: 'https://www.facebook.com/profile.php?id=61584462503981&mibextid=wwXIfr',
+    link: 'https://www.facebook.com/vayerartgallery?mibextid=wwXIfr',
     icon: FacebookIcon,
   },
   {

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PathlessLayoutRouteRouteImport } from './routes/_pathlessLayout/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PathlessLayoutMagazineIndexRouteImport } from './routes/_pathlessLayout/magazine/index'
@@ -24,6 +25,11 @@ import { Route as PathlessLayoutArtistsSlugIndexRouteImport } from './routes/_pa
 import { Route as PathlessLayoutEventsFairsSlugIndexRouteImport } from './routes/_pathlessLayout/events/fairs/$slug.index'
 import { Route as PathlessLayoutEventsExhibitionsSlugIndexRouteImport } from './routes/_pathlessLayout/events/exhibitions/$slug.index'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PathlessLayoutRouteRoute = PathlessLayoutRouteRouteImport.update({
   id: '/_pathlessLayout',
   getParentRoute: () => rootRouteImport,
@@ -107,6 +113,7 @@ const PathlessLayoutEventsExhibitionsSlugIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/magazine/$slug': typeof PathlessLayoutMagazineSlugRoute
   '/api/shopify/graphql': typeof ApiShopifyGraphqlRoute
   '/about': typeof PathlessLayoutAboutIndexRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/magazine/$slug': typeof PathlessLayoutMagazineSlugRoute
   '/api/shopify/graphql': typeof ApiShopifyGraphqlRoute
   '/about': typeof PathlessLayoutAboutIndexRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_pathlessLayout': typeof PathlessLayoutRouteRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_pathlessLayout/magazine/$slug': typeof PathlessLayoutMagazineSlugRoute
   '/api/shopify/graphql': typeof ApiShopifyGraphqlRoute
   '/_pathlessLayout/about/': typeof PathlessLayoutAboutIndexRoute
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/sitemap.xml'
     | '/magazine/$slug'
     | '/api/shopify/graphql'
     | '/about'
@@ -171,6 +181,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/sitemap.xml'
     | '/magazine/$slug'
     | '/api/shopify/graphql'
     | '/about'
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_pathlessLayout'
+    | '/sitemap.xml'
     | '/_pathlessLayout/magazine/$slug'
     | '/api/shopify/graphql'
     | '/_pathlessLayout/about/'
@@ -204,11 +216,19 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PathlessLayoutRouteRoute: typeof PathlessLayoutRouteRouteWithChildren
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiShopifyGraphqlRoute: typeof ApiShopifyGraphqlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_pathlessLayout': {
       id: '/_pathlessLayout'
       path: ''
@@ -346,6 +366,7 @@ const PathlessLayoutRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PathlessLayoutRouteRoute: PathlessLayoutRouteRouteWithChildren,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiShopifyGraphqlRoute: ApiShopifyGraphqlRoute,
 }
 export const routeTree = rootRouteImport

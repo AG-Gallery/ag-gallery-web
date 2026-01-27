@@ -13,6 +13,8 @@ const allArtistsQuery = `
     "backgroundImage": backgroundImage.asset->url,
     tagline,
     bio,
+    _updatedAt,
+    _createdAt
   }
 `
 

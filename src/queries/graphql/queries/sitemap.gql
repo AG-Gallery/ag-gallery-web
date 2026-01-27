@@ -1,0 +1,21 @@
+# Optimized query for sitemap generation
+# Only fetches handle and createdAt to minimize data transfer
+
+query Sitemap_GetAllProducts($first: Int!, $after: String) {
+  products(
+    first: $first
+    after: $after
+    query: "available_for_sale:true AND inventory_total:>0"
+  ) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        handle
+        createdAt
+      }
+    }
+  }
+}
