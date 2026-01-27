@@ -11,7 +11,6 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
-import pretendardFontUrl from '../assets/fonts/pretendard-variable.woff2?url'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import appCss from '../styles.css?url'
 
@@ -44,13 +43,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       {
         rel: 'stylesheet',
         href: appCss,
-      },
-      {
-        rel: 'preload',
-        as: 'font',
-        href: pretendardFontUrl,
-        type: 'font/woff2',
-        crossOrigin: 'anonymous',
       },
     ],
   }),
